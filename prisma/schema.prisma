@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  firstName        String            @db.VarChar(25)
+  lastName         String            @db.VarChar(25)
+  password         String            @db.VarChar(150)
+  email            String            @unique @db.VarChar(120)
+  birthDate        DateTime          @db.Date
+  gender           Boolean //1 male 0 female
+  bio              String?           @db.Text
+  createTime       DateTime          @default(now())
+  posts            Post[]
+  postReactions    PostReaction[]
+  savedPosts       SavedPost[]
+  comments         Comment[]
+  commentReactions CommentReaction[]
+}
+
+model Post {
+  id         Int            @id @default(autoincrement())
+  body       String?        @db.Text
+  private    Boolean        @default(false)
+  createTime DateTime       @default(now())
+  updateTime DateTime       @updatedAt
+  author     User           @relation(fields: [authorId], references: [id])
+  authorId   Int
+  images     PostImage[]
+  reactions  PostReaction[]
+  savedPosts SavedPost[]
+  comments   Comment[]
+}
+
+model PostImage {
+  id          Int      @id @default(autoincrement())
+  image       String   @db.VarChar(100)
+  description String?  @db.Text
+  createTime  DateTime @default(now())
+  updateTime  DateTime @updatedAt
+  post        Post     @relation(fields: [postId], references: [id])
+  postId      Int
+}
+
+model PostReaction {
+  postId     Int
+  userId     Int
+  reaction   Boolean //1 like 0 dislike
+  createTime DateTime @default(now())
+  post       Post     @relation(fields: [postId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@id([postId, userId])
+}
+
+model SavedPost {
+  postId     Int
+  userId     Int
+  createTime DateTime @default(now())
+  post       Post     @relation(fields: [postId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@id([postId, userId])
+}
+
+model Comment {
+  id         Int               @id @default(autoincrement())
+  body       String            @db.Text
+  createTime DateTime          @default(now())
+  updateTime DateTime          @updatedAt
+  authorId   Int
+  postId     Int
+  author     User              @relation(fields: [authorId], references: [id])
+  post       Post              @relation(fields: [postId], references: [id])
+  reactions  CommentReaction[]
+}
+
+model CommentReaction {
+  commentId  Int
+  userId     Int
+  reaction   Boolean //1 like 0 dislike
+  createTime DateTime @default(now())
+  comment    Comment  @relation(fields: [commentId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@id([commentId, userId])
+}
