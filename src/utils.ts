@@ -8,7 +8,6 @@ import multer from "multer"
 import { extname, join, resolve } from "path"
 import { BadRequestError } from "./errors"
 import sharp from "sharp"
-import { unlinkSync } from "fs"
 
 export const prisma = new PrismaClient()
 
@@ -94,8 +93,7 @@ export const resizeImage = async(path:string,name:string,dest:string,maxWidth=12
         .resize(ratio * meta.width!, ratio * meta.height!)
         .toFormat("jpeg",{force:true})
         .jpeg({ quality: 85})
-        .toBuffer()).toFile(path)
-    unlinkSync(path)
+        .toBuffer()).toFile(resolve(dest,name))
 }
 
 export enum StatusCodes {
