@@ -3,11 +3,13 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  referentialIntegrity = "foreignKeys"
 }
 
 model User {
@@ -33,7 +35,7 @@ model Post {
   private    Boolean        @default(false)
   createTime DateTime       @default(now())
   updateTime DateTime       @updatedAt
-  author     User           @relation(fields: [authorId], references: [id])
+  author     User           @relation(fields: [authorId], references: [id],onDelete: Cascade)
   authorId   Int
   images     PostImage[]
   reactions  PostReaction[]
@@ -47,7 +49,7 @@ model PostImage {
   description String?  @db.Text
   createTime  DateTime @default(now())
   updateTime  DateTime @updatedAt
-  post        Post     @relation(fields: [postId], references: [id])
+  post        Post     @relation(fields: [postId], references: [id],onDelete: Cascade)
   postId      Int
 }
 
@@ -56,8 +58,8 @@ model PostReaction {
   userId     Int
   reaction   Boolean //1 like 0 dislike
   createTime DateTime @default(now())
-  post       Post     @relation(fields: [postId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  post       Post     @relation(fields: [postId], references: [id],onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id],onDelete: Cascade)
 
   @@id([postId, userId])
 }
@@ -66,8 +68,8 @@ model SavedPost {
   postId     Int
   userId     Int
   createTime DateTime @default(now())
-  post       Post     @relation(fields: [postId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  post       Post     @relation(fields: [postId], references: [id],onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id],onDelete: Cascade)
 
   @@id([postId, userId])
 }
@@ -79,8 +81,8 @@ model Comment {
   updateTime DateTime          @updatedAt
   authorId   Int
   postId     Int
-  author     User              @relation(fields: [authorId], references: [id])
-  post       Post              @relation(fields: [postId], references: [id])
+  author     User              @relation(fields: [authorId], references: [id],onDelete: Cascade)
+  post       Post              @relation(fields: [postId], references: [id],onDelete: Cascade)
   reactions  CommentReaction[]
 }
 
@@ -89,8 +91,8 @@ model CommentReaction {
   userId     Int
   reaction   Boolean //1 like 0 dislike
   createTime DateTime @default(now())
-  comment    Comment  @relation(fields: [commentId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  comment    Comment  @relation(fields: [commentId], references: [id],onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id],onDelete: Cascade)
 
   @@id([commentId, userId])
 }
