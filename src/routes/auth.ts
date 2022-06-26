@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express"
 import { JsonWebTokenError } from "jsonwebtoken";
 import { CreateUserDTO, LoginDTO } from "../@types/user";
 import { BadRequestError, NotFoundError } from "../errors";
+import { authMiddleware } from "../middleware/authMiddleware";
 import { validationMiddleware } from "../middleware/validationMiddleware";
 import { attachCookie, comparePasswords, createJWT, hashPassword, 
     prisma, serializeUser, StatusCodes, transporter, verifyJWT } from "../utils"
@@ -49,14 +50,16 @@ const forgetPassword = async (req: Request, res: Response) => {
     }
     const token = createJWT({id:user.id,email:user.email});
     const mailOption = {
-        from:"g6r3si6fxmy7ulpw@ethereal.email",
-        to:email,
-        subject:"Reset Your Password",
-        text:"hi welcome "+token
-    }
+        from: process.env.MASTER_MAIL,
+        to: email,
+        subject: "Reset Your Password",
+        html: `<a href="http://localhost:${process.env.PORT}/api/v1/auth/resetPassword/${token}" target="_blank" style="display: inline-block;text-decoration: none;color: #FFFFFF; background-color: #18163a; border-radius: 1px;">
+      <span style="display:block;padding:15px 40px;line-height:120%;"><span style="font-size: 18px; line-height: 21.6px;">Reset Password</span></span></a>`,
+    };
     transporter.sendMail(mailOption,(err,info)=>{
         if(err){
             console.error(err);
+            throw new BadRequestError("Email Sent Failed Check Your Email And Try Again")
         }else{
             console.log("Sent "+info.response);
         }
@@ -83,6 +86,6 @@ const resetPassword = async (req: Request, res: Response) => {
 
 authRouter.post("/login",validationMiddleware(LoginDTO),login)
 authRouter.post("/register",validationMiddleware(CreateUserDTO),register)
-authRouter.post("/logout",logout)
+authRouter.post("/logout",authMiddleware,logout)
 authRouter.post("/forgetPassword",forgetPassword)
 authRouter.post("/resetPassword/:token",resetPassword)

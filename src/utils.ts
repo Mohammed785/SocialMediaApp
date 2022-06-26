@@ -10,7 +10,8 @@ export const prisma = new PrismaClient()
 export const serializeUser = (user:User)=>{
     return {
         id:user.id,
-        email:user.email
+        email:user.email,
+        fullName:`${user.firstName} ${user.lastName}`
     }
 }
 
