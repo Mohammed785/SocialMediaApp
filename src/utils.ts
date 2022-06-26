@@ -4,6 +4,11 @@ import { Response } from "express"
 import { JwtPayload, sign,verify } from "jsonwebtoken"
 import { createTransport } from "nodemailer"
 import smtpTransport  from "nodemailer-smtp-transport"
+import multer from "multer"
+import { extname, join, resolve } from "path"
+import { BadRequestError } from "./errors"
+import sharp from "sharp"
+import { unlinkSync } from "fs"
 
 export const prisma = new PrismaClient()
 
@@ -54,6 +59,44 @@ export const transporter = createTransport(smtpTransport({
     }
 }))
 
+const storage = multer.diskStorage({
+    destination(req, file, callback) {
+        callback(null,join(__dirname, "..", "/src/public/uploads"));
+    },
+    filename(req, file, callback) {
+        const ext = extname(file.originalname)
+        const uniqueName = `${file.fieldname}-${Date.now()}${Math.round(Math.random() * 1e9)}${ext}`;
+        callback(null,uniqueName);
+    },
+})
+
+export const uploader = multer({
+    storage,
+    limits: { fileSize: 4 * 1024 * 1024 },
+    fileFilter(req, file, callback) {
+        if (file.mimetype == "image/png" ||file.mimetype == "image/jpg" ||
+            file.mimetype == "image/jpeg") {
+            callback(null, true);
+        }else{
+            callback(null,false);
+            return callback(
+                new BadRequestError("Only .png, .jpg and .jpeg format allowed!")
+            );
+        }
+    },
+});
+
+export const resizeImage = async(path:string,name:string,dest:string,maxWidth=1200,maxHeight=630)=>{
+    sharp.cache(false);
+    const meta = await sharp(path).metadata()
+    const ratio=Math.min(maxWidth / meta.width!, maxHeight / meta.height!)||1;    
+    sharp(await sharp(path)
+        .resize(ratio * meta.width!, ratio * meta.height!)
+        .toFormat("jpeg",{force:true})
+        .jpeg({ quality: 85})
+        .toBuffer()).toFile(path)
+    unlinkSync(path)
+}
 
 export enum StatusCodes {
     OK = 200,

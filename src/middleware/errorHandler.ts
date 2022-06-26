@@ -1,5 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { ErrorRequestHandler } from "express";
+import { MulterError } from "multer";
 import { StatusCodes } from "../utils";
 
 export const errorHandler: ErrorRequestHandler = async (err, req, res, next) => {
@@ -14,6 +15,10 @@ export const errorHandler: ErrorRequestHandler = async (err, req, res, next) => 
     if(err instanceof PrismaClientKnownRequestError){
         CustomError.meta = err.meta
         CustomError.code = err.code
+    }else if(err instanceof MulterError){
+        CustomError.code = err.code
+        CustomError.message = err.message
+        CustomError.meta = err.field
     }
     return res.status(CustomError.statusCode).json({ 
         ...CustomError
