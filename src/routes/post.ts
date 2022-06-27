@@ -14,7 +14,7 @@ const getPosts: RequestHandler = async (req, res) => {
         throw new BadRequestError("Please Provide User id")
     }
     let queryObj:Record<string,any> = {
-        id:(id==="self")?req.user?.id:parseInt(id as string),
+        authorId:(id==="self")?req.user?.id:parseInt(id as string),
         private:(id==="self")?{in:[true,false]}:false,
         createTime:{
             gte:(stDate)?new Date(stDate as string).toISOString():new Date(0).toISOString(),
@@ -84,6 +84,81 @@ const deletePost:RequestHandler = async(req,res)=>{
     return res.status(StatusCodes.OK).json({post})
 }
 
+const getPostImage:RequestHandler = async (req,res)=>{
+    const { id,postId } = req.query
+    if(id){
+        const img = await prisma.postImage.findUnique({where:{id:parseInt(id as string)}})
+        return res.json({img})
+    }else if(postId){
+        const images = await prisma.postImage.findMany({where:{postId:parseInt(postId as string)}})
+        return res.json(images)
+    }
+    throw new NotFoundError("No Post Images Found")
+}
+
+const createPostImage:RequestHandler = async (req,res)=>{
+    const id = parseInt(req.params.id)
+    const post = await prisma.post.findUnique({where:{id}})
+    if(!post){
+        throw new NotFoundError("Post Not Found")
+    }
+    if(post?.authorId!==req.user?.id){
+        throw new ForbiddenError("You Cant Edit This Post")
+    }
+    if(!req.file){
+        throw new BadRequestError("Please Provide An Image")
+    }
+    await resizeImage(req.file.path,req.file.filename,req.file.destination)
+    const newImg = await prisma.postImage.create({data:{
+        postId:id,
+        image:req.file!.path,
+        description:req.body.description
+    }})
+    return res.status(StatusCodes.CREATED).json({newImg});
+}
+
+const updatePostImage:RequestHandler = async (req,res)=>{
+    const id = parseInt(req.params.id)
+    const queryObj:Record<string,any> = {}
+    const old = await prisma.postImage.findUnique({where:{id},include:{post:true}})
+    if(!old){
+        throw new NotFoundError("Post Image Not Found");
+    }
+    if(old.post.authorId!==req.user?.id){
+        throw new ForbiddenError("You Cant Update This Post Image")
+    }
+    if(req.file){
+        await resizeImage(req.file.path, req.file.filename, req.file.destination);
+        queryObj['image'] = req.file.path;
+        unlinkSync(old.image);
+    }
+    if(req.body.description){
+        queryObj["description"] = req.body.description;
+    }
+    const newImg = await prisma.postImage.update({where:{id},data:queryObj})
+    return res.status(StatusCodes.ACCEPTED).json({newImg})
+}
+
+const deletePostImage:RequestHandler = async (req,res)=>{
+    const id = parseInt(req.params.id);
+    const exists = await prisma.postImage.findUnique({ where: { id },include:{post:true} });
+    if(!exists){
+        throw new NotFoundError("Post Image Not Found")
+    }
+    if(exists.post.authorId!==req.user?.id){
+        throw new ForbiddenError("You Cant Update This Post Image");
+    }
+    const postImage = await prisma.postImage.delete({where:{id}})
+    unlinkSync(exists.image);
+    return res.json({postImage})
+}
+
+
+// post image
+postRouter.get("/image",getPostImage)
+postRouter.post("/:id/image/create",uploader.single("image"),createPostImage)
+postRouter.patch("/image/update/:id",uploader.single("image"),updatePostImage)
+postRouter.delete("/image/delete/:id",deletePostImage)
 
 // post
 postRouter.get("/",getPosts)

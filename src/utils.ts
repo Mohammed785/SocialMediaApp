@@ -90,7 +90,7 @@ export const resizeImage = async(path:string,name:string,dest:string,maxWidth=12
     const meta = await sharp(path).metadata()
     const ratio=Math.min(maxWidth / meta.width!, maxHeight / meta.height!)||1;    
     sharp(await sharp(path)
-        .resize(ratio * meta.width!, ratio * meta.height!)
+        .resize(Math.round(ratio * meta.width!), Math.round(ratio * meta.height!))
         .toFormat("jpeg",{force:true})
         .jpeg({ quality: 85})
         .toBuffer()).toFile(resolve(dest,name))
