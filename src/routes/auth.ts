@@ -1,15 +1,14 @@
-import { Request, Response, Router } from "express"
+import { RequestHandler, Router } from "express"
 import { JsonWebTokenError } from "jsonwebtoken";
 import { CreateUserDTO, LoginDTO } from "../@types/user";
 import { BadRequestError, NotFoundError } from "../errors";
-import { authMiddleware } from "../middleware/authMiddleware";
-import { validationMiddleware } from "../middleware/validationMiddleware";
+import { authMiddleware, validationMiddleware } from "../middleware";
 import { attachCookie, comparePasswords, createJWT, hashPassword, 
     prisma, serializeUser, StatusCodes, transporter, verifyJWT } from "../utils"
 
 export const authRouter = Router();
 
-const login = async (req:Request,res:Response) => {
+const login:RequestHandler = async (req,res) => {
     const {email,password} = req.body;
     const user = await prisma.user.findUnique({where:{email}});
     if(!user){
@@ -23,7 +22,7 @@ const login = async (req:Request,res:Response) => {
     return res.status(StatusCodes.ACCEPTED).json({msg:"Logged in Successfully",token})
 }
 
-const register = async (req: Request, res: Response) => {
+const register:RequestHandler = async (req, res) => {
     let user = await prisma.user.findUnique({where:{email:req.body.email}});
     if(user){
         return res.status(StatusCodes.BAD_REQUEST).json({msg:"User Already Exists"});
@@ -34,7 +33,7 @@ const register = async (req: Request, res: Response) => {
     return res.status(StatusCodes.CREATED).json({msg:"User Created Successfully"});
 }
 
-const logout = async (req: Request, res: Response) => {
+const logout:RequestHandler = async (req, res) => {
     res.cookie("token","logged out",{
         httpOnly:true,
         expires:new Date(Date.now()+2500)
@@ -42,7 +41,7 @@ const logout = async (req: Request, res: Response) => {
     return res.status(StatusCodes.OK).json({msg:"Logged out"});
 }
 
-const forgetPassword = async (req: Request, res: Response) => {
+const forgetPassword:RequestHandler = async (req, res) => {
     const {email} = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
     if(!user){
@@ -67,7 +66,7 @@ const forgetPassword = async (req: Request, res: Response) => {
     return res.status(StatusCodes.ACCEPTED).json({msg:"Rest Link Sent To Your Email"})
 }
 
-const resetPassword = async (req: Request, res: Response) => {
+const resetPassword:RequestHandler = async (req,res) => {
     const token = req.params.token   
     const {newPass,confirmPass} = req.body
     const verifiedToken = verifyJWT(token)
@@ -84,8 +83,37 @@ const resetPassword = async (req: Request, res: Response) => {
     return res.status(StatusCodes.ACCEPTED).json({msg:"Password Changed Successfully"})
 }
 
+
+const changePassword:RequestHandler = async (req,res)=>{
+    const {oldPass,newPass,confirmPass} = req.body
+    const user = await prisma.user.findUnique({where:{id:req.user?.id}})
+    if(!await comparePasswords(oldPass,user!.password)){
+        throw new BadRequestError("Wrong Old Password")
+    }
+    if(newPass!==confirmPass){
+        throw new BadRequestError("New Password Must Equal Confirm Password")
+    }
+    const hashed = await hashPassword(newPass)
+    await prisma.user.update({where:{id:req.user?.id},data:{password:hashed}})
+    return res.status(StatusCodes.ACCEPTED).json({msg:"Password Updated Successfully"})
+}
+
+const deleteAccount:RequestHandler = async(req,res)=>{
+    const user = await prisma.user.delete({where:{id:req.user?.id}})
+    return res.json({msg:`${req.user?.fullName} Your Account has Deleted`})
+}
+
+const updateProfile:RequestHandler = async(req,res)=>{
+    const user = await prisma.user.update({where:{id:req.user?.id},
+        data:req.body,select:{password:false}})
+    return res.status(StatusCodes.ACCEPTED).json({msg:"Profile Updated Successfully",user})
+}
+
 authRouter.post("/login",validationMiddleware(LoginDTO),login)
 authRouter.post("/register",validationMiddleware(CreateUserDTO),register)
 authRouter.post("/logout",authMiddleware,logout)
 authRouter.post("/forgetPassword",forgetPassword)
 authRouter.post("/resetPassword/:token",resetPassword)
+authRouter.patch("/changePassword",authMiddleware,changePassword)
+authRouter.patch("/account/update",authMiddleware,updateProfile)
+authRouter.delete("/account/delete",authMiddleware,deleteAccount)

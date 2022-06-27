@@ -33,6 +33,7 @@ model Post {
   id         Int            @id @default(autoincrement())
   body       String?        @db.Text
   private    Boolean        @default(false)
+  edited     Boolean        @default(false)
   createTime DateTime       @default(now())
   updateTime DateTime       @updatedAt
   author     User           @relation(fields: [authorId], references: [id],onDelete: Cascade)
@@ -77,6 +78,7 @@ model SavedPost {
 model Comment {
   id         Int               @id @default(autoincrement())
   body       String            @db.Text
+  edited     Boolean           @default(false)
   createTime DateTime          @default(now())
   updateTime DateTime          @updatedAt
   authorId   Int

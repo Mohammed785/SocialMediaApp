@@ -5,9 +5,10 @@ import "express-async-errors"
 import { urlencoded } from "body-parser"
 import cookieParser from "cookie-parser"
 import { authRouter } from "./routes/auth"
-import { errorHandler } from "./middleware/errorHandler"
 import { join } from "path"
 import { postRouter } from "./routes/post"
+import { authMiddleware,errorHandler } from "./middleware"
+
 
 
 
@@ -16,7 +17,7 @@ app.use(express.json())
 app.use(urlencoded({extended:false}))
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(express.static(join(__dirname,"public")))
-app.use("/api/v1/post",postRouter)
+app.use("/api/v1/post",authMiddleware,postRouter)
 app.use("/api/v1/auth",authRouter)
 app.use(errorHandler)
 
