@@ -5,6 +5,8 @@ import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 
 export const postRouter = Router()
 
+
+                    /* Post Section*/
 const feed:RequestHandler = async(req,res)=>{}
 
 const getPosts: RequestHandler = async (req, res) => {
@@ -67,7 +69,7 @@ const updatePost: RequestHandler = async (req, res) => {
     return res.json({post})
 };
 
-
+                    /* Post Image Section*/
 const deletePost:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id);
     const post = await prisma.post.findUnique({where:{id},include:{images:true}})
@@ -153,6 +155,101 @@ const deletePostImage:RequestHandler = async (req,res)=>{
     return res.json({postImage})
 }
 
+                    /* Post Save Section */
+const savePost:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id)
+    const post = await prisma.post.findUnique({where:{id}})
+    if(!post){
+        throw new NotFoundError("Post Not Found")
+    }
+    const saved = await prisma.savedPost.create({data:{
+        userId:req.user!.id,
+        postId:id
+    }})
+    return res.status(StatusCodes.CREATED).json({msg:"Post Saved",post:saved})
+}
+
+const unSavePost:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id);
+    const saved = await prisma.savedPost.findUnique({where:{
+        postId_userId:{
+            postId:id,
+            userId:req.user!.id
+        }
+    }})
+    if(!saved){
+        throw new NotFoundError("You Did't save this post")
+    }
+    if(saved.userId!==req.user?.id){
+        throw new ForbiddenError("You Can't UnSave This Post")
+    }
+    await prisma.savedPost.delete({where:{
+        postId_userId:{
+            postId:id,
+            userId:req.user!.id
+        }
+    }})
+    return res.json({msg:"Saved Post Deleted"})
+}
+
+                    /* Post Save Section */
+const getPostReact:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id);
+    const reaction = await prisma.postReaction.findUnique({
+        where: {
+            postId_userId: {
+                postId: id,
+                userId: req.user!.id,
+            },
+        },
+    });
+    if(!reaction){
+        throw new NotFoundError("No React For This Post Found")
+    }
+    return res.json({reaction})
+}
+const postReact:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id)
+    let reaction;
+    const react = Boolean(req.query.react)
+    const exists = await prisma.postReaction.findUnique({where:{
+        postId_userId:{
+            postId:id,
+            userId:req.user!.id
+        }
+    }})
+    if(!exists){
+        reaction=await prisma.postReaction.create({data:{
+            postId:id,
+            userId:req.user!.id,
+            reaction:react
+        }})
+    }else{
+        if(exists.reaction!==react){
+            reaction=await prisma.postReaction.update({where:{
+                postId_userId:{
+                postId:id,
+                userId:req.user!.id
+            }
+            },data:{reaction:react}})
+        }else{
+            await prisma.postReaction.delete({where:{
+                postId_userId:{
+                postId:id,
+                userId:req.user!.id
+                }   
+            }})
+        }
+    }
+    return res.status(StatusCodes.CREATED).json({msg:`Post ${(react===true)?"Liked":"Disliked"}`,reaction})
+}
+
+// post react
+postRouter.get("/:id/react",getPostReact)
+postRouter.post("/:id/react",postReact)
+// post save
+postRouter.post("/:id/save",savePost)
+postRouter.delete("/:id/unsave",unSavePost)
 
 // post image
 postRouter.get("/image",getPostImage)
