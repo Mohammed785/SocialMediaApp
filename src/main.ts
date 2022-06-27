@@ -8,7 +8,7 @@ import { authRouter } from "./routes/auth"
 import { join } from "path"
 import { postRouter } from "./routes/post"
 import { authMiddleware,errorHandler } from "./middleware"
-
+import { commentRouter } from "./routes/comment"
 
 
 
@@ -18,6 +18,7 @@ app.use(urlencoded({extended:false}))
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(express.static(join(__dirname,"public")))
 app.use("/api/v1/post",authMiddleware,postRouter)
+app.use("/api/v1/comment",authMiddleware,commentRouter)
 app.use("/api/v1/auth",authRouter)
 app.use(errorHandler)
 

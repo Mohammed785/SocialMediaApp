@@ -65,7 +65,7 @@ const updatePost: RequestHandler = async (req, res) => {
     if(old.authorId!==req.user?.id){
         throw new ForbiddenError("You Cant Update This Post")
     }
-    const post = await prisma.post.update({where:{id},data:{body:req.body.body}})
+    const post = await prisma.post.update({where:{id},data:{...req.body,edited:true}})
     return res.json({post})
 };
 

@@ -2,13 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "foreignKeys"
 }
 
@@ -30,18 +30,19 @@ model User {
 }
 
 model Post {
-  id         Int            @id @default(autoincrement())
-  body       String?        @db.Text
-  private    Boolean        @default(false)
-  edited     Boolean        @default(false)
-  createTime DateTime       @default(now())
-  updateTime DateTime       @updatedAt
-  author     User           @relation(fields: [authorId], references: [id],onDelete: Cascade)
-  authorId   Int
-  images     PostImage[]
-  reactions  PostReaction[]
-  savedPosts SavedPost[]
-  comments   Comment[]
+  id          Int            @id @default(autoincrement())
+  body        String?        @db.Text
+  private     Boolean        @default(false)
+  edited      Boolean        @default(false)
+  commentable Boolean        @default(true)
+  createTime  DateTime       @default(now())
+  updateTime  DateTime       @updatedAt
+  author      User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    Int
+  images      PostImage[]
+  reactions   PostReaction[]
+  savedPosts  SavedPost[]
+  comments    Comment[]
 }
 
 model PostImage {
@@ -50,7 +51,7 @@ model PostImage {
   description String?  @db.Text
   createTime  DateTime @default(now())
   updateTime  DateTime @updatedAt
-  post        Post     @relation(fields: [postId], references: [id],onDelete: Cascade)
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId      Int
 }
 
@@ -59,8 +60,8 @@ model PostReaction {
   userId     Int
   reaction   Boolean //1 like 0 dislike
   createTime DateTime @default(now())
-  post       Post     @relation(fields: [postId], references: [id],onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id],onDelete: Cascade)
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([postId, userId])
 }
@@ -69,8 +70,8 @@ model SavedPost {
   postId     Int
   userId     Int
   createTime DateTime @default(now())
-  post       Post     @relation(fields: [postId], references: [id],onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id],onDelete: Cascade)
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([postId, userId])
 }
@@ -83,8 +84,8 @@ model Comment {
   updateTime DateTime          @updatedAt
   authorId   Int
   postId     Int
-  author     User              @relation(fields: [authorId], references: [id],onDelete: Cascade)
-  post       Post              @relation(fields: [postId], references: [id],onDelete: Cascade)
+  author     User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post       Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
   reactions  CommentReaction[]
 }
 
@@ -93,8 +94,8 @@ model CommentReaction {
   userId     Int
   reaction   Boolean //1 like 0 dislike
   createTime DateTime @default(now())
-  comment    Comment  @relation(fields: [commentId], references: [id],onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id],onDelete: Cascade)
+  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([commentId, userId])
 }
