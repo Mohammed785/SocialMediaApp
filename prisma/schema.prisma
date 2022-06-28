@@ -84,8 +84,11 @@ model Comment {
   updateTime DateTime          @updatedAt
   authorId   Int
   postId     Int
+  commentId  Int?
   author     User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post       Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
+  pComment   Comment?          @relation("SubComments",fields: [commentId], references: [id],onDelete: Cascade)
+  comments   Comment[]         @relation("SubComments")
   reactions  CommentReaction[]
 }
 

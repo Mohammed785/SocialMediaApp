@@ -23,14 +23,15 @@ const getPosts: RequestHandler = async (req, res) => {
             lte:(enDate)?new Date(enDate as string).toISOString():new Date().toISOString()
         }
     }
-    posts = await prisma.post.findMany({where:queryObj,include:{images:true}})
+    posts = await prisma.post.findMany({where:queryObj,
+        include:{images:true,author:true,reactions:true,_count:{select:{comments:true}}}})
     return res.json({posts})
 };
 
 const getPost:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     const post = await prisma.post.findUnique({where:{id}
-    ,include:{images:true}})
+    ,include:{images:true,reactions:true,author:true}})
     if(!post){
         throw new NotFoundError("Post Not Found")
     }
