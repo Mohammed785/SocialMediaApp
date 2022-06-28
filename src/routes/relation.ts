@@ -32,6 +32,10 @@ const getFriendRequestHistory:RequestHandler = async(req,res)=>{
 
 const sendFriendRequest:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id)
+    const userExists = await prisma.user.findUnique({ where: { id } });
+    if (!userExists) {
+        throw new NotFoundError("User Not Found");
+    }
     const oldReq = await prisma.friendRequest.findFirst({
         where:{
             OR:[{senderId:req.user!.id,receiverId:id},{senderId:id,receiverId:req.user!.id}]
@@ -147,9 +151,97 @@ const cancelFriendRequest:RequestHandler = async (req,res)=>{
     return res.json({msg:"Request Canceled",request})
 }
 
+const blockUser:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id as string)
+    let block;
+    const userExists = await prisma.user.findUnique({where:{id}})
+    if(!userExists){
+        throw new NotFoundError("User Not Found")
+    }
+    const isRelated = await prisma.relation.findMany({
+        where:{
+            OR:[{userId:id,relatedId:req.user!.id},{userId:req.user!.id,relatedId:id}]
+        }
+    })
+    if(isRelated.length){
+        isRelated.forEach(async(relation)=>{
+            if(!relation.friend){
+                throw new BadRequestError("You Have Already Blocked This User");
+            }else{
+                await prisma.relation.deleteMany({
+                    where: {OR: [{ userId: id, relatedId: req.user!.id },
+                            { userId: req.user!.id, relatedId: id }]},
+                });
+                block = await prisma.relation.create({
+                    data:{userId:req.user!.id,relatedId:id,friend:false}
+                })
+            }
+        })
+    }
+    return res.json({ block });
+}
+const unblockUser:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id as string)
+    const isRelated = await prisma.relation.findFirst({
+        where:{
+            userId:req.user!.id,relatedId:id,friend:false
+        }
+    })
+    if(!isRelated){
+        throw new NotFoundError("You Didn't Block This User You Can't Unblock Him")
+    }
+    const unblock = await prisma.relation.delete({
+        where: {
+            userId_relatedId:{
+                userId: req.user!.id,
+                relatedId: id,
+            }
+        },
+    })
+    return res.json({ unblock });
+}
+
+const getBlockList:RequestHandler = async(req,res)=>{
+    const list = await prisma.relation.findMany({
+        where:{userId:req.user!.id,friend:false},include:{related:true}
+    })
+    return res.json({list})
+}
+
+const getFriendList:RequestHandler = async(req,res)=>{
+    const list = await prisma.relation.findMany({
+        where: { userId: req.user!.id, friend: true },include:{related:true}
+    });
+    return res.json({ list });
+}
+
+const unfriendUser:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id as string)
+    const isRelated = await prisma.relation.findFirst({
+        where:{
+            userId:req.user!.id,relatedId:id,friend:true
+        }
+    })
+    if(!isRelated){
+        throw new BadRequestError("You Are Not Friend With This User")
+    }
+    const unfriend = await prisma.relation.deleteMany({
+        where:{
+            OR:[{userId:id,relatedId:req.user!.id},{userId:req.user!.id,relatedId:id}],
+            friend:true
+        }
+    })
+    return res.json({ msg:"You Removed Your Friendship" });
+}
+
 relationRouter.get("/request",getFriendRequests)
 relationRouter.get("/request/history",getFriendRequestHistory)
 relationRouter.post("/request/send/:id",sendFriendRequest)
 relationRouter.post("/request/accept/:id",acceptFriendRequest)
 relationRouter.post("/request/decline/:id",declineFriendRequest)
 relationRouter.delete("/request/cancel/:id",cancelFriendRequest)
+relationRouter.get("/friend/list",getFriendList)
+relationRouter.post("/friend/unfriend",unfriendUser)
+relationRouter.get("/block/list",getBlockList)
+relationRouter.post("/block",blockUser)
+relationRouter.post("/block/unblock",unblockUser)
