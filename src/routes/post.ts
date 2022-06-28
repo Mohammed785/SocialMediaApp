@@ -60,13 +60,14 @@ const createPost:RequestHandler = async(req,res)=>{
 const updatePost: RequestHandler = async (req, res) => {
     const id = parseInt(req.params.id);
     const old = await prisma.post.findUnique({where:{id}})
+    const {body} = req.body
     if(!old){
         throw new NotFoundError("Post Not Found")
     }
     if(old.authorId!==req.user?.id){
         throw new ForbiddenError("You Cant Update This Post")
     }
-    const post = await prisma.post.update({where:{id},data:{...req.body,edited:true}})
+    const post = await prisma.post.update({where:{id},data:{body,edited:true}})
     return res.json({post})
 };
 

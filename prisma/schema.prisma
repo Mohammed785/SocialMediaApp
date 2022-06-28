@@ -22,12 +22,39 @@ model User {
   gender           Boolean //1 male 0 female
   bio              String?           @db.Text
   createTime       DateTime          @default(now())
+  lastSeen         DateTime          @default(now())
   posts            Post[]
   postReactions    PostReaction[]
   savedPosts       SavedPost[]
   comments         Comment[]
   commentReactions CommentReaction[]
+  relations Relation[]  @relation("Relations")
+  related Relation[]  @relation("Related")
+  sentReqest  FriendRequest[] @relation("SentRequest")
+  recivedRequest  FriendRequest[] @relation("RecivedRequest")
 }
+
+model FriendRequest {
+  senderId  Int
+  reciverId Int
+  createTime  DateTime  @default(now())
+  acceptTime  DateTime?
+  accepted  Boolean?
+  sender  User  @relation("SentRequest",fields: [senderId],references: [id],onDelete: Cascade)
+  reciver User  @relation("RecivedRequest",fields: [reciverId],references: [id],onDelete: Cascade)
+  @@id([senderId,reciverId])
+}
+
+model Relation {
+  userId  Int
+  relatedId  Int
+  createTime  DateTime  @default(now())
+  friend  Boolean // true friends false block
+  user User  @relation("Relations",fields: [userId],references: [id],onDelete: Cascade)
+  related User  @relation("Related",fields: [relatedId],references: [id],onDelete: Cascade)
+  @@id([userId,relatedId])
+}
+
 
 model Post {
   id          Int            @id @default(autoincrement())

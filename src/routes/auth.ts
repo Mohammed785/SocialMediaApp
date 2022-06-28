@@ -34,6 +34,7 @@ const register:RequestHandler = async (req, res) => {
 }
 
 const logout:RequestHandler = async (req, res) => {
+    await prisma.user.update({where:{id:req.user?.id},data:{lastSeen:new Date()}})
     res.cookie("token","logged out",{
         httpOnly:true,
         expires:new Date(Date.now()+2500)
