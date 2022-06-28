@@ -31,18 +31,18 @@ model User {
   relations Relation[]  @relation("Relations")
   related Relation[]  @relation("Related")
   sentReqest  FriendRequest[] @relation("SentRequest")
-  recivedRequest  FriendRequest[] @relation("RecivedRequest")
+  receivedRequest  FriendRequest[] @relation("receivedRequest")
 }
 
 model FriendRequest {
   senderId  Int
-  reciverId Int
+  receiverId Int
   createTime  DateTime  @default(now())
   acceptTime  DateTime?
   accepted  Boolean?
   sender  User  @relation("SentRequest",fields: [senderId],references: [id],onDelete: Cascade)
-  reciver User  @relation("RecivedRequest",fields: [reciverId],references: [id],onDelete: Cascade)
-  @@id([senderId,reciverId])
+  receiver User  @relation("receivedRequest",fields: [receiverId],references: [id],onDelete: Cascade)
+  @@id([senderId,receiverId])
 }
 
 model Relation {

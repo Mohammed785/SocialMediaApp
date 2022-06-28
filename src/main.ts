@@ -9,7 +9,7 @@ import { join } from "path"
 import { postRouter } from "./routes/post"
 import { authMiddleware,errorHandler } from "./middleware"
 import { commentRouter } from "./routes/comment"
-
+import { relationRouter } from "./routes/relation"
 
 
 const app = express()
@@ -19,6 +19,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(express.static(join(__dirname,"public")))
 app.use("/api/v1/post",authMiddleware,postRouter)
 app.use("/api/v1/comment",authMiddleware,commentRouter)
+app.use("/api/v1/relation",authMiddleware,relationRouter)
 app.use("/api/v1/auth",authRouter)
 app.use(errorHandler)
 
