@@ -28,6 +28,8 @@ model User {
   savedPosts       SavedPost[]
   comments         Comment[]
   commentReactions CommentReaction[]
+  status  Status[]
+  statusViews StatusView[]
   relations Relation[]  @relation("Relations")
   related Relation[]  @relation("Related")
   sentReqest  FriendRequest[] @relation("SentRequest")
@@ -128,4 +130,24 @@ model CommentReaction {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([commentId, userId])
+}
+
+model Status {
+  id  Int @id @default(autoincrement())
+  caption String?    @db.Text
+  image String?  @db.Text
+  createTime  DateTime  @default(now())
+  authorId  Int
+  author  User  @relation(fields: [authorId],references: [id],onDelete: Cascade)
+  views StatusView[]
+}
+
+
+model StatusView {
+  viewerId  Int
+  statusId  Int
+  createTime DateTime @default(now())
+  status  Status  @relation(fields: [statusId],references: [id],onDelete: Cascade)
+  viewer  User  @relation(fields: [viewerId],references: [id],onDelete: Cascade)
+  @@id([viewerId,statusId])
 }
