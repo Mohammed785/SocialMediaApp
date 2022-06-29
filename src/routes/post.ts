@@ -2,6 +2,8 @@ import { RequestHandler, Router } from "express";
 import { resizeImage, uploader,prisma, StatusCodes,userSelect } from "../utils";
 import { unlinkSync } from "fs";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
+import { validationMiddleware } from "../middleware";
+import { UpdatePostDTO } from "../@types/post";
 export const postRouter = Router()
 
                     /* Post Section*/
@@ -288,5 +290,5 @@ postRouter.delete("/image/delete/:id",deletePostImage)
 postRouter.get("/",getPosts)
 postRouter.get("/:id",getPost)
 postRouter.post("/create",uploader.array("images"),createPost);
-postRouter.patch("/update/:id",updatePost)
+postRouter.patch("/update/:id",validationMiddleware(UpdatePostDTO,true),updatePost)
 postRouter.delete("/delete/:id",deletePost)

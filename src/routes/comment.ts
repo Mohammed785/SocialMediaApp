@@ -6,10 +6,10 @@ export const commentRouter = Router()
 
 const getPostComments:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id)
-    const cursor = req.query.cursor
+    let cursor = parseInt(req.query.cursor as string)
     const queryOptions:Record<string,any> = {cursor:undefined,skip:undefined}
     if(cursor){
-        queryOptions.cursor = {id:parseInt(cursor as string)}
+        queryOptions.cursor = {id:cursor}
         queryOptions.skip = 1
     }
     const comments = await prisma.comment.findMany({
@@ -23,7 +23,9 @@ const getPostComments:RequestHandler = async (req,res)=>{
         },
         ...queryOptions,
     });
-    return res.json({comments,cursor:comments[comments.length-1].id})
+    const last = comments[comments.length-1]
+    cursor = (last)?last.id:0
+    return res.json({comments,cursor})
 };
 
 const getSubComments:RequestHandler = async (req,res)=>{
@@ -85,7 +87,8 @@ const updateComment:RequestHandler = async (req,res)=>{
         throw new ForbiddenError("You Cant Update This Comment")
     }
     const comment = await prisma.comment.update({where:{id},data:{body,edited:true}})
-    return res.json({comment})
+    const msg = (!comment)?"Update Failed":"Update Success"
+    return res.json({comment,msg})
 };
 
 const deleteComment:RequestHandler = async (req,res)=>{
