@@ -10,6 +10,7 @@ import { postRouter } from "./routes/post"
 import { authMiddleware,errorHandler } from "./middleware"
 import { commentRouter } from "./routes/comment"
 import { relationRouter } from "./routes/relation"
+import { statusRouter } from "./routes/status"
 
 
 const app = express()
@@ -20,6 +21,7 @@ app.use(express.static(join(__dirname,"public")))
 app.use("/api/v1/post",authMiddleware,postRouter)
 app.use("/api/v1/comment",authMiddleware,commentRouter)
 app.use("/api/v1/relation",authMiddleware,relationRouter)
+app.use("/api/v1/status",authMiddleware,statusRouter)
 app.use("/api/v1/auth",authRouter)
 app.use(errorHandler)
 
