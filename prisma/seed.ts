@@ -38,6 +38,14 @@ async function users() {
                 birthDate: new Date("2000-10-10").toISOString(),
                 gender: true,
             },
+            {
+                firstName: "mr",
+                lastName: "friendRequest",
+                email: "request@test.com",
+                password,
+                birthDate: new Date("2000-10-10").toISOString(),
+                gender: true,
+            },
         ],
     });
     console.log("Users ✅");
@@ -45,12 +53,37 @@ async function users() {
 
 async function friendRequests(){
     await prisma.friendRequest.createMany({
-        data:[
-            {senderId:3,receiverId:1,accepted:true,acceptTime:new Date().toISOString()},
-            {senderId:3,receiverId:2,accepted:true,acceptTime:new Date().toISOString()},
-            {senderId:1,receiverId:2,accepted:true,acceptTime:new Date().toISOString()}
-        ]
-    })
+        data: [
+            {
+                senderId: 3,
+                receiverId: 1,
+                accepted: true,
+                acceptTime: new Date().toISOString(),
+            },
+            {
+                senderId: 3,
+                receiverId: 2,
+                accepted: true,
+                acceptTime: new Date().toISOString(),
+            },
+            {
+                senderId: 1,
+                receiverId: 2,
+                accepted: true,
+                acceptTime: new Date().toISOString(),
+            },
+            {
+                senderId: 5,
+                receiverId: 1,
+                accepted: null,
+            },
+            {
+                senderId: 5,
+                receiverId: 2,
+                accepted: null,
+            },
+        ],
+    });
     console.log("Friend Requests ✅");
 }
 

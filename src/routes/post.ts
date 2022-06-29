@@ -35,6 +35,15 @@ const getPost:RequestHandler = async(req,res)=>{
     if(!post){
         throw new NotFoundError("Post Not Found")
     }
+    const blocked = await prisma.relation.findFirst({
+        where: {
+            OR: [
+                { userId: post.authorId, relatedId: req.user?.id },
+                { userId: req.user?.id, relatedId: post.authorId }]},
+    });
+    if (blocked) {
+        throw new ForbiddenError("You View This Post");
+    }
     if(post.authorId!==req.user?.id && post.private===true){
         throw new ForbiddenError("You Cant View This Post")
     }
@@ -164,6 +173,14 @@ const savePost:RequestHandler = async(req,res)=>{
     if(!post){
         throw new NotFoundError("Post Not Found")
     }
+    const blocked = await prisma.relation.findFirst({
+        where: {
+            OR: [{ userId: post.authorId, relatedId: req.user?.id },
+                { userId: req.user?.id, relatedId: post.authorId }]},
+    });
+    if(blocked){
+        throw new ForbiddenError("You Can't Save This Post")
+    }
     const saved = await prisma.savedPost.create({data:{
         userId:req.user!.id,
         postId:id
@@ -214,6 +231,18 @@ const postReact:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     let reaction;
     const react = Boolean(req.query.react)
+    const post = await prisma.post.findUnique({where:{id}})
+    if (!post) {
+        throw new NotFoundError("Post Not Found");
+    }
+    const blocked = await prisma.relation.findFirst({
+        where: {
+            OR: [{ userId: post.authorId, relatedId: req.user?.id },
+                { userId: req.user?.id, relatedId: post.authorId }]},
+    });
+    if(blocked){
+        throw new ForbiddenError("You React to This Post")
+    }
     const exists = await prisma.postReaction.findUnique({where:{
         postId_userId:{
             postId:id,

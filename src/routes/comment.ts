@@ -44,6 +44,14 @@ const createComment:RequestHandler = async (req,res)=>{
     if(!post){
         throw new NotFoundError("Post Not Found")
     }
+    const blocked = await prisma.relation.findFirst({
+        where: {
+            OR: [{ userId: post.authorId, relatedId: req.user?.id },
+                { userId: req.user?.id, relatedId: post.authorId }]},
+    });
+    if(blocked){
+        throw new ForbiddenError("You Can't Comment on this Post")
+    }
     if(!post.commentable){
         throw new ForbiddenError("You Cant Comment On This Post Owner Locked Comments")
     }
@@ -89,6 +97,22 @@ const commentReact:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     let reaction;
     const react = Boolean(req.query.react)
+    let msg = `Post ${react === true ? "Liked" : "Disliked"}`;
+    const comment = await prisma.comment.findUnique({where:{id}})
+    if(!comment){
+        throw new NotFoundError("Comment Not Found")
+    }
+    const blocked = await prisma.relation.findFirst({
+        where: {
+            OR: [
+                { userId: comment.authorId, relatedId: req.user?.id },
+                { userId: req.user?.id, relatedId: comment.authorId },
+            ],
+        },
+    });
+    if (blocked) {
+        throw new ForbiddenError("You Can't React To Comment on this Post");
+    }
     const exists = await prisma.commentReaction.findUnique({where:{
         commentId_userId:{
             commentId:id,
@@ -116,9 +140,10 @@ const commentReact:RequestHandler = async(req,res)=>{
                 userId:req.user!.id
                 }   
             }})
+            msg = "React Deleted"
         }
     }
-    return res.status(StatusCodes.CREATED).json({msg:`Post ${(react===true)?"Liked":"Disliked"}`,reaction})
+    return res.status(StatusCodes.CREATED).json({msg,reaction})
 }
 
 
@@ -127,4 +152,4 @@ commentRouter.get("/:id/sub",getSubComments)
 commentRouter.post("/create/:id",createComment)
 commentRouter.patch("/update/:id",updateComment)
 commentRouter.delete("/delete/:id",deleteComment)
-
+commentRouter.post("/react",commentReact)
