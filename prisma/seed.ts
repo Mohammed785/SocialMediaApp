@@ -30,11 +30,46 @@ async function users() {
                 birthDate: new Date("1990-10-10").toISOString(),
                 gender: true,
             },
+            {
+                firstName: "mr",
+                lastName: "block",
+                email: "block@test.com",
+                password,
+                birthDate: new Date("2000-10-10").toISOString(),
+                gender: true,
+            },
         ],
     });
     console.log("Users ✅");
 }
 
+async function friendRequests(){
+    await prisma.friendRequest.createMany({
+        data:[
+            {senderId:3,receiverId:1,accepted:true,acceptTime:new Date().toISOString()},
+            {senderId:3,receiverId:2,accepted:true,acceptTime:new Date().toISOString()},
+            {senderId:1,receiverId:2,accepted:true,acceptTime:new Date().toISOString()}
+        ]
+    })
+    console.log("Friend Requests ✅");
+}
+
+async function relations(){
+    await prisma.relation.createMany({
+        data: [
+            { userId: 1, relatedId: 2, friend: true },
+            { userId: 2, relatedId: 1, friend: true },
+            { userId: 1, relatedId: 3, friend: true },
+            { userId: 3, relatedId: 1, friend: true },
+            { userId: 3, relatedId: 2, friend: true },
+            { userId: 2, relatedId: 3, friend: true },
+            { userId: 1, relatedId: 4, friend: false },
+            { userId: 2, relatedId: 4, friend: false },
+            { userId: 3, relatedId: 4, friend: false },
+        ],
+    });
+    console.log("Friends & Blocks ✅");
+}
 async function posts() {
     await prisma.post.createMany({
         data: [
@@ -122,6 +157,8 @@ async function commentReactions() {
 
 async function main() {
     await users();
+    await friendRequests();
+    await relations();
     await posts();
     await postImages();
     await savedPosts();

@@ -32,6 +32,9 @@ const getFriendRequestHistory:RequestHandler = async(req,res)=>{
 
 const sendFriendRequest:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id)
+    if (id === req.user?.id) {
+        throw new BadRequestError("You Cant Send Request To Your Self");
+    }
     const userExists = await prisma.user.findUnique({ where: { id } });
     if (!userExists) {
         throw new NotFoundError("User Not Found");
@@ -69,6 +72,9 @@ const sendFriendRequest:RequestHandler = async (req,res)=>{
 
 const acceptFriendRequest:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id)
+    if(id===req.user?.id){
+        throw new BadRequestError("You Cant Send Request To Your Self")
+    }
     const friendReq = await prisma.friendRequest.findFirst({
         where:{
             senderId:id,receiverId:req.user!.id
@@ -89,7 +95,7 @@ const acceptFriendRequest:RequestHandler = async (req,res)=>{
                 receiverId: req.user!.id
             }
         },
-        data:{accepted:true}
+        data:{accepted:true,acceptTime:new Date().toISOString()}
     });
     const friendship = await prisma.relation.createMany({
         data:[
@@ -102,6 +108,9 @@ const acceptFriendRequest:RequestHandler = async (req,res)=>{
 
 const declineFriendRequest:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id)
+    if (id === req.user?.id) {
+        throw new BadRequestError("You Cant Send Request To Your Self");
+    }
     const friendReq = await prisma.friendRequest.findFirst({
         where:{
             senderId:id,receiverId:req.user!.id
@@ -153,6 +162,9 @@ const cancelFriendRequest:RequestHandler = async (req,res)=>{
 
 const blockUser:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id as string)
+    if (id === req.user?.id) {
+        throw new BadRequestError("You Cant Block Your Self");
+    }
     let block;
     const userExists = await prisma.user.findUnique({where:{id}})
     if(!userExists){
@@ -182,6 +194,9 @@ const blockUser:RequestHandler = async(req,res)=>{
 }
 const unblockUser:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id as string)
+    if (id === req.user?.id) {
+        throw new BadRequestError("You Cant Block Your Self");
+    }
     const isRelated = await prisma.relation.findFirst({
         where:{
             userId:req.user!.id,relatedId:id,friend:false
@@ -217,6 +232,9 @@ const getFriendList:RequestHandler = async(req,res)=>{
 
 const unfriendUser:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id as string)
+    if (id === req.user?.id) {
+        throw new BadRequestError("You Cant Unfriend Your Self");
+    }
     const isRelated = await prisma.relation.findFirst({
         where:{
             userId:req.user!.id,relatedId:id,friend:true
