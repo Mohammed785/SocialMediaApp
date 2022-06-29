@@ -8,6 +8,9 @@
     "prestart": "npm run build",
     "start": "node ./dist/main.js"
   },
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
