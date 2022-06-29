@@ -1,6 +1,6 @@
 import { RequestHandler, Router } from "express"
 import { BadRequestError, NotFoundError } from "../errors";
-import { prisma, StatusCodes } from "../utils"
+import { prisma, StatusCodes,userSelect } from "../utils"
 
 export const relationRouter = Router()
 
@@ -11,21 +11,19 @@ const getFriendRequests:RequestHandler = async(req,res)=>{
             accepted: null,
         },
         orderBy: { createTime: "desc" },
-        include: { sender: true },
+        include: { sender: { select: { ...userSelect } } },
     });
     return res.json({requests})
 }
 
 const getFriendRequestHistory:RequestHandler = async(req,res)=>{
     const requests = await prisma.friendRequest.findMany({
-        where:{
-            OR:[
-                {receiverId:req.user?.id},{senderId:req.user?.id}
-            ],
-            accepted:{not:null}
+        where: {
+            OR: [{ receiverId: req.user?.id }, { senderId: req.user?.id }],
+            accepted: { not: null },
         },
-        orderBy:{createTime:"desc"},
-        include:{sender:true}
+        orderBy: { createTime: "desc" },
+        include: { sender: { select: { ...userSelect } } },
     });
     return res.json({requests})
 }
@@ -218,14 +216,16 @@ const unblockUser:RequestHandler = async(req,res)=>{
 
 const getBlockList:RequestHandler = async(req,res)=>{
     const list = await prisma.relation.findMany({
-        where:{userId:req.user!.id,friend:false},include:{related:true}
-    })
+        where: { userId: req.user!.id, friend: false },
+        include: { related: { select: { ...userSelect } } },
+    });
     return res.json({list})
 }
 
 const getFriendList:RequestHandler = async(req,res)=>{
     const list = await prisma.relation.findMany({
-        where: { userId: req.user!.id, friend: true },include:{related:true}
+        where: { userId: req.user!.id, friend: true },
+        include: { related: { select: { ...userSelect } } },
     });
     return res.json({ list });
 }

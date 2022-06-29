@@ -1,6 +1,6 @@
 import { RequestHandler, Router } from "express";
 import { ForbiddenError, NotFoundError } from "../errors";
-import { prisma, StatusCodes } from "../utils";
+import { prisma, StatusCodes, userSelect } from "../utils";
 
 export const commentRouter = Router()
 
@@ -14,10 +14,14 @@ const getPostComments:RequestHandler = async (req,res)=>{
     }
     const comments = await prisma.comment.findMany({
         take: 10,
-        where: { postId: id,commentId:null },
+        where: { postId: id, commentId: null },
         orderBy: [{ id: "desc" }, { createTime: "desc" }],
-        include:{reactions:true,author:true,_count:{select:{comments:true}}},
-        ...queryOptions
+        include: {
+            reactions: true,
+            author: { select: { ...userSelect } },
+            _count: { select: { comments: true } },
+        },
+        ...queryOptions,
     });
     return res.json({comments,cursor:comments[comments.length-1].id})
 };
@@ -29,10 +33,14 @@ const getSubComments:RequestHandler = async (req,res)=>{
         throw new NotFoundError("Comment Not Found")
     }
     const comments = await prisma.comment.findMany({
-        where:{commentId:id},
-        orderBy:{createTime:"desc"},
-        include:{reactions:true,author:true,_count:{select:{comments:true}}}
-    })
+        where: { commentId: id },
+        orderBy: { createTime: "desc" },
+        include: {
+            reactions: true,
+            author: { select: { ...userSelect } },
+            _count: { select: { comments: true } },
+        },
+    });
     return res.json({comments})
 }
 
@@ -66,7 +74,10 @@ const createComment:RequestHandler = async (req,res)=>{
 const updateComment:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id);
     const { body } = req.body;
-    const old = await prisma.comment.findUnique({where:{id},include:{author:true}})
+    const old = await prisma.comment.findUnique({
+        where: { id },
+        include: { author: { select: { ...userSelect } } },
+    });
     if(!old){
         throw new NotFoundError("Comment Not Found")
     }
@@ -79,7 +90,10 @@ const updateComment:RequestHandler = async (req,res)=>{
 
 const deleteComment:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id);
-    const old = await prisma.comment.findUnique({where:{id},include:{author:true,post:true}})
+    const old = await prisma.comment.findUnique({
+        where: { id },
+        include: { author: { select: { ...userSelect } }, post: true },
+    });
     if(!old){
         throw new NotFoundError("Comment Not Found")
     }

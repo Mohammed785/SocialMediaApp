@@ -4,7 +4,7 @@ import { CreateUserDTO, LoginDTO } from "../@types/user";
 import { BadRequestError, NotFoundError } from "../errors";
 import { authMiddleware, validationMiddleware } from "../middleware";
 import { attachCookie, comparePasswords, createJWT, hashPassword, 
-    prisma, serializeUser, StatusCodes, transporter, verifyJWT } from "../utils"
+    prisma, serializeUser, StatusCodes, transporter, verifyJWT,userSelect } from "../utils"
 
 export const authRouter = Router();
 
@@ -105,8 +105,9 @@ const deleteAccount:RequestHandler = async(req,res)=>{
 }
 
 const updateProfile:RequestHandler = async(req,res)=>{
+    if(req.body.password) delete req.body.password
     const user = await prisma.user.update({where:{id:req.user?.id},
-        data:req.body,select:{password:false}})
+        data:req.body,select:{...userSelect}})
     return res.status(StatusCodes.ACCEPTED).json({msg:"Profile Updated Successfully",user})
 }
 
@@ -116,5 +117,5 @@ authRouter.post("/logout",authMiddleware,logout)
 authRouter.post("/forgetPassword",forgetPassword)
 authRouter.post("/resetPassword/:token",resetPassword)
 authRouter.patch("/changePassword",authMiddleware,changePassword)
-authRouter.patch("/account/update",authMiddleware,updateProfile)
+authRouter.patch("/account/update",authMiddleware,validationMiddleware(CreateUserDTO,true),updateProfile)
 authRouter.delete("/account/delete",authMiddleware,deleteAccount)

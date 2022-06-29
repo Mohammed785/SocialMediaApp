@@ -1,37 +1,34 @@
 import { RequestHandler, Router } from "express";
-import { resizeImage, uploader,prisma, StatusCodes } from "../utils";
+import { resizeImage, uploader,prisma, StatusCodes,userSelect } from "../utils";
 import { unlinkSync } from "fs";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
-
 export const postRouter = Router()
-
 
                     /* Post Section*/
 const feed:RequestHandler = async(req,res)=>{}
 
 const getPosts: RequestHandler = async (req, res) => {
-    const {id,stDate,enDate} = req.query
-    let posts;
-    if(!id){
-        throw new BadRequestError("Please Provide User id")
-    }
+    const {stDate,enDate} = req.query
+    let posts,id=req.query.id;
+    if(!id)id='0';
+    const privateQuery = (id==="0")?{OR:[{private:true},{private:false}]}:false
     let queryObj:Record<string,any> = {
-        authorId:(id==="self")?req.user?.id:parseInt(id as string),
-        private:(id==="self")?{in:[true,false]}:false,
+        authorId:(id==="0")?req.user?.id:parseInt(id as string),
+        ...privateQuery,
         createTime:{
             gte:(stDate)?new Date(stDate as string).toISOString():new Date(0).toISOString(),
             lte:(enDate)?new Date(enDate as string).toISOString():new Date().toISOString()
         }
     }
-    posts = await prisma.post.findMany({where:queryObj,
-        include:{images:true,author:true,reactions:true,_count:{select:{comments:true}}}})
+    posts = await prisma.post.findMany({where:{...queryObj},
+        include:{images:true,author:{select:{...userSelect}},reactions:true,_count:{select:{comments:true,reactions:true}}}})
     return res.json({posts})
 };
 
 const getPost:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     const post = await prisma.post.findUnique({where:{id}
-    ,include:{images:true,reactions:true,author:true}})
+    ,include:{images:true,reactions:true,author:{select:{...userSelect}}}})
     if(!post){
         throw new NotFoundError("Post Not Found")
     }
@@ -69,14 +66,13 @@ const createPost:RequestHandler = async(req,res)=>{
 const updatePost: RequestHandler = async (req, res) => {
     const id = parseInt(req.params.id);
     const old = await prisma.post.findUnique({where:{id}})
-    const {body} = req.body
     if(!old){
         throw new NotFoundError("Post Not Found")
     }
     if(old.authorId!==req.user?.id){
         throw new ForbiddenError("You Cant Update This Post")
     }
-    const post = await prisma.post.update({where:{id},data:{body,edited:true}})
+    const post = await prisma.post.update({where:{id},data:{...req.body,edited:true}})
     return res.json({post})
 };
 

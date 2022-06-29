@@ -11,6 +11,13 @@ import sharp from "sharp"
 
 export const prisma = new PrismaClient()
 
+export const userSelect = {
+    id: true,
+    firstName: true,
+    lastName: true,
+    email: true,
+    password: false,
+};
 export const serializeUser = (user:User)=>{
     return {
         id:user.id,
