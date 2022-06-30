@@ -37,6 +37,7 @@ model User {
   createdGroups    Group[]
   sentGroupReq     GroupRequest[]
   groupMemberships GroupMembership[]
+  notifications    Notification[]
 }
 
 model FriendRequest {
@@ -193,4 +194,14 @@ model GroupMembership {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([groupId, userId])
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  content    String
+  action     String?
+  createTime DateTime @default(now())
+  seen       Boolean  @default(false)
+  receiverId Int
+  receiver   User     @relation(fields: [receiverId], references: [id], onDelete: Cascade)
 }

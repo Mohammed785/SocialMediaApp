@@ -103,6 +103,16 @@ export const resizeImage = async(path:string,name:string,dest:string,maxWidth=12
         .toBuffer()).toFile(resolve(dest,name))
 }
 
+export const createNotification = async (receiverId:number,content:string,action:string|null=null) => {
+    return await prisma.notification.create({
+        data: {
+            receiverId,
+            content,
+            action
+        },
+    });
+};
+
 export enum StatusCodes {
     OK = 200,
     CREATED = 201,

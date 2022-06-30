@@ -11,6 +11,7 @@ import { commentRouter } from "./routes/comment"
 import { relationRouter } from "./routes/relation"
 import { statusRouter } from "./routes/status"
 import { groupRouter } from "./routes/group"
+import { notificationRouter } from "./routes/notifications"
 
 
 const app = express()
@@ -23,6 +24,7 @@ app.use("/api/v1/comment",authMiddleware,commentRouter)
 app.use("/api/v1/relation",authMiddleware,relationRouter)
 app.use("/api/v1/status",authMiddleware,statusRouter)
 app.use("/api/v1/group",authMiddleware,groupRouter)
+app.use("/api/v1/notification",authMiddleware,notificationRouter)
 app.use("/api/v1/auth",authRouter)
 app.use(errorHandler)
 
