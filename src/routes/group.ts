@@ -168,14 +168,71 @@ const cancelGroupRequest: RequestHandler = async (req, res) => {
 };
 
 
+const getGroupMembers: RequestHandler = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const members = await prisma.groupMembership.findMany({
+        where: { groupId: id },
+        include: { user: { select: userSelect } },
+    });
+    return res.json({ count: members.length, members });
+};
+
+const joinGroup: RequestHandler = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const group = await prisma.group.findUnique({ where: { id } });
+    if(!group){
+        throw new NotFoundError("Group Not Found")
+    }
+    if(group.private){
+        const request = await prisma.groupRequest.create({
+            data: { groupId: id, senderId: req.user!.id },
+        });
+        return res.status(StatusCodes.CREATED).json({msg:"Request Sent",request})
+    }
+    const membership = await prisma.groupMembership.create({
+        data: { groupId: id, userId: req.user!.id },
+    });
+    return res.status(StatusCodes.CREATED).json({msg:"Joined Group",membership})
+};
+
+const leaveGroup: RequestHandler = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const membership = await prisma.groupMembership.delete({
+        where: { groupId_userId: { groupId: id, userId: req.user!.id } },
+    });
+    await prisma.post.deleteMany({ where: { authorId: req.user?.id, groupId:id } });
+    return res.json({msg:"Leaved Group Successfully",membership})
+};
+
+
+const kickGroupMember: RequestHandler = async (req, res) => {
+    const groupId = parseInt(req.params.groupId),userId = parseInt(req.params.userId)
+    const group = await prisma.group.findUnique({where:{id:groupId}})
+    if (!group) {
+        throw new NotFoundError("Group Not Found");
+    }
+    if(group.creatorId!==req.user?.id){
+        throw new ForbiddenError("You Can't Kick This Member")
+    }
+    const membership = await prisma.groupMembership.delete({where:{groupId_userId:{
+        groupId,userId
+    }},include:{user:{select:userSelect},group:true}})
+    await prisma.post.deleteMany({where:{authorId:userId,groupId}})
+    return res.json({membership})
+};
+
+
 groupRouter.post("/create",uploader.single("image"),createGroup)
 groupRouter.patch("/update/:id",uploader.single("image"),editGroup)
 groupRouter.delete("/delete/:id",deleteGroup)
 groupRouter.get("/:id",getGroup)
-
 
 groupRouter.get("/:id/request/all", getGroupRequests);
 groupRouter.patch("/:groupId/request/:userId/accept", acceptGroupRequest);
 groupRouter.delete("/:groupId/request/:userId/decline",declineGroupRequest)
 groupRouter.delete("/:id/request/cancel",cancelGroupRequest)
 
+groupRouter.get("/:id/member/all", getGroupMembers);
+groupRouter.post("/:id/join", joinGroup);
+groupRouter.delete("/:id/member/leave", leaveGroup);
+groupRouter.delete("/:groupId/member/:userId/kick", kickGroupMember);
