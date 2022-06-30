@@ -28,35 +28,39 @@ model User {
   savedPosts       SavedPost[]
   comments         Comment[]
   commentReactions CommentReaction[]
-  status  Status[]
-  statusViews StatusView[]
-  relations Relation[]  @relation("Relations")
-  related Relation[]  @relation("Related")
-  sentReqest  FriendRequest[] @relation("SentRequest")
-  receivedRequest  FriendRequest[] @relation("receivedRequest")
+  status           Status[]
+  statusViews      StatusView[]
+  relations        Relation[]        @relation("Relations")
+  related          Relation[]        @relation("Related")
+  sentRequests     FriendRequest[]   @relation("SentRequest")
+  receivedRequests FriendRequest[]   @relation("receivedRequest")
+  createdGroups    Group[]
+  sentGroupReq     GroupRequest[]
+  groupMemberships GroupMembership[]
 }
 
 model FriendRequest {
-  senderId  Int
+  senderId   Int
   receiverId Int
-  createTime  DateTime  @default(now())
-  acceptTime  DateTime?
-  accepted  Boolean?
-  sender  User  @relation("SentRequest",fields: [senderId],references: [id],onDelete: Cascade)
-  receiver User  @relation("receivedRequest",fields: [receiverId],references: [id],onDelete: Cascade)
-  @@id([senderId,receiverId])
+  createTime DateTime  @default(now())
+  acceptTime DateTime?
+  accepted   Boolean?
+  sender     User      @relation("SentRequest", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User      @relation("receivedRequest", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@id([senderId, receiverId])
 }
 
 model Relation {
-  userId  Int
+  userId     Int
   relatedId  Int
-  createTime  DateTime  @default(now())
-  friend  Boolean // true friends false block
-  user User  @relation("Relations",fields: [userId],references: [id],onDelete: Cascade)
-  related User  @relation("Related",fields: [relatedId],references: [id],onDelete: Cascade)
-  @@id([userId,relatedId])
-}
+  createTime DateTime @default(now())
+  friend     Boolean // true friends false block
+  user       User     @relation("Relations", fields: [userId], references: [id], onDelete: Cascade)
+  related    User     @relation("Related", fields: [relatedId], references: [id], onDelete: Cascade)
 
+  @@id([userId, relatedId])
+}
 
 model Post {
   id          Int            @id @default(autoincrement())
@@ -68,6 +72,8 @@ model Post {
   updateTime  DateTime       @updatedAt
   author      User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    Int
+  groupId     Int?
+  group       Group?         @relation(fields: [groupId], references: [id], onDelete: Cascade)
   images      PostImage[]
   reactions   PostReaction[]
   savedPosts  SavedPost[]
@@ -116,7 +122,7 @@ model Comment {
   commentId  Int?
   author     User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post       Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
-  pComment   Comment?          @relation("SubComments",fields: [commentId], references: [id],onDelete: Cascade)
+  pComment   Comment?          @relation("SubComments", fields: [commentId], references: [id], onDelete: Cascade)
   comments   Comment[]         @relation("SubComments")
   reactions  CommentReaction[]
 }
@@ -133,21 +139,58 @@ model CommentReaction {
 }
 
 model Status {
-  id  Int @id @default(autoincrement())
-  caption String?    @db.Text
-  image String?  @db.Text
-  createTime  DateTime  @default(now())
-  authorId  Int
-  author  User  @relation(fields: [authorId],references: [id],onDelete: Cascade)
-  views StatusView[]
+  id         Int          @id @default(autoincrement())
+  caption    String?      @db.Text
+  image      String?      @db.Text
+  createTime DateTime     @default(now())
+  authorId   Int
+  author     User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  views      StatusView[]
 }
 
-
 model StatusView {
-  viewerId  Int
-  statusId  Int
+  viewerId   Int
+  statusId   Int
   createTime DateTime @default(now())
-  status  Status  @relation(fields: [statusId],references: [id],onDelete: Cascade)
-  viewer  User  @relation(fields: [viewerId],references: [id],onDelete: Cascade)
-  @@id([viewerId,statusId])
+  status     Status   @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  viewer     User     @relation(fields: [viewerId], references: [id], onDelete: Cascade)
+
+  @@id([viewerId, statusId])
+}
+
+model Group {
+  id          Int               @id @default(autoincrement())
+  name        String            @db.Text
+  image       String            @db.Text
+  description String            @db.Text
+  createTime  DateTime          @default(now())
+  private     Boolean           @default(false)
+  creatorId   Int
+  creator     User              @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  requests    GroupRequest[]
+  members     GroupMembership[]
+  posts       Post[]
+}
+
+model GroupRequest {
+  createTime DateTime @default(now())
+  accepted   Boolean?
+  acceptTime DateTime @updatedAt
+  groupId    Int
+  senderId   Int
+  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  sender     User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, senderId])
+}
+
+model GroupMembership {
+  createTime DateTime @default(now())
+  isAdmin    Boolean  @default(false)
+  groupId    Int
+  userId     Int
+  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, userId])
 }

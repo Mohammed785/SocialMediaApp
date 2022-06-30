@@ -188,6 +188,60 @@ async function commentReactions() {
     console.log("CommentReactions ✅");
 }
 
+async function status(){
+    await prisma.status.createMany({
+        data: [
+            { authorId: 1, caption: "1 Status" },
+            { authorId: 2, caption: "2 Status" },
+        ],
+    });
+    console.log("Status ✅");
+}
+
+async function statusView(){
+    await prisma.statusView.createMany({
+        data: [
+            { viewerId: 2, statusId: 1 },
+            { viewerId: 1, statusId: 2 },
+            { viewerId: 3, statusId: 1 },
+            { viewerId: 3, statusId: 2 },
+        ],
+    });
+    console.log("Status View ✅");
+}
+async function group() {
+    await prisma.group.create({
+        data: {
+            creatorId: 1,
+            name: "test Group",
+            description: "our test group",
+            image: "test.png",
+        },
+    });
+    console.log("Group ✅");
+}
+
+async function groupMembership(){
+    await prisma.groupMembership.createMany({
+        data: [
+            { userId: 1, isAdmin: true, groupId: 1 },
+            { userId: 2, isAdmin: false, groupId: 1 },
+            { userId: 3, isAdmin: false, groupId: 1 },
+        ],
+    });
+    console.log("Group Membership ✅");
+}
+
+async function groupPost(){
+    await prisma.post.createMany({
+        data: [
+            { authorId: 1, groupId: 1, body: "1 group post" },
+            { authorId: 2, groupId: 1, body: "2 group post" },
+        ],
+    });
+    console.log("Group Posts ✅");
+}
+
 async function main() {
     await users();
     await friendRequests();
@@ -198,6 +252,11 @@ async function main() {
     await postReactions();
     await comments();
     await commentReactions();
+    await status()
+    await statusView()
+    await group()
+    await groupMembership()
+    await groupPost()
 }
 
 main()
