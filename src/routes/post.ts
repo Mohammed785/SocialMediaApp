@@ -11,20 +11,37 @@ const feed:RequestHandler = async(req,res)=>{}
 
 const getPosts: RequestHandler = async (req, res) => {
     const {stDate,enDate} = req.query
-    let posts,id=req.query.id;
-    if(!id)id='0';
-    const privateQuery = (id==="0")?{OR:[{private:true},{private:false}]}:false
-    let queryObj:Record<string,any> = {
-        authorId:(id==="0")?req.user?.id:parseInt(id as string),
+    let id=req.query.id;
+    let cursor = parseInt(req.query.cursor as string)
+    const privateQuery = (!id)?{OR:[{private:true},{private:false}]}:{private:false}
+    const cursorOptions:Record<string,any> = {cursor:undefined,skip:undefined}
+    if(cursor){
+        cursorOptions.cursor = {id:cursor}
+        cursorOptions.skip = 1
+    }
+    const queryObj:Record<string,any> = {
+        authorId:(!id)?req.user?.id:parseInt(id as string),
+        groupId:null,
         ...privateQuery,
         createTime:{
             gte:(stDate)?new Date(stDate as string).toISOString():new Date(0).toISOString(),
             lte:(enDate)?new Date(enDate as string).toISOString():new Date().toISOString()
         }
     }
-    posts = await prisma.post.findMany({where:{...queryObj},
-        include:{images:true,author:{select:{...userSelect}},reactions:true,_count:{select:{comments:true,reactions:true}}}})
-    return res.json({posts})
+    const posts = await prisma.post.findMany({
+        take:2,
+        ...cursorOptions,
+        where:{...queryObj},
+        include:{images:true,
+            author:{select:{...userSelect}},
+            reactions:true,
+            _count:{select:{comments:true,reactions:true}}
+        },
+        orderBy:{id:"desc"}
+    })
+    const last = posts[posts.length - 1];
+    cursor = last ? last.id : 0;
+    return res.json({posts,cursor})
 };
 
 const getPost:RequestHandler = async(req,res)=>{
