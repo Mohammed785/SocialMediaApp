@@ -1,7 +1,7 @@
 import { RequestHandler, Router } from "express";
 import { unlinkSync } from "fs";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
-import { prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
+import { createNotification, prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
 
 export const groupRouter = Router()
 
@@ -111,6 +111,7 @@ const acceptGroupRequest: RequestHandler = async (req, res) => {
         },
         data: { accepted: true, acceptTime: new Date() },
     });
+    await createNotification(request.senderId,`Your Join Request To ${group.name} Group Is Accepted`)
     await prisma.groupMembership.create({data:{groupId,userId}})
     return res.json({ msg: "Accepted", request });
     

@@ -1,6 +1,6 @@
 import { RequestHandler, Router } from "express";
 import { ForbiddenError, NotFoundError } from "../errors";
-import { prisma, StatusCodes, userSelect } from "../utils";
+import { createNotification, prisma, StatusCodes, userSelect } from "../utils";
 
 export const commentRouter = Router()
 
@@ -70,6 +70,9 @@ const createComment:RequestHandler = async (req,res)=>{
         queryOptions.commentId = commentId
     }
     const comment = await prisma.comment.create({data:{...queryOptions}})
+    if(post.authorId!==req.user?.id){
+        await createNotification(post.authorId,`${req.user?.fullName} Commented On Your Post`)
+    }
     return res.status(StatusCodes.CREATED).json({comment})
 };
 
@@ -142,6 +145,7 @@ const commentReact:RequestHandler = async(req,res)=>{
             userId:req.user!.id,
             reaction:react
         }})
+        await createNotification(comment.authorId,`${req.user?.fullName} Reacted On Your Comment`);
     }else{
         if(exists.reaction!==react){
             reaction=await prisma.commentReaction.update({where:{

@@ -4,7 +4,7 @@ import { CreateUserDTO, LoginDTO } from "../@types/user";
 import { BadRequestError, NotFoundError } from "../errors";
 import { authMiddleware, validationMiddleware } from "../middleware";
 import { attachCookie, comparePasswords, createJWT, hashPassword, 
-    prisma, serializeUser, StatusCodes, transporter, verifyJWT,userSelect } from "../utils"
+    prisma, serializeUser, StatusCodes, transporter, verifyJWT,userSelect, createNotification } from "../utils"
 
 export const authRouter = Router();
 
@@ -64,6 +64,7 @@ const forgetPassword:RequestHandler = async (req, res) => {
             console.log("Sent "+info.response);
         }
     })
+    await createNotification(user.id,`There Has Been An Attempt To Change Your Password If Its You Ignore`);
     return res.status(StatusCodes.ACCEPTED).json({msg:"Rest Link Sent To Your Email"})
 }
 
@@ -78,9 +79,6 @@ const resetPassword:RequestHandler = async (req,res) => {
         throw new BadRequestError("Confirm Password Must Equal New Password.")
     }
     const user = await prisma.user.update({where:{id:verifiedToken.id},data:{password:await hashPassword(newPass)}},)
-    if(!user){
-        throw new NotFoundError("User Not Found.")
-    }
     return res.status(StatusCodes.ACCEPTED).json({msg:"Password Changed Successfully"})
 }
 

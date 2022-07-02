@@ -1,5 +1,5 @@
 import { RequestHandler, Router } from "express";
-import { resizeImage, uploader,prisma, StatusCodes,userSelect } from "../utils";
+import { resizeImage, uploader,prisma, StatusCodes,userSelect, createNotification } from "../utils";
 import { unlinkSync } from "fs";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 import { validationMiddleware } from "../middleware";
@@ -270,6 +270,7 @@ const postReact:RequestHandler = async(req,res)=>{
             userId:req.user!.id,
             reaction:react
         }})
+        await createNotification(post.authorId,`${req.user?.fullName} Reacted On Your Post`);
     }else{
         if(exists.reaction!==react){
             reaction=await prisma.postReaction.update({where:{
