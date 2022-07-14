@@ -52,7 +52,8 @@ export const attachCookie = (res:Response,user:object)=>{
         signed:true,
         httpOnly:true,
         expires:new Date(Date.now()+day),
-        secure:process.env.NODE_ENV==='production'
+        secure:process.env.NODE_ENV==='production',
+        sameSite:"strict"
     });
     return token
 }

@@ -12,12 +12,13 @@ import { relationRouter } from "./routes/relation"
 import { statusRouter } from "./routes/status"
 import { groupRouter } from "./routes/group"
 import { notificationRouter } from "./routes/notifications"
-
+import cors from "cors";
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(cors({credentials:true,origin:true}))
 app.use(express.static(join(__dirname,"public")))
 app.use("/api/v1/post",authMiddleware,postRouter)
 app.use("/api/v1/comment",authMiddleware,commentRouter)

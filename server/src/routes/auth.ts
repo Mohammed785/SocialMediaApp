@@ -19,7 +19,7 @@ const login:RequestHandler = async (req,res) => {
     }
     const serializedUser = serializeUser(user)
     const token = attachCookie(res,serializedUser)
-    return res.status(StatusCodes.ACCEPTED).json({msg:"Logged in Successfully",token})
+    return res.status(StatusCodes.ACCEPTED).json({msg:"Logged in Successfully",token,user:serializedUser})
 }
 
 const register:RequestHandler = async (req, res) => {
@@ -37,6 +37,7 @@ const logout:RequestHandler = async (req, res) => {
     await prisma.user.update({where:{id:req.user?.id},data:{lastSeen:new Date()}})
     res.cookie("token","logged out",{
         httpOnly:true,
+        sameSite:"strict",
         expires:new Date(Date.now()+2500)
     });
     return res.status(StatusCodes.OK).json({msg:"Logged out"});
@@ -109,9 +110,14 @@ const updateProfile:RequestHandler = async(req,res)=>{
     return res.status(StatusCodes.ACCEPTED).json({msg:"Profile Updated Successfully",user})
 }
 
+const userInfo:RequestHandler = async(req,res)=>{
+    return res.json({user:req.user})
+}
+
 authRouter.post("/login",validationMiddleware(LoginDTO),login)
 authRouter.post("/register",validationMiddleware(CreateUserDTO),register)
 authRouter.post("/logout",authMiddleware,logout)
+authRouter.get("/me",authMiddleware,userInfo)
 authRouter.post("/forgetPassword",forgetPassword)
 authRouter.post("/resetPassword/:token",resetPassword)
 authRouter.patch("/changePassword",authMiddleware,changePassword)
