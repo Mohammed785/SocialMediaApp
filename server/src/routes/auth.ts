@@ -23,13 +23,10 @@ const login:RequestHandler = async (req,res) => {
 }
 
 const register:RequestHandler = async (req, res) => {
-    let user = await prisma.user.findUnique({where:{email:req.body.email}});
-    if(user){
-        return res.status(StatusCodes.BAD_REQUEST).json({msg:"User Already Exists"});
-    }
     req.body.birthDate = new Date(req.body.birthDate)
     req.body.password = await hashPassword(req.body.password)
-    user = await prisma.user.create({data:{...req.body}});
+    delete req.body.confirmPassword    
+    const user = await prisma.user.create({data:{...req.body}});
     return res.status(StatusCodes.CREATED).json({msg:"User Created Successfully"});
 }
 
