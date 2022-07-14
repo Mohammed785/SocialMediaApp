@@ -2,6 +2,7 @@ import React, { useRef } from "react"
 import {Link, useLocation, useNavigate} from "react-router-dom"
 import axios from "axios"
 import { useAuthContext } from "../../context/authContext"
+import useFormFields from "../../hooks/useFormChange";
 
 type LocationProps = {
   state: {
@@ -11,16 +12,11 @@ type LocationProps = {
 
 
 function LoginForm(){
-    const [info,setInfo] = React.useState({email:"",password:""})
-    const errorCont = useRef<HTMLHeadingElement>(null)
+    const [info,setInfo] = useFormFields({email:"",password:""})
+    const errorCont = useRef<HTMLDivElement>(null)
     const {loginUser,setToken} = useAuthContext()!
     const navigate = useNavigate()
     const location = useLocation() as LocationProps
-    const handleChange = (e:React.ChangeEvent)=>{
-        const name = (e.target! as HTMLInputElement).name
-        const val = (e.target! as HTMLInputElement).value
-        setInfo({...info,[name]:val})
-    }
     const handleSubmit = async(e:React.FormEvent)=>{
         e.preventDefault()
         try {
@@ -46,11 +42,11 @@ function LoginForm(){
             </div>
             <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
             <div className="form-floating">
-                <input type="email" name="email" value={info.email} onChange={handleChange} className="form-control" id="floatingInput" required placeholder="name@example.com"/>
+                <input type="email" name="email" value={info.email} onChange={setInfo} className="form-control" id="floatingInput" required placeholder="name@example.com"/>
                 <label htmlFor="floatingInput">Email address</label>
             </div>
             <div className="form-floating">
-                <input type="password" name="password" value={info.password} onChange={handleChange} className="form-control" id="floatingPassword" required placeholder="Password"/>
+                <input type="password" name="password" value={info.password} onChange={setInfo} className="form-control" id="floatingPassword" required placeholder="Password"/>
                 <label htmlFor="floatingPassword">Password</label>
             </div>
     
