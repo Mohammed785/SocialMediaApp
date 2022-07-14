@@ -64,3 +64,6 @@ input:focus{
 .form-check-label,.form-label{
     color: white;
 }
+.form-check-input{
+    appearance: radio;
+}
