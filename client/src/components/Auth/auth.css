@@ -1,0 +1,66 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: var(--main-bg);
+}
+
+.form-signin {
+    max-width: fit-content;
+    padding: 15px;
+    background: #060d1fcc;
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2.9px);
+    -webkit-backdrop-filter: blur(12.9px);
+    -webkit-box-shadow: 7px 7px 31px 0px rgba(0, 0, 0, 0.56);
+    -moz-box-shadow: 7px 7px 31px 0px rgba(0, 0, 0, 0.56);
+    box-shadow: 7px 7px 31px 0px rgba(0, 0, 0, 0.56);
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+h1,p{
+    color: white;
+}
+input{
+    cursor: pointer;
+}
+input:not([type="date"]){
+    margin: 10px 0;
+    background: rgb(226, 226, 226)!important;
+    border-radius: 0.75rem!important;
+}
+
+input:hover{
+    background: rgb(245, 245, 245)!important;
+}
+
+input:focus{
+    background: white!important;
+}
+.form-check-label,.form-label{
+    color: white;
+}
