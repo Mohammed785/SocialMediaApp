@@ -1,13 +1,9 @@
 import React from "react"
 import LoginForm  from "../components/Auth/Login"
 import "../components/Auth/auth.css"
+import useTitle from "../hooks/useTitle"
 function Login(){
-    React.useEffect(()=>{
-        document.title = "Login"
-        document.getElementById("root")?.classList.add("form-signin","w-100","m-auto")
-        document.querySelector("body")?.classList.add("text-center")
-    }
-    ,[])
+    useTitle("Login",true)
     return <>
         <LoginForm/>
     </>
