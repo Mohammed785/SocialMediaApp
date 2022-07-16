@@ -34,6 +34,9 @@ export const errorHandler: ErrorRequestHandler = async (err, req, res, next) => 
             const name = err.meta!.field_name as string
             CustomError.message = `${name.slice(0,-2)} Not Found`;
             CustomError.statusCode = 404;
+        }else{
+            CustomError.message = "Something Went Wrong"
+            CustomError.statusCode = 500
         }
         CustomError.meta = err.meta
     }else if(err instanceof PrismaClientValidationError){

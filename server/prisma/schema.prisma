@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity","fullTextSearch","fullTextIndex"]
 }
 
 datasource db {
@@ -38,6 +38,7 @@ model User {
   sentGroupReq     GroupRequest[]
   groupMemberships GroupMembership[]
   notifications    Notification[]
+  @@fulltext([email])
 }
 
 model FriendRequest {

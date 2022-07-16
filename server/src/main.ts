@@ -12,6 +12,7 @@ import { relationRouter } from "./routes/relation"
 import { statusRouter } from "./routes/status"
 import { groupRouter } from "./routes/group"
 import { notificationRouter } from "./routes/notifications"
+import { userRouter } from "./routes/user"
 import cors from "cors";
 
 const app = express()
@@ -26,6 +27,7 @@ app.use("/api/v1/relation",authMiddleware,relationRouter)
 app.use("/api/v1/status",authMiddleware,statusRouter)
 app.use("/api/v1/group",authMiddleware,groupRouter)
 app.use("/api/v1/notification",authMiddleware,notificationRouter)
+app.use("/api/v1/user",authMiddleware,userRouter)
 app.use("/api/v1/auth",authRouter)
 app.use(errorHandler)
 

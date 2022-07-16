@@ -104,14 +104,10 @@ const updateProfile:RequestHandler = async(req,res)=>{
     return res.status(StatusCodes.ACCEPTED).json({msg:"Profile Updated Successfully",user})
 }
 
-const userInfo:RequestHandler = async(req,res)=>{
-    return res.json({user:req.user})
-}
 
 authRouter.post("/login",validationMiddleware(LoginDTO),login)
 authRouter.post("/register",validationMiddleware(CreateUserDTO),register)
 authRouter.post("/logout",authMiddleware,logout)
-authRouter.get("/me",authMiddleware,userInfo)
 authRouter.post("/forgetPassword",forgetPassword)
 authRouter.post("/resetPassword/:token",validationMiddleware(ResetPasswordDTO),resetPassword)
 authRouter.patch("/changePassword",authMiddleware,changePassword)
