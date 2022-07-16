@@ -2,30 +2,26 @@ import axios from "axios"
 import React, { useRef } from "react"
 import {Link} from "react-router-dom"
 import useFormChange from "../../hooks/useFormChange"
+import axiosClient from "../../axiosClient"
+import "./auth.css"
+import { setFormMSG } from "../../utils"
 
 function RegisterForm(){
     const [info,setInfo] = useFormChange({firstName:"",lastName:"",email:"",password:"",confirmPassword:"",gender:"",birthDate:""})
     const errorCont = useRef<HTMLDivElement>(null)
-    const setMsg = (msg:string,isError=true)=>{
-        if(!isError){
-            errorCont.current?.classList.add("alert-success")
-            errorCont.current?.classList.remove("alert-danger")
-        }
-        errorCont.current!.style!.display = "block"
-        errorCont.current!.innerText=msg
-    }
     const handleSubmit = async(e:React.FormEvent)=>{
         e.preventDefault()
         try {
             info.gender = (info.gender==="male")?true:false;
-            const res = await axios.post("http://localhost:8000/api/v1/auth/register",{...info},{withCredentials:true})
-            setMsg("User Created Successfully,Try To Login",false)
+            const res = await axiosClient.post("/auth/register",{...info})
+            setFormMSG(errorCont.current!,"User Created Successfully,Try To Login",false)
         } catch (error) {
             if(axios.isAxiosError(error)){
                 if((error.response?.data as Record<string,any>).code==="P2002"){
-                    setMsg("User Already Exists Try Login")
+                    setFormMSG(errorCont.current!,"User Already Exists Try Login")
+                }else{
+                    setFormMSG(errorCont.current!,(error.response?.data as Record<string,any>).message)
                 }
-                setMsg((error.response?.data as Record<string,any>).message)
             }
         }
     }
@@ -33,7 +29,7 @@ function RegisterForm(){
     <form onSubmit={handleSubmit}>
             <h1 className="h3 mb-3 fw-normal">Register</h1>
             <div className="form-group">
-                <div className="alert alert-danger text-wrap" style={{display:"none",maxWidth:"38rem"}} ref={errorCont} role="alert">
+                <div className="alert text-wrap" style={{maxWidth:"38rem"}} ref={errorCont} role="alert">
                 </div>
             </div>
             <div className="form-group row">

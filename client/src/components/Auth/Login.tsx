@@ -3,6 +3,9 @@ import {Link, useLocation, useNavigate} from "react-router-dom"
 import axios from "axios"
 import { useAuthContext } from "../../context/authContext"
 import useFormFields from "../../hooks/useFormChange";
+import axiosClient from "../../axiosClient";
+import "./auth.css"
+import { setFormMSG } from "../../utils";
 
 type LocationProps = {
   state: {
@@ -20,34 +23,31 @@ function LoginForm(){
     const handleSubmit = async(e:React.FormEvent)=>{
         e.preventDefault()
         try {
-            const res = await axios.post("http://localhost:8000/api/v1/auth/login",{...info},{headers:{"Content-Type":"application/json"},withCredentials:true})
+            const res = await axiosClient.post("/auth/login",{...info})
             const token = `Bearer ${res.data.token}`;
             setToken(token)
             loginUser(res.data.user)
             navigate(location.state?.from?.pathname || "/",{replace:true})
         } catch (error) {
             if(axios.isAxiosError(error)){
-                if(error.response?.status===400){
-                    errorCont.current!.style!.display = "block"
-                    errorCont.current!.innerText = (error.response?.data as Record<string,any>).message
-                }
+                setFormMSG(errorCont.current!,(error.response?.data as Record<string,any>).message)
             }
-        }        
+        }
     }
     return <>
     <form onSubmit={handleSubmit}>
             <div className="form-group">
-                <div className="alert alert-danger text-wrap" style={{display:"none",maxWidth:"30rem"}} ref={errorCont} role="alert">
+                <div className="alert text-wrap" style={{maxWidth:"30rem"}} ref={errorCont} role="alert">
                 </div>
             </div>
             <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
             <div className="form-floating">
-                <input type="email" name="email" value={info.email} onChange={setInfo} className="form-control" id="floatingInput" required placeholder="name@example.com"/>
-                <label htmlFor="floatingInput">Email address</label>
+                <input type="email" name="email" value={info.email} onChange={setInfo} className="form-control" id="email" required placeholder="Email address"/>
+                <label htmlFor="email">Email address</label>
             </div>
             <div className="form-floating">
-                <input type="password" name="password" value={info.password} onChange={setInfo} className="form-control" id="floatingPassword" required placeholder="Password"/>
-                <label htmlFor="floatingPassword">Password</label>
+                <input type="password" name="password" value={info.password} onChange={setInfo} className="form-control" id="password" required placeholder="Password"/>
+                <label htmlFor="password">Password</label>
             </div>
     
             <div className="form-group mb-2">
