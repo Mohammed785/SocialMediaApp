@@ -1,4 +1,5 @@
 import {BrowserRouter,Route,Routes} from "react-router-dom"
+import Navbar from "./components/Navbar/Navbar";
 import ForgetPassword from "./pages/ForgetPassword";
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,6 +14,7 @@ function App() {
     <Route path="/forgetPassword" element={<ForgetPassword/>}/>
     <Route path="/resetPassword/:token" element={<ResetPassword/>}/>
   </Routes>
+    <Navbar/>
   </BrowserRouter>
 }
 
