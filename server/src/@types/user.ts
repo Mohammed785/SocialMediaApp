@@ -59,4 +59,16 @@ export class CreateUserDTO {
     public gender: boolean;
     @IsOptional()
     public bio: string;
-} 
+}
+
+export class ResetPasswordDTO {
+    @IsString()
+    @MaxLength(30)
+    @MinLength(8)
+    public password: string;
+    @IsString()
+    @MaxLength(30)
+    @MinLength(8)
+    @IsEqualTo<ResetPasswordDTO>("password")
+    public confirmPass: string;
+}

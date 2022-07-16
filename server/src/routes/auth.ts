@@ -1,6 +1,5 @@
 import { RequestHandler, Router } from "express"
-import { JsonWebTokenError } from "jsonwebtoken";
-import { CreateUserDTO, LoginDTO } from "../@types/user";
+import { CreateUserDTO, LoginDTO, ResetPasswordDTO } from "../@types/user";
 import { BadRequestError, NotFoundError } from "../errors";
 import { authMiddleware, validationMiddleware } from "../middleware";
 import { attachCookie, comparePasswords, createJWT, hashPassword, 
@@ -70,11 +69,9 @@ const resetPassword:RequestHandler = async (req,res) => {
     const token = req.params.token   
     const {newPass,confirmPass} = req.body
     const verifiedToken = verifyJWT(token)
-    if(!verifiedToken){
-        throw new JsonWebTokenError("Invalid Token")
-    }
-    if(!newPass || !confirmPass || newPass!==confirmPass){
-        throw new BadRequestError("Confirm Password Must Equal New Password.")
+    console.log(verifiedToken);
+    if (!verifiedToken) {
+        throw new BadRequestError("Invalid Token Try Resend Reset Email Again");
     }
     const user = await prisma.user.update({where:{id:verifiedToken.id},data:{password:await hashPassword(newPass)}},)
     return res.status(StatusCodes.ACCEPTED).json({msg:"Password Changed Successfully"})
@@ -116,7 +113,7 @@ authRouter.post("/register",validationMiddleware(CreateUserDTO),register)
 authRouter.post("/logout",authMiddleware,logout)
 authRouter.get("/me",authMiddleware,userInfo)
 authRouter.post("/forgetPassword",forgetPassword)
-authRouter.post("/resetPassword/:token",resetPassword)
+authRouter.post("/resetPassword/:token",validationMiddleware(ResetPasswordDTO),resetPassword)
 authRouter.patch("/changePassword",authMiddleware,changePassword)
 authRouter.patch("/account/update",authMiddleware,validationMiddleware(CreateUserDTO,true),updateProfile)
 authRouter.delete("/account/delete",authMiddleware,deleteAccount)

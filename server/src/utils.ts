@@ -58,13 +58,16 @@ export const attachCookie = (res:Response,user:object)=>{
     return token
 }
 
-export const transporter = createTransport(smtpTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.MASTER_MAIL,
-        pass: process.env.MASTER_MAIL_Password,
-    }
-}))
+export const transporter = createTransport(
+    smtpTransport({
+        service: "gmail",
+        host: "smtp.gmail.email",
+        auth: {
+            user: process.env.MASTER_MAIL,
+            pass: process.env.MASTER_MAIL_Password,
+        },
+    })
+);
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
