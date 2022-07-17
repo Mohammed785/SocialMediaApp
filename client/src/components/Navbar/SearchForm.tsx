@@ -24,10 +24,6 @@ function SearchForm() {
         }
     },[searchInfo.search])
     function handleSearchScroll(e: UIEvent) {
-        console.log("scroll: ", e.currentTarget!.scrollHeight - e.currentTarget!.scrollTop);
-        console.log("height: ", e.currentTarget!.clientHeight+10);
-        
-        
         if (searchInfo.cursor===0) {
             loadMoreRef.current?.classList.remove("d-none")
         }else{
