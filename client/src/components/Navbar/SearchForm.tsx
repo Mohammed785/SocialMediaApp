@@ -37,7 +37,7 @@ function SearchForm() {
                 <div className="input-group ms-2" typeof="button">
                     <span className="input-group-prepend" id="searchMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                         <div className="input-group-text bg-gray border-0 rounded-circle" style={{ minHeight: "40px" }}>
-                            <FaSearch className="text-muted" />
+                            <FaSearch title="Search" type="button" className="text-muted" />
                         </div>
                     </span>
                     <div onScroll={handleSearchScroll} className="dropdown-menu overflow-auto border-0 shadow p-3" style={{ width: "20em", maxHeight: "600px" }} aria-labelledby="searchMenu" data-popper-placement="bottom-start">
