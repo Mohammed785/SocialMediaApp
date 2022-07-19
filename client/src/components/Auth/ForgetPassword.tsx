@@ -33,7 +33,7 @@ function ForgetPasswordForm(){
             </div>
             <h1 className="h3 mb-3 fw-normal">Find My Account</h1>
             <div className="form-floating">
-                <input type="email" name="email" id="email" className="form-control" value={email} onChange={(e)=>{setEmail(e.target.value)}} placeholder="Email address"/>
+                <input type="email" name="email" id="email" className="form-control inp" value={email} onChange={(e)=>{setEmail(e.target.value)}} placeholder="Email address"/>
                 <label htmlFor="email">Email:</label>
             </div>
             <button className="w-100 btn btn-lg mb-3 btn-primary" type="submit">Find</button>

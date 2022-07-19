@@ -40,13 +40,13 @@ function LoginForm(){
                 <div className="alert text-wrap" style={{maxWidth:"30rem"}} ref={errorCont} role="alert">
                 </div>
             </div>
-            <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+            <h1 className="h3 mb-3 fw-normal" style={{color:"white"}}>Please sign in</h1>
             <div className="form-floating">
-                <input type="email" name="email" value={info.email} onChange={setInfo} className="form-control" id="email" required placeholder="Email address"/>
+                <input type="email" name="email" value={info.email} onChange={setInfo} className="form-control inp" id="email" required placeholder="Email address"/>
                 <label htmlFor="email">Email address</label>
             </div>
             <div className="form-floating">
-                <input type="password" name="password" value={info.password} onChange={setInfo} className="form-control" id="password" required placeholder="Password"/>
+                <input type="password" name="password" value={info.password} onChange={setInfo} className="form-control inp" id="password" required placeholder="Password"/>
                 <label htmlFor="password">Password</label>
             </div>
     
@@ -55,7 +55,7 @@ function LoginForm(){
             </div>
             <button className="w-100 btn btn-lg mb-3 btn-primary" type="submit">Sign in</button>
             {<Link to="/register" className="btn btn-outline-secondary">Need Account?</Link>}
-            <p className="mt-3 mb-3 text-muted">©{new Date().getFullYear()}</p>
+            <p className="mt-3 mb-3 text-muted" style={{color:"white"}}>©{new Date().getFullYear()}</p>
         </form>
     </>
 }

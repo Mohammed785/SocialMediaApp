@@ -4,17 +4,19 @@ import ForgetPassword from "./pages/ForgetPassword";
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ResetPassword from "./pages/ResetPassword";
+import Home from "./pages/Home"
 
 function WithNav(){
   return <>
-  <Navbar/>
-  <Outlet/>
+  <div className="container-fluid">
+      <div className="row justify-content-evenly">
+        <Navbar/>
+        <Outlet/>
+      </div>
+  </div>
   </>
 }
 
-function Home(){
-  return <><h1>Home</h1></>
-}
 function App() {
   return <BrowserRouter>
   <Routes>

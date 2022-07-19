@@ -3,7 +3,7 @@ body {
     height: 100%;
 }
 
-body {
+.body {
     display: flex;
     align-items: center;
     padding-top: 40px;
@@ -42,28 +42,13 @@ body {
     }
 }
 
-h1,p{
-    color: white;
-}
-input{
+.inp{
     cursor: pointer;
-}
-input:not([type="date"]){
     margin: 10px 0;
     background: rgb(226, 226, 226)!important;
     border-radius: 0.75rem!important;
 }
 
-input:hover{
-    background: rgb(245, 245, 245)!important;
-}
-
-input:focus{
-    background: white!important;
-}
-.form-check-label,.form-label{
-    color: white;
-}
 .form-check-input{
     appearance: radio;
 }
