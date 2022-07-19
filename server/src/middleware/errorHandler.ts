@@ -16,7 +16,7 @@ export const errorHandler: ErrorRequestHandler = async (err, req, res, next) => 
         CustomError.code = err.code
         if(err.code==="P2025"){
             CustomError.message = "Record to update not found.";
-            CustomError.statusCode = 400;
+            CustomError.statusCode = StatusCodes.NOT_FOUND;
         }else if(err.code==="P2021"){
             CustomError.message = (process.env.NODE_ENV==="dev")
             ?"The table `StatusView` does not exist in the current database"
@@ -25,18 +25,18 @@ export const errorHandler: ErrorRequestHandler = async (err, req, res, next) => 
             CustomError.message = "Server has closed the connection.";
         }else if(err.code==="P2002"){
             CustomError.message = "Value Is Not Unique.";
-            CustomError.statusCode = 500
+            CustomError.statusCode = StatusCodes.BAD_REQUEST
         }
         else if(err.code==="P2013"){
             CustomError.message = "Required Values Are Missing.";
-            CustomError.statusCode = 500;
+            CustomError.statusCode = StatusCodes.BAD_REQUEST;
         }else if(err.code==="P2003"){
             const name = err.meta!.field_name as string
             CustomError.message = `${name.slice(0,-2)} Not Found`;
-            CustomError.statusCode = 404;
+            CustomError.statusCode = StatusCodes.NOT_FOUND;
         }else{
             CustomError.message = "Something Went Wrong"
-            CustomError.statusCode = 500
+            CustomError.statusCode = StatusCodes.INTERNAL_SERVER_ERROR
         }
         CustomError.meta = err.meta
     }else if(err instanceof PrismaClientValidationError){

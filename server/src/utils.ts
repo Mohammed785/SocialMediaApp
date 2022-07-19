@@ -71,7 +71,7 @@ export const transporter = createTransport(
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
-        callback(null,join(__dirname, "..", "/src/public/uploads"));
+        callback(null,join(__dirname,"..","..","client","public","images"))
     },
     filename(req, file, callback) {
         const ext = extname(file.originalname)

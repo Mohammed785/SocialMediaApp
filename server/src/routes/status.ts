@@ -1,18 +1,28 @@
 import { RequestHandler, Router } from "express";
 import { unlinkSync } from "fs";
-import { ForbiddenError, NotFoundError } from "../errors";
-import { prisma, resizeImage, StatusCodes, uploader } from "../utils";
+import { join } from "path";
+import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
+import { prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
 
 
 export const statusRouter = Router()
 
+const getAvailableStatus: RequestHandler = async (req, res) => {
+    const friendsList = await prisma.relation.findMany({
+        where: { userId: req.user!.id, friend: true },
+        select: { relatedId: true },
+    });
+    const stories = await prisma.status.findMany({
+        where: { authorId: { in: friendsList.map((f) => f.relatedId) } },
+        distinct: ["authorId"],
+        include:{author:{select:userSelect}}
+    });
+    return res.json({stories})
+};
+
 const getAllStatus:RequestHandler = async(req,res)=>{
-    const authorId = parseInt(req.params.authorId)
-    const author = await prisma.status.findUnique({where:{id:authorId}})
-    if(!author){
-        throw new NotFoundError("User Not Found")
-    }
-    let status = await prisma.status.findMany({where:{authorId},include:{author:true}})
+    const authorId = parseInt(req.query.id as string||"-1")
+    let status = await prisma.status.findMany({where:{authorId:(authorId!==-1)?authorId:req.user!.id}})
     status = status.filter(async(stat)=>{
         if (new Date().getTime() - stat.createTime.getTime() <= 86400000) return true;
         await prisma.status.delete({where:{id:stat.id}});
@@ -26,8 +36,12 @@ const createStatus:RequestHandler = async(req,res)=>{
     if(req.file){
         await resizeImage(req.file.path, req.file.filename, req.file.destination);
     }
+    if(!caption && !req.file){
+        throw new BadRequestError("Cant Create Empty Story")
+    }
+    const image = req.file?.path.split("/").slice(-2).join("/")
     const status = await prisma.status.create({
-        data: { caption, image: req.file!.path, authorId: req.user!.id },
+        data: { caption, image, authorId: req.user!.id },
     });
     return res.status(StatusCodes.CREATED).json({status})
 };
@@ -42,7 +56,7 @@ const deleteStatus:RequestHandler = async(req,res)=>{
         throw new ForbiddenError("You Can't Delete This Status");
     }
     if(status.image){
-        unlinkSync(status.image)
+        unlinkSync(join(__dirname,"..","..","..","client","public",status.image))
     }
     await prisma.status.delete({ where: { id } });
     return res.json({status})
@@ -67,6 +81,7 @@ const viewStatus:RequestHandler = async(req,res)=>{
                 { userId: status.authorId, relatedId: req.user?.id },
                 { userId: req.user?.id, relatedId: status.authorId },
             ],
+            friend:false
         },
     });
     if (blocked) {
@@ -76,8 +91,10 @@ const viewStatus:RequestHandler = async(req,res)=>{
     return res.json({view})
 };
 
-statusRouter.get("/author/:id",getAllStatus)
+
+statusRouter.get("/available",getAvailableStatus)
+statusRouter.get("/author/",getAllStatus)
 statusRouter.post("/create",uploader.single("image"),createStatus)
-statusRouter.delete(":id/delete",deleteStatus)
+statusRouter.delete("/:id/delete",deleteStatus)
 statusRouter.post("/:id/view",viewStatus)
 statusRouter.get("/:id/views",getStatusViews)
