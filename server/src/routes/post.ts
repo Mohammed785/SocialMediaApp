@@ -67,11 +67,18 @@ const getPost:RequestHandler = async(req,res)=>{
 }
 
 const createPost:RequestHandler = async(req,res)=>{
-    const { body,captions } = req.body
+    const { body, captions, isPrivate, commentable } = req.body;
     if(!req.files && !body){
         throw new BadRequestError("Cant Create Empty Post")
     }
-    const post = await prisma.post.create({data:{body,authorId:req.user!.id}})
+    const post = await prisma.post.create({
+        data: {
+            body,
+            authorId: req.user!.id,
+            private: isPrivate === "true" ? true : false,
+            commentable: commentable === "true" ? true : false,
+        },
+    });
     if(req.files){
         (req.files as Array<Express.Multer.File>).forEach(async(file,idx)=>{
             await resizeImage(file.path,file.filename,file.destination)

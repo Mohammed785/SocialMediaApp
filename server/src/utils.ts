@@ -99,12 +99,14 @@ export const uploader = multer({
 export const resizeImage = async(path:string,name:string,dest:string,maxWidth=1200,maxHeight=630)=>{
     sharp.cache(false);
     const meta = await sharp(path).metadata()
-    const ratio=Math.min(maxWidth / meta.width!, maxHeight / meta.height!)||1;    
-    sharp(await sharp(path)
-        .resize(Math.round(ratio * meta.width!), Math.round(ratio * meta.height!))
-        .toFormat("jpeg",{force:true})
-        .jpeg({ quality: 85})
-        .toBuffer()).toFile(resolve(dest,name))
+    if(meta.width!>1200 || meta.height!>630){
+        const ratio=Math.min(maxWidth / meta.width!, maxHeight / meta.height!)||1;    
+        sharp(await sharp(path)
+            .resize(Math.round(ratio * meta.width!), Math.round(ratio * meta.height!))
+            .toFormat("jpeg",{force:true})
+            .jpeg({ quality: 85})
+            .toBuffer()).toFile(resolve(dest,name))
+    }
 }
 
 export const createNotification = async (receiverId:number,content:string,action:string|null=null) => {
