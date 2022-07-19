@@ -8,3 +8,27 @@
     width: 75px;
     margin-right: 8px;
 }
+
+.story{
+    cursor: pointer;
+}
+
+.story:hover {
+    opacity: 0.8;
+}
+
+.story-text{
+    background-color: black;
+    color:white;
+    text-align:center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: blur(1px);
+}
+
+.carousel-text {
+    font-weight: 700;
+    font-size: 2em;
+    bottom: 37%;
+}
