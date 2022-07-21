@@ -61,7 +61,6 @@ function StoryCreateForm(){
                         <button className="btn btn-danger" data-bs-target="#updateStoryForm" data-bs-toggle="modal">
                             Delete Story
                         </button>
-
                     </div>
                 </form>
             </div>

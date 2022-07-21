@@ -32,3 +32,75 @@
     font-size: 2em;
     bottom: 37%;
 }
+.post__comment .accordion-button::after {
+    margin-left: 0 !important;
+    display: none !important;
+}
+
+.post__comment .accordion-button:hover {
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+.post__comment .accordion-button:not(.collapsed) {
+    background: transparent !important;
+}
+
+.post__comment .accordion-button:not(.collapsed) {
+    box-shadow: none !important;
+}
+.fs-0 {
+    font-size: 4rem;
+}
+
+.fs-7 {
+    font-size: 0.8rem;
+}
+.dropdown-item:active {
+    background-color: #d5d5d5 !important;
+}
+.pointer{
+    cursor: pointer;
+}
+
+
+.grid {
+width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-gap: 2px;
+  grid-auto-rows: min-max(80px, auto);
+  grid-auto-flow: dense;
+}
+.card {
+    min-height: 100px;
+    background-size: cover;
+    background-position: 50% 50%;
+}
+
+.span-2 {
+    grid-column-end: span 2;
+    height: 200px;
+}
+
+.span-3 {
+    grid-column-end: span 3;
+    grid-row-end: span 3;
+    height: 400px;
+}
+.react-info{
+    padding: 10px 3px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.react-info svg{
+    font-size: 23px;
+}
+.react-info:hover{
+    background-color: rgb(206, 206, 206);
+}
+.selected-filter{
+    background-color: rgb(196, 196, 196);
+    padding: 8px;
+    border-radius: 5px;
+}

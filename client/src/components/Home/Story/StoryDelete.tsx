@@ -43,7 +43,6 @@ function StoryDeleteForm(){
                                 </div>
                             </div>
                             <hr></hr>
-                            
                             </> 
                         })}
                     </div>

@@ -6,7 +6,7 @@ import image from "../../img.jpg"
 function PostForm() {
     const [postImages, setPostImages] = useState<{selected:FileList|any[],preview:any[]}>({selected:[],preview:[]})
     const [captions, setCaptions] = useState<Record<string, any>>({})
-    const [postInfo, setPostInfo] = useState({ content: "", private: "false", commentable:"false" })
+    const [postInfo, setPostInfo] = useState({ content: "", private: "false", commentable:"true" })
     const imgInpRef = useRef<HTMLInputElement>(null)
     function previewImages(){
         const images = imgInpRef.current?.files!
@@ -58,7 +58,7 @@ function PostForm() {
                 <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header align-items-center">
-                            <h5 className="text-dark text-center w-100 m-0" id="exampleModalLabel">
+                            <h5 className="text-dark text-center w-100 m-0" id="createModalLabel">
                                 Create Post
                             </h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal"

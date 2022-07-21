@@ -25,7 +25,7 @@ function StatusList() {
         <div className="mt-5 d-flex position-relative">
             <StoryForm/>
             <StoryUpdateForm/>
-            {stories.length && stories.map((story:Record<string,any>)=>{
+            {stories.length>0 && stories.map((story:Record<string,any>)=>{
                 return <Story key={story.id} story={story} setStory={setStory} /> 
             })}
             <StoryModal story={story} />
