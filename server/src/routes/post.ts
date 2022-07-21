@@ -34,7 +34,7 @@ const getPosts: RequestHandler = async (req, res) => {
         where:{...queryObj},
         include:{images:true,
             author:{select:{...userSelect}},
-            reactions:true,
+            reactions:{select:{reaction:true,user:{select:userSelect}}},
             _count:{select:{comments:true,reactions:true}}
         },
         orderBy:{id:"desc"}
@@ -82,7 +82,7 @@ const createPost:RequestHandler = async(req,res)=>{
     if(req.files){
         (req.files as Array<Express.Multer.File>).forEach(async(file,idx)=>{
             await resizeImage(file.path,file.filename,file.destination)
-            await prisma.postImage.create({data:{postId:post.id,image:file.path,
+            await prisma.postImage.create({data:{postId:post.id,image:"/"+file.path.split("/").slice(-2).join("/"),
                 description:captions[idx]}})
         })
     }
@@ -233,7 +233,18 @@ const unSavePost:RequestHandler = async(req,res)=>{
     return res.json({msg:"Saved Post Deleted"})
 }
 
-                    /* Post Save Section */
+                    /* Post React Section */
+const getPostReactions:RequestHandler = async(req,res)=>{
+    const id = parseInt(req.params.id);
+    const reactions = await prisma.postReaction.findMany({
+        where:{postId:id},include:{user:{select:userSelect}}
+    })
+    let likeCount = 0
+    reactions.forEach(react=>{
+        if(react.reaction) likeCount+=1
+    })
+    return res.json({reactions,_count:{like:likeCount,dislike:reactions.length-likeCount}})
+}
 const getPostReact:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id);
     const reaction = await prisma.postReaction.findUnique({
@@ -252,7 +263,9 @@ const getPostReact:RequestHandler = async(req,res)=>{
 const postReact:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     let reaction;
-    const react = Boolean(req.query.react)
+    const react = (req.query.react==="like")?true:false
+    let msg =`Post ${(react===true)?"Liked":"Disliked"}`
+    let removed = false
     const post = await prisma.post.findUnique({where:{id}})
     if (!post) {
         throw new NotFoundError("Post Not Found");
@@ -287,18 +300,21 @@ const postReact:RequestHandler = async(req,res)=>{
             }
             },data:{reaction:react}})
         }else{
-            await prisma.postReaction.delete({where:{
+            reaction = await prisma.postReaction.delete({where:{
                 postId_userId:{
                 postId:id,
                 userId:req.user!.id
                 }   
             }})
+            msg = "Reaction removed"
+            removed = true
         }
     }
-    return res.status(StatusCodes.CREATED).json({msg:`Post ${(react===true)?"Liked":"Disliked"}`,reaction})
+    return res.status(StatusCodes.CREATED).json({msg,removed,reaction})
 }
 
 // post react
+postRouter.get("/:id/reacts",getPostReactions)
 postRouter.get("/:id/react",getPostReact)
 postRouter.post("/:id/react",postReact)
 // post save

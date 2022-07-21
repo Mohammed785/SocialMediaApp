@@ -39,7 +39,7 @@ const createStatus:RequestHandler = async(req,res)=>{
     if(!caption && !req.file){
         throw new BadRequestError("Cant Create Empty Story")
     }
-    const image = req.file?.path.split("/").slice(-2).join("/")
+    const image = "/"+req.file?.path.split("/").slice(-2).join("/")
     const status = await prisma.status.create({
         data: { caption, image, authorId: req.user!.id },
     });
