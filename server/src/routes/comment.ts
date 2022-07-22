@@ -49,7 +49,7 @@ const getSubComments:RequestHandler = async (req,res)=>{
 const createComment:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id)
     const {body} = req.body
-    const commentId = parseInt(req.query.commentId as string)
+    const commentId = req.query.commentId ? parseInt(req.query.commentId as string) :null
     const post = await prisma.post.findUnique({where:{id}})
     if(!post){
         throw new NotFoundError("Post Not Found")
@@ -66,9 +66,9 @@ const createComment:RequestHandler = async (req,res)=>{
         throw new ForbiddenError("You Cant Comment On This Post Owner Locked Comments")
     }
     const queryOptions = { body, postId: id, authorId: req.user!.id,commentId };
-    if(commentId){
-        queryOptions.commentId = commentId
-    }
+    // if(commentId){
+    //     queryOptions.commentId = commentId
+    // }
     const comment = await prisma.comment.create({data:{...queryOptions}})
     if(post.authorId!==req.user?.id){
         await createNotification(post.authorId,`${req.user?.fullName} Commented On Your Post`)
