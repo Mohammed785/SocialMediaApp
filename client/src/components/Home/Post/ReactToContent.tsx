@@ -4,7 +4,7 @@ import axiosClient from "../../../axiosClient";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 
 
-function ReactToPost({ id, reactions }: { id: number, reactions: Record<string, any>[] }) {
+function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:string, reactions: Record<string, any>[],setReactions?:Function }) {
     const [liked, setLiked] = useState(null)
     const { user } = useAuthContext()!
     const likeRef = useRef<HTMLDivElement>(null)
@@ -25,10 +25,33 @@ function ReactToPost({ id, reactions }: { id: number, reactions: Record<string, 
             likeRef.current?.classList.add("text-muted")
         }
     }
+    const updateReactionsList = (reaction:Record<string,any>, removed:boolean)=>{
+        let newReactions;
+        if(removed){
+            newReactions = reactions.filter((react)=>{
+                return react.user.id!==user!.id
+            })
+        }else{
+            let found = false
+            newReactions = reactions.map((react)=>{
+                if (react.user.id === user!.id){
+                    found = true
+                    react.reaction = reaction.reaction
+                }
+                return react
+            })
+            if(!found){
+                reaction.user = user   
+                newReactions.push(reaction)
+            }
+        }        
+        if(setReactions)setReactions(newReactions)
+    }
     const react = async (react="like") => {        
         try {
-            const response = await axiosClient.post(`/post/${id}/react?react=${react}`)
-            const { reaction, removed, msg } = response.data            
+            const response = await axiosClient.post(`/${type}/${id}/react?react=${react}`)
+            const { reaction, removed, msg } = response.data 
+            removed ? updateReactionsList(reaction, true) : updateReactionsList(reaction,false)
             setLiked(removed ? null : reaction.reaction)
         } catch (error) {
             console.error(error);
@@ -44,15 +67,15 @@ function ReactToPost({ id, reactions }: { id: number, reactions: Record<string, 
         updateBtns()
     }, [liked])
     return <>
-        <div onClick={async() => {await react("like")}} ref={likeRef} className="dropdown-item pointer rounded d-flex justify-content-center align-items-center pointer text-muted p-1">
+        <div onClick={async() => {await react("like")}} ref={likeRef} className={`${type==="post"&&"dropdown-item"} pointer rounded d-flex justify-content-center align-items-center pointer text-muted p-1`}>
             <FaThumbsUp className="me-3"></FaThumbsUp>
             <p className="m-0">Like</p>
         </div>
-        <div onClick={async() => {await react("dislike")}} ref={dislikeRef} className="dropdown-item pointer rounded d-flex justify-content-center align-items-center pointer text-muted p-1">
+        <div onClick={async () => { await react("dislike") }} ref={dislikeRef} className={`${type==="post"&&"dropdown-item"} pointer rounded d-flex justify-content-center align-items-center pointer text-muted p-1`}>
             <FaThumbsDown className=" me-3"></FaThumbsDown>
             <p className="m-0">Dislike</p>
         </div>
     </>
 }
 
-export default ReactToPost
+export default ReactToContent
