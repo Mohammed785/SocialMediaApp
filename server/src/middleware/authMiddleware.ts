@@ -17,7 +17,8 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
         req.user = {
             id:payload.id,
             email:payload.email,
-            fullName:payload.fullName
+            firstName:payload.firstName,
+            lastName:payload.lastName
         }
         next()
     } catch (error) {

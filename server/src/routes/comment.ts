@@ -13,18 +13,18 @@ const getPostComments:RequestHandler = async (req,res)=>{
         queryOptions.skip = 1
     }
     const comments = await prisma.comment.findMany({
-        take: 10,
+        take: 6,
         where: { postId: id, commentId: null },
         orderBy: [{ id: "desc" }, { createTime: "desc" }],
         include: {
-            reactions: true,
+            reactions: {select:{reaction:true,user:{select:userSelect}}},
             author: { select: { ...userSelect } },
             _count: { select: { comments: true } },
         },
         ...queryOptions,
     });
     const last = comments[comments.length-1]
-    cursor = (last)?last.id:0
+    cursor = (last && comments.length>=6)?last.id:0
     return res.json({comments,cursor})
 };
 
@@ -66,12 +66,12 @@ const createComment:RequestHandler = async (req,res)=>{
         throw new ForbiddenError("You Cant Comment On This Post Owner Locked Comments")
     }
     const queryOptions = { body, postId: id, authorId: req.user!.id,commentId };
-    // if(commentId){
-    //     queryOptions.commentId = commentId
-    // }
     const comment = await prisma.comment.create({data:{...queryOptions}})
     if(post.authorId!==req.user?.id){
-        await createNotification(post.authorId,`${req.user?.fullName} Commented On Your Post`)
+        await createNotification(
+            post.authorId,
+            `${req.user?.firstName} ${req.user?.lastName} Commented On Your Post`
+        );
     }
     return res.status(StatusCodes.CREATED).json({comment})
 };
@@ -116,8 +116,9 @@ const deleteComment:RequestHandler = async (req,res)=>{
 const commentReact:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     let reaction;
-    const react = Boolean(req.query.react)
+    const react = req.query.react === "like" ? true : false;
     let msg = `Post ${react === true ? "Liked" : "Disliked"}`;
+    let removed = false;
     const comment = await prisma.comment.findUnique({where:{id}})
     if(!comment){
         throw new NotFoundError("Comment Not Found")
@@ -145,7 +146,10 @@ const commentReact:RequestHandler = async(req,res)=>{
             userId:req.user!.id,
             reaction:react
         }})
-        await createNotification(comment.authorId,`${req.user?.fullName} Reacted On Your Comment`);
+        await createNotification(
+            comment.authorId,
+            `${req.user?.firstName} ${req.user?.lastName} Reacted On Your Comment`
+        );
     }else{
         if(exists.reaction!==react){
             reaction=await prisma.commentReaction.update({where:{
@@ -155,16 +159,17 @@ const commentReact:RequestHandler = async(req,res)=>{
             }
             },data:{reaction:react}})
         }else{
-            await prisma.commentReaction.delete({where:{
+            reaction = await prisma.commentReaction.delete({where:{
                 commentId_userId:{
                 commentId:id,
                 userId:req.user!.id
                 }   
             }})
-            msg = "React Deleted"
+            msg = "Reaction removed";
+            removed = true;
         }
     }
-    return res.status(StatusCodes.CREATED).json({msg,reaction})
+    return res.status(StatusCodes.CREATED).json({msg,removed,reaction})
 }
 
 
@@ -173,4 +178,4 @@ commentRouter.get("/:id/sub",getSubComments)
 commentRouter.post("/create/:id",createComment)
 commentRouter.patch("/update/:id",updateComment)
 commentRouter.delete("/delete/:id",deleteComment)
-commentRouter.post("/react",commentReact)
+commentRouter.post("/:id/react",commentReact)

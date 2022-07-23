@@ -94,7 +94,9 @@ const changePassword:RequestHandler = async (req,res)=>{
 
 const deleteAccount:RequestHandler = async(req,res)=>{
     const user = await prisma.user.delete({where:{id:req.user?.id}})
-    return res.json({msg:`${req.user?.fullName} Your Account has Deleted`})
+    return res.json({
+        msg: `${req.user?.firstName} ${req.user?.lastName} Your Account has Deleted`,
+    });
 }
 
 const updateProfile:RequestHandler = async(req,res)=>{

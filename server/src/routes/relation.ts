@@ -65,7 +65,10 @@ const sendFriendRequest:RequestHandler = async (req,res)=>{
         throw new BadRequestError("You Blocked this User You Can't Send Him Friend Request")
     }
     const request = await prisma.friendRequest.create({data:{senderId:req.user!.id,receiverId:id}})
-    await createNotification(request.receiverId,`${req.user?.fullName} Sent You Friend Request`);
+    await createNotification(
+        request.receiverId,
+        `${req.user?.firstName} ${req.user?.lastName} Sent You Friend Request`
+    );
     return res.status(StatusCodes.CREATED).json({request})
 }
 
@@ -102,7 +105,10 @@ const acceptFriendRequest:RequestHandler = async (req,res)=>{
             {userId:req.user!.id,relatedId:id,friend:true}
         ]
     })
-    await createNotification(request.senderId,`${req.user?.fullName} Accepted Your FriendRequest`);
+    await createNotification(
+        request.senderId,
+        `${req.user?.firstName} ${req.user?.lastName} Accepted Your FriendRequest`
+    );
     return res.json({msg:"Request Accepted",request})
 }
 

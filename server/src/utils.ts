@@ -20,10 +20,11 @@ export const userSelect = {
 };
 export const serializeUser = (user:User)=>{
     return {
-        id:user.id,
-        email:user.email,
-        fullName:`${user.firstName} ${user.lastName}`
-    }
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+    };
 }
 
 export const createJWT = (payload:object)=>{

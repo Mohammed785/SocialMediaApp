@@ -4,7 +4,8 @@ declare global{
             user?:{
                 id:number,
                 email:string,
-                fullName:string
+                firstName:string,
+                lastName:string
             }
         }
     }

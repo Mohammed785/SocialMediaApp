@@ -35,7 +35,7 @@ const getPosts: RequestHandler = async (req, res) => {
         include:{images:true,
             author:{select:{...userSelect}},
             reactions:{select:{reaction:true,user:{select:userSelect}}},
-            _count:{select:{comments:true,reactions:true}}
+            _count:{select:{comments:true}}
         },
         orderBy:{id:"desc"}
     })
@@ -290,7 +290,10 @@ const postReact:RequestHandler = async(req,res)=>{
             userId:req.user!.id,
             reaction:react
         }})
-        await createNotification(post.authorId,`${req.user?.fullName} Reacted On Your Post`);
+        await createNotification(
+            post.authorId,
+            `${req.user?.firstName} ${req.user?.lastName} Reacted On Your Post`
+        );
     }else{
         if(exists.reaction!==react){
             reaction=await prisma.postReaction.update({where:{
