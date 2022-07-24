@@ -42,7 +42,7 @@ function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:s
             })
             if(!found){
                 reaction.user = user   
-                newReactions.push(reaction)
+                newReactions.unshift(reaction)
             }
         }        
         if(setReactions)setReactions(newReactions)
