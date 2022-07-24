@@ -2,7 +2,7 @@ import { RequestHandler, Router } from "express";
 import { unlinkSync } from "fs";
 import { join } from "path";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
-import { prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
+import { filePath, prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
 
 
 export const statusRouter = Router()
@@ -33,13 +33,14 @@ const getAllStatus:RequestHandler = async(req,res)=>{
 
 const createStatus:RequestHandler = async(req,res)=>{
     const {caption} = req.body
+    let image;
     if(req.file){
         await resizeImage(req.file.path, req.file.filename, req.file.destination);
+        image = filePath(req.file?.filename)
     }
     if(!caption && !req.file){
         throw new BadRequestError("Cant Create Empty Story")
     }
-    const image = "/"+req.file?.path.split("/").slice(-2).join("/")
     const status = await prisma.status.create({
         data: { caption, image, authorId: req.user!.id },
     });
@@ -56,7 +57,7 @@ const deleteStatus:RequestHandler = async(req,res)=>{
         throw new ForbiddenError("You Can't Delete This Status");
     }
     if(status.image){
-        unlinkSync(join(__dirname,"..","..","..","client","public",status.image))
+        unlinkSync(join(__dirname,"..","..","public",status.image))
     }
     await prisma.status.delete({ where: { id } });
     return res.json({status})

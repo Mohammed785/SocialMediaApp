@@ -72,7 +72,7 @@ export const transporter = createTransport(
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
-        callback(null,join(__dirname,"..","..","client","public","images"))
+        callback(null,join(__dirname,"..","public"))
     },
     filename(req, file, callback) {
         const ext = extname(file.originalname)
@@ -119,7 +119,9 @@ export const createNotification = async (receiverId:number,content:string,action
         },
     });
 };
-
+export const filePath = (filename:string,host=`http://localhost:${process.env.PORT}`)=>{
+    return `${host}/static/${filename}`
+}
 export enum StatusCodes {
     OK = 200,
     CREATED = 201,

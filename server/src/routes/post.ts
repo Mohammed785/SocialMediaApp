@@ -1,9 +1,10 @@
 import { RequestHandler, Router } from "express";
-import { resizeImage, uploader,prisma, StatusCodes,userSelect, createNotification } from "../utils";
+import { resizeImage, uploader,prisma, StatusCodes,userSelect, createNotification, filePath } from "../utils";
 import { unlinkSync } from "fs";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 import { validationMiddleware } from "../middleware";
 import { UpdatePostDTO } from "../@types/post";
+import { join } from "path";
 export const postRouter = Router()
 
                     /* Post Section*/
@@ -29,7 +30,7 @@ const getPosts: RequestHandler = async (req, res) => {
         }
     }
     const posts = await prisma.post.findMany({
-        take:2,
+        take:3,
         ...cursorOptions,
         where:{...queryObj},
         include:{images:true,
@@ -40,7 +41,7 @@ const getPosts: RequestHandler = async (req, res) => {
         orderBy:{id:"desc"}
     })
     const last = posts[posts.length - 1];
-    cursor = last ? last.id : 0;
+    cursor = last && posts.length >= 3 ? last.id : 0;
     return res.json({posts,cursor})
 };
 
@@ -82,7 +83,7 @@ const createPost:RequestHandler = async(req,res)=>{
     if(req.files){
         (req.files as Array<Express.Multer.File>).forEach(async(file,idx)=>{
             await resizeImage(file.path,file.filename,file.destination)
-            await prisma.postImage.create({data:{postId:post.id,image:"/"+file.path.split("/").slice(-2).join("/"),
+            await prisma.postImage.create({data:{postId:post.id,image:filePath(file.filename),
                 description:captions[idx]}})
         })
     }
@@ -114,7 +115,7 @@ const deletePost:RequestHandler = async(req,res)=>{
     }
     await prisma.post.delete({where:{id}})
     post.images.forEach((img)=>{
-        unlinkSync(img.image);
+        unlinkSync(join(__dirname,"..","..","public",img.image.split("/").at(-1)!));
     })
     return res.status(StatusCodes.OK).json({post})
 }
@@ -144,35 +145,31 @@ const createPostImage:RequestHandler = async (req,res)=>{
         throw new BadRequestError("Please Provide An Image")
     }
     await resizeImage(req.file.path,req.file.filename,req.file.destination)
-    const newImg = await prisma.postImage.create({data:{
-        postId:id,
-        image:req.file!.path,
-        description:req.body.description
-    }})
+    const newImg = await prisma.postImage.create({
+        data: {
+            postId: id,
+            image: filePath(req.file.filename),
+            description: req.body.description,
+        },
+    });
     return res.status(StatusCodes.CREATED).json({newImg});
 }
 
-const updatePostImage:RequestHandler = async (req,res)=>{
-    const id = parseInt(req.params.id)
-    const queryObj:Record<string,any> = {}
-    const old = await prisma.postImage.findUnique({where:{id},include:{post:true}})
-    if(!old){
-        throw new NotFoundError("Post Image Not Found");
-    }
-    if(old.post.authorId!==req.user?.id){
-        throw new ForbiddenError("You Cant Update This Post Image")
-    }
-    if(req.file){
-        await resizeImage(req.file.path, req.file.filename, req.file.destination);
-        queryObj['image'] = req.file.path;
-        unlinkSync(old.image);
-    }
-    if(req.body.description){
-        queryObj["description"] = req.body.description;
-    }
-    const newImg = await prisma.postImage.update({where:{id},data:queryObj})
-    return res.status(StatusCodes.ACCEPTED).json({newImg})
-}
+// const updatePostImage:RequestHandler = async (req,res)=>{
+//     const id = parseInt(req.params.id)
+//     const old = await prisma.postImage.findUnique({where:{id},include:{post:true}})
+//     if(!old){
+//         throw new NotFoundError("Post Image Not Found");
+//     }
+//     if(old.post.authorId!==req.user?.id){
+//         throw new ForbiddenError("You Cant Update This Post Image")
+//     }
+//     const newImg = await prisma.postImage.update({
+//         where: { id },
+//         data: { description :req.body.description},
+//     });
+//     return res.status(StatusCodes.ACCEPTED).json({newImg})
+// }
 
 const deletePostImage:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id);
@@ -181,10 +178,10 @@ const deletePostImage:RequestHandler = async (req,res)=>{
         throw new NotFoundError("Post Image Not Found")
     }
     if(exists.post.authorId!==req.user?.id){
-        throw new ForbiddenError("You Cant Update This Post Image");
+        throw new ForbiddenError("You Cant Delete This Post Image");
     }
     const postImage = await prisma.postImage.delete({where:{id}})
-    unlinkSync(exists.image);
+    unlinkSync(join(__dirname,"..","..","public",postImage.image.split("/").at(-1)!));
     return res.json({postImage})
 }
 
@@ -327,7 +324,7 @@ postRouter.delete("/:id/unsave",unSavePost)
 // post image
 postRouter.get("/image",getPostImage)
 postRouter.post("/:id/image/create",uploader.single("image"),createPostImage)
-postRouter.patch("/image/update/:id",uploader.single("image"),updatePostImage)
+// postRouter.patch("/image/update/:id",uploader.single("image"),updatePostImage)
 postRouter.delete("/image/delete/:id",deletePostImage)
 
 // post
