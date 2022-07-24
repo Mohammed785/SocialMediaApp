@@ -5,4 +5,6 @@ export class UpdatePostDTO{
     body:string
     @IsBoolean()
     private:boolean
+    @IsBoolean()
+    commentable:boolean
 }

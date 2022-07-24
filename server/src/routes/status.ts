@@ -57,7 +57,7 @@ const deleteStatus:RequestHandler = async(req,res)=>{
         throw new ForbiddenError("You Can't Delete This Status");
     }
     if(status.image){
-        unlinkSync(join(__dirname,"..","..","public",status.image))
+        unlinkSync(join(__dirname,"..","..","public",status.image.split("/").at(-1)!))
     }
     await prisma.status.delete({ where: { id } });
     return res.json({status})

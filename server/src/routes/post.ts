@@ -155,22 +155,6 @@ const createPostImage:RequestHandler = async (req,res)=>{
     return res.status(StatusCodes.CREATED).json({newImg});
 }
 
-// const updatePostImage:RequestHandler = async (req,res)=>{
-//     const id = parseInt(req.params.id)
-//     const old = await prisma.postImage.findUnique({where:{id},include:{post:true}})
-//     if(!old){
-//         throw new NotFoundError("Post Image Not Found");
-//     }
-//     if(old.post.authorId!==req.user?.id){
-//         throw new ForbiddenError("You Cant Update This Post Image")
-//     }
-//     const newImg = await prisma.postImage.update({
-//         where: { id },
-//         data: { description :req.body.description},
-//     });
-//     return res.status(StatusCodes.ACCEPTED).json({newImg})
-// }
-
 const deletePostImage:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id);
     const exists = await prisma.postImage.findUnique({ where: { id },include:{post:true} });
@@ -324,7 +308,6 @@ postRouter.delete("/:id/unsave",unSavePost)
 // post image
 postRouter.get("/image",getPostImage)
 postRouter.post("/:id/image/create",uploader.single("image"),createPostImage)
-// postRouter.patch("/image/update/:id",uploader.single("image"),updatePostImage)
 postRouter.delete("/image/delete/:id",deletePostImage)
 
 // post
