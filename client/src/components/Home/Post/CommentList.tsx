@@ -3,7 +3,7 @@ import Comment from "./Comment"
 import axiosClient from "../../../axiosClient";
 import { useEffect, useState,UIEvent } from "react";
 
-function CommentList({ postId, updateCommentCount }: { postId: number, updateCommentCount:Function }){
+function CommentList({ postId, updateCommentCount, commentable }: { postId: number, updateCommentCount: Function, commentable:boolean }){
     const [commentsQuery, setCommentsQuery] = useState<{ comments: Record<string, any>[],cursor:number|string }>({comments:[],cursor:0})
     const getComments = async()=>{
         try {
@@ -53,7 +53,9 @@ function CommentList({ postId, updateCommentCount }: { postId: number, updateCom
     return <>
         <div id={`collapsePost${postId}`} className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent={`#post${postId}Accordion`}>
             <hr />
+            {commentable && 
             <CommentForm id={postId} addComment={addComment} />
+            }
             <div onScroll={handleScroll} className="accordion-body navbar-nav-scroll">
                 {commentsQuery.comments.length>0 && commentsQuery.comments.map((comment:Record<string,any>)=>{
                     return  <Comment key={comment.id} {...{comment,updateComment,deleteComment}}/>

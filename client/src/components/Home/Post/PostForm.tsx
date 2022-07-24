@@ -48,11 +48,11 @@ function PostForm() {
     }
     return <>
         <div className="bg-white p-3 mt-3 rounded border shadow">
-            <div className="d-flex" typeof="button">
+            <div className="d-flex" typeof="button" data-bs-toggle="modal" data-bs-target="#createModal">
                 <div className="p-1">
                     <img src={image} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
                 </div>
-                <input type="text" className="form-control rounded-pill border-0 bg-gray pointer" style={{ cursor: "pointer" }} disabled placeholder="What's on your mind?" data-bs-toggle="modal" data-bs-target="#createModal" />
+                <input type="text" className="form-control rounded-pill border-0 bg-gray pointer" style={{ cursor: "pointer" }}  placeholder="What's on your mind?" />
             </div>
             <div className="modal fade" id="createModal" tabIndex={-1} aria-labelledby="createModalLabel" aria-hidden="true" data-bs-backdrop="false">
                 <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="modal-dialog modal-dialog-centered">
@@ -99,7 +99,10 @@ function PostForm() {
                                             </div>
                                         })}
                                     </div>
-                                    <FaImage type="button" onClick={()=>imgInpRef.current?.click()} className="text-success pointer mx-1"></FaImage>
+                                    <div className="d-flex align-items-center">
+                                        <FaImage type="button" style={{ fontSize: "40px" }} onClick={() => imgInpRef.current?.click()} className="text-success pointer mx-1"></FaImage>
+                                        <p className="m-0">add images</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
