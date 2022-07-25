@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axiosClient";
 import Post from "./Post";
+import SavedPost from "./SavedPost";
 
-function PostList(){
+function PostList({postsType}:{postsType:string}){
     const [posts,setPosts] = useState<{posts:Record<string,any>[],cursor:number}>({posts:[],cursor:0})
     async function getPosts(){
         try {
-            const response = await axiosClient.get(`/post?cursor=${posts.cursor}`)
+            const url = (postsType==="saved") ? `/post/saved?cursor=${posts.cursor}` : `/post?cursor=${posts.cursor}`
+            const response = await axiosClient.get(url)
             const {posts:newPosts,cursor} = response.data
             setPosts({posts:[...posts.posts,...newPosts],cursor:cursor})
         } catch (error) {
@@ -36,8 +38,12 @@ function PostList(){
         getPosts()
     },[])
     return <>
-    {posts.posts && posts.posts.map((post:Record<string,any>)=>{        
-        return <Post key={post.id} post={post} deletePost={deletePost}/>
+    {posts.posts && posts.posts.map((post:Record<string,any>)=>{
+        if(postsType==='saved'){
+            return <SavedPost key={post.id} post={post} deletePost={deletePost} />
+        }else{
+            return <Post key={post.id} post={post} deletePost={deletePost}/>
+        }
     })}
     {posts.cursor===0 && <p className="text-center mt-3 mb-0 fw-bold" style={{fontSize:"2em"}}>No More Posts</p>}
     </>
