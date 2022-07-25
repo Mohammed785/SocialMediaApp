@@ -9,7 +9,7 @@ function Home() {
             <div className="d-flex flex-column justify-content-center w-100 mx-auto" style={{ paddingTop: "56px", maxWidth: "680px" }}>
                 <StoryList/>
                 <PostForm/>
-                <PostList/>
+                <PostList postsType="all"/>
             </div>
         </div>
     </>

@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ResetPassword from "./pages/ResetPassword";
 import Home from "./pages/Home"
+import SavedPosts from "./pages/SavedPosts";
+import Profile from "./pages/Profile";
 
 function WithNav(){
   return <>
@@ -28,6 +30,8 @@ function App() {
     </Route>
     <Route element={<WithNav/>}>
       <Route path="/" element={<Home/>}/>
+      <Route path="/profile/:id" element={<Profile/>}/>
+      <Route path="/posts/saved" element={<SavedPosts/>}/>
     </Route>
   </Routes>
   </BrowserRouter>
