@@ -20,24 +20,14 @@ function FriendRequests() {
             console.error(error);
         }
     }
-    const acceptRequest = async(id:number)=>{
-        try {
-            const response = await axiosClient.post(`/relation/request/accept/${id}`,{})
+    const handleRequest = async(id:number,action:"accept"|"decline")=>{
+        try{
+            const response = await axiosClient.post(`/relation/request/${action}/${id}`)
             setRequestState({...requestState,requests:requestState.requests.filter((req:IRequest)=>{
                 return req.sender.id!==id
             })})
-        } catch (error) {
-            console.error(error);
-        }
-    }
-    const declineRequest = async(id:number)=>{
-        try {
-            const response = await axiosClient.post(`/relation/request/decline/${id}`,{})
-            setRequestState({...requestState,requests:requestState.requests.filter((req:IRequest)=>{
-                return req.sender.id!==id
-            })})
-        } catch (error) {
-            console.error(error);
+        }catch(error){
+            console.error(error);            
         }
     }
     return <>
@@ -52,7 +42,7 @@ function FriendRequests() {
                     </div>
                 </li>
                 {requestState.requests && requestState.requests.map((req: IRequest) => {
-                    return <Request req={req} declineRequest={declineRequest} acceptRequest={acceptRequest} />
+                    return <Request key={req.sender.id} req={req} handleRequest={handleRequest} />
                 })}
                 <li className="footer bg-dark text-center">
                     <p className="text-light m-0">
@@ -63,7 +53,7 @@ function FriendRequests() {
         </div>
     </>
 }
-function Request({ req, acceptRequest, declineRequest }: { req: IRequest, acceptRequest: Function, declineRequest: Function }) {
+function Request({ req, handleRequest }: { req: IRequest, handleRequest: Function }) {
     return <>
         <li className={"notification-box"} key={req.id} >
             <div className="row">
@@ -78,8 +68,8 @@ function Request({ req, acceptRequest, declineRequest }: { req: IRequest, accept
                     <small className="text-warning">{req.createTime}</small>
                 </div>
                 <div className="col-2">
-                    <button onClick={()=>{acceptRequest(req.sender.id)}} className="btn btn-info">Accept</button>
-                    <button onClick={() => { declineRequest(req.sender.id)}} className="btn btn-danger mt-1">Decline</button>
+                    <button onClick={()=>{handleRequest(req.sender.id,"accept")}} className="btn btn-info">Accept</button>
+                    <button onClick={() => { handleRequest(req.sender.id,"decline")}} className="btn btn-danger mt-1">Decline</button>
                 </div>
             </div>
         </li>

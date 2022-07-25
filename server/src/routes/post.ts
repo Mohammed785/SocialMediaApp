@@ -12,16 +12,16 @@ const feed:RequestHandler = async(req,res)=>{}
 
 const getPosts: RequestHandler = async (req, res) => {
     const {stDate,enDate} = req.query
-    let id=req.query.id;
+    let id=parseInt(req.query.id as string) || req.user!.id;
     let cursor = parseInt(req.query.cursor as string)
-    const privateQuery = (!id)?{OR:[{private:true},{private:false}]}:{private:false}
+    const privateQuery = (id===req.user!.id)?{OR:[{private:true},{private:false}]}:{private:false}
     const cursorOptions:Record<string,any> = {cursor:undefined,skip:undefined}
     if(cursor){
         cursorOptions.cursor = {id:cursor}
         cursorOptions.skip = 1
     }
     const queryObj:Record<string,any> = {
-        authorId:(!id)?req.user?.id:parseInt(id as string),
+        authorId:id,
         groupId:null,
         ...privateQuery,
         createTime:{

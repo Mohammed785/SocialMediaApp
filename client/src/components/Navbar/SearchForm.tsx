@@ -2,6 +2,7 @@ import { UIEvent, useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa"
 import { Link } from "react-router-dom";
 import axiosClient from "../../axiosClient";
+import image from "../img.jpg"
 function SearchForm() {
     const [searchInfo,setSearchInfo] = useState({search:"",cursor:0,timeout:0,result:[]})
     const searchMsgRef = useRef<HTMLParagraphElement>(null)
@@ -10,7 +11,7 @@ function SearchForm() {
     async function userSearch(){
         try{
             const response = await axiosClient.get(`/user/all/?search=${searchInfo.search}&cursor=${searchInfo.cursor}`)
-            setSearchInfo({ ...searchInfo, cursor: response.data.cursor, result: searchInfo.result.concat(response.data.users) })
+            setSearchInfo({ ...searchInfo, cursor: response.data.cursor, result: response.data.users })
         }catch(error){
             console.error(error);
         }
@@ -52,10 +53,10 @@ function SearchForm() {
                                     return <div className="my-4" key={user.id}>
                                         <div className=" alert fade show dropdown-item p-1 m-0 d-flex align-items-center justify-content-between" role="alert">
                                             <Link className="d-flex align-items-center" to={"/profile/" + user.id}>
-                                                <img src="./img.jpg" alt="avatar" className="rounded-circle me-2" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
+                                                <img src={image} alt="avatar" className="rounded-circle me-2" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
                                                 <p className="m-0" style={{color:"black"}}>{user.firstName+user.lastName}</p>
                                             </Link>
-                                            <button type="button" className="btn-close p-0 m-0" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            {/* <button type="button" className="btn-close p-0 m-0" data-bs-dismiss="alert" aria-label="Close"></button> */}
                                         </div>
                                     </div>
                                 })

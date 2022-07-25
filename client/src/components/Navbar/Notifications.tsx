@@ -56,7 +56,7 @@ function Notifications(){
                     </div>
                 </li>
                 {notificationState.notifications && notificationState.notifications.map((noti: INotification) => {
-                    return <Notification {...noti} />
+                    return <Notification key={noti.id} {...noti} />
                 })}
                 <li className="footer bg-dark text-center">
                     <p className="text-light m-0">
