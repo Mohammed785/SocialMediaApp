@@ -1,17 +1,14 @@
 import { useState } from "react";
-import { FaCommentAlt, FaEllipsisH } from "react-icons/fa";
+import { FaCommentAlt } from "react-icons/fa";
 import PostReactions from "./PostReactions"
 import ReactToContent from "./ReactToContent";
 import CommentList from "./CommentList";
-import { useAuthContext } from "../../../context/authContext";
-import {FaPencilAlt,FaTrash} from "react-icons/fa"
-import axiosClient from "../../../axiosClient";
 import PostUpdate from "./PostUpdate";
-import PostModal from "./PostModal";
+import PostContent from "./PostContent";
+import PostOptions from "./PostOptions";
 
 function Post({post,deletePost}:{post:Record<string,any>,deletePost:Function}) {
     const [postState,setPostState] = useState({...post})
-    const {user} = useAuthContext()!
     const updateCommentCount = (count:number)=>setPostState({...postState,_count:{comments:postState._count.comments+count}})
     const setReactions = (reactions:[])=>{
         setPostState({...postState,reactions})
@@ -21,14 +18,6 @@ function Post({post,deletePost}:{post:Record<string,any>,deletePost:Function}) {
     }
     const updateInfo = (info:Record<string,any>)=>{
         setPostState({...postState,...info})
-    }
-    const postDelete=async()=>{
-        try {
-            const response = await axiosClient.delete(`/post/delete/${post.id}`)
-            deletePost(post.id)
-        } catch (error) {
-            console.error(error);
-        }
     }
     return <>
         <div className="bg-white p-4 rounded shadow mt-3">
@@ -40,55 +29,10 @@ function Post({post,deletePost}:{post:Record<string,any>,deletePost:Function}) {
                         <span className="text-muted fs-7">{post.createTime}</span>
                     </div>
                 </div>
-                <div className="d-flex align-items-center">
-                    <p className="text-muted me-2" style={{ margin: 0 }}>{postState.edited && "edited"}</p>                
-                    <FaEllipsisH type="button" id={`post${post.id}Menu`} data-bs-toggle="dropdown" className="dropdown-toggle" aria-expanded="false"></FaEllipsisH>
-                        <ul className="dropdown-menu border-0 shadow" aria-labelledby={`post${postState.id}Menu`} >
-                            {
-                                user!.id === postState.author.id && <>
-                                <li className="d-flex align-items-center my-1 btn btn-success" data-bs-toggle="modal" data-bs-target={`#update${post.id}Modal`}>
-                                    <FaPencilAlt className="me-1"></FaPencilAlt> Edit
-                                </li>
-                                    <li onClick={postDelete} className="d-flex align-items-center my-1 btn btn-danger">
-                                        <FaTrash className="me-1"></FaTrash> Delete
-                                    </li>
-                                </>
-                            }
-                        </ul>
-
-                </div>
+                <PostOptions {...{id:post.id,authorId:post.author.id,edited:postState.edited,deletePost,saved:false}}/>
             </div>
             <div className="mt-3">
-                <div>
-                    <p>
-                        {postState.body}
-                    </p>
-                    <div className="post-images pointer" data-bs-toggle="modal" data-bs-target={`#post${post.id}modal`}>
-                        {postState.images.length===1 && 
-                            <img src={postState.images[0].image} className="img-fluid rounded"/>
-                        }
-                        {postState.images.length===2 &&
-                            <div className="d-flex">{
-                            postState.images.map((image:Record<string,any>)=>{
-                                return <img key={image.id} src={image.image} style={{width:"50%",margin:"0 2px",height:"auto"}}/>
-                            })
-                        }
-                        </div>
-                        }
-                        {postState.images.length>=3 &&
-                            <div className="grid">
-                            {
-                                postState.images.map((image:Record<string,any>,idx:number)=>{
-                                    if(idx<=2){
-                                        return <div key={image.id} className={`card span-${idx === 0 ? 3 : 2}`} style={{ backgroundImage: `url(${image.image})` }}></div>
-
-                                    }
-                                })  
-                            }
-                            </div>
-                        }
-                    </div>
-                </div>
+                <PostContent {...{id:post.id,images:postState.images,body:postState.body}}/>
                 <div className="post__comment mt-3 position-relative">
                     <PostReactions {...{id:post.id,reactions:postState.reactions}}/>
                     <div className="accordion" id={`post${post.id}Accordion`}>
@@ -112,7 +56,6 @@ function Post({post,deletePost}:{post:Record<string,any>,deletePost:Function}) {
                 </div>
             </div>
             <PostUpdate post={postState} updateInfo={updateInfo} postDelete={deletePost} update={updatePostImages}/>
-            <PostModal {...{id:post.id,images:postState.images}}/>
         </div>
     </>
 }

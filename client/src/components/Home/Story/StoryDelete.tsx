@@ -34,16 +34,13 @@ function StoryDeleteForm(){
                     </div>
                     <div className="modal-body">
                         {myStories && myStories.map((story:Record<string,any>)=>{
-                            return<>
-                            <div className="preview my-2" key={story.id+Date.now()}>
+                            return <div className="preview my-2" key={story.id}>
                                 {story.image && <img src={story.image} crossOrigin='anonymous' className="preview-image" alt="story image" />}
                                 <div className="d-flex w-100 justify-content-between">
                                     <p style={{fontSize:"1.5em"}}>{story.caption}</p>
                                     <button onClick={()=>deleteStory(story.id)} className="btn btn-danger">Delete</button>
                                 </div>
                             </div>
-                            <hr></hr>
-                            </> 
                         })}
                     </div>
                     <div className="modal-footer">
