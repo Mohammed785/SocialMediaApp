@@ -170,6 +170,26 @@ const deletePostImage:RequestHandler = async (req,res)=>{
 }
 
                     /* Post Save Section */
+const getSavedPosts:RequestHandler = async(req,res)=>{
+    let cursor = parseInt(req.query.cursor as string);
+    const cursorOptions:Record<string,any> = {cursor:undefined,skip:undefined}
+    if (cursor) {
+        cursorOptions.cursor = { postId_userId:{postId:cursor,userId:req.user!.id}};
+        cursorOptions.skip = 1;
+    }
+    const saved = await prisma.savedPost.findMany({
+        take: 3,
+        ...cursorOptions,
+        where: { userId: req.user!.id },
+        include: { post: { include: { author: { select: userSelect },images:true } } },
+        orderBy: { postId: "desc" }
+    });
+    const posts = saved.map(post=>post.post)
+    const last = posts[posts.length - 1];
+    cursor = last && posts.length >= 3 ? last.id : 0;
+    return res.json({posts,cursor})
+}
+
 const savePost:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     const post = await prisma.post.findUnique({where:{id}})
@@ -302,6 +322,7 @@ postRouter.get("/:id/reacts",getPostReactions)
 postRouter.get("/:id/react",getPostReact)
 postRouter.post("/:id/react",postReact)
 // post save
+postRouter.get("/saved",getSavedPosts)
 postRouter.post("/:id/save",savePost)
 postRouter.delete("/:id/unsave",unSavePost)
 
