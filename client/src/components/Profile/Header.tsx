@@ -1,22 +1,26 @@
 import "./profile.css"
 import Relation from "./Relation"
-
-function Header({ id, relations }: { id: number, relations:Record<string,any>}){
+import { NavLink, useSearchParams } from "react-router-dom"
+function Header({ id, relations, info }: { id: number, relations: Record<string, any>, info: Record<string, any> }){
+    const [queryParams, setQueryParams] = useSearchParams()
+    const page = queryParams.get("p")
     return <>
         <header className="shadow bg-white">
             <img className="cover-img pointer shadow" src="#" alt="d" />
             <img className="profile-img rounded-circle pointer shadow" src="#" alt="d" />
-
             <div className="user-info">
-                <h4 className="profile-name">john doe</h4>
-                <p className="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, nihil vitae inventore officia porro nemo corporis repellat hic fugiat? Placeat quas mollitia, nam suscipit reiciendis perspiciatis assumenda magni perferendis itaque.</p>
+                <h4 className="profile-name">{info.firstName} {info.lastName}</h4>
+                <p className="text-muted">{info.bio}</p>
             </div>
             <div style={{ height: "1px", backgroundColor: "black", width: "80%" }}></div>
-            <nav className="d-flex justify-content-between w-100">
+            <nav className="d-flex justify-content-between w-100 mt-2">
                 <ul className="list-group list-group-horizontal m-auto">
-                    <li className="mx-2 item active-item pointer">Timeline</li>
-                    <li className="mx-2 item pointer">Friends</li>
-                    <li className="mx-2 item pointer">About</li>
+                    <NavLink to="" className={({ isActive }) => !page ? "mx-2 item pointer active-item" :"mx-2 item pointer"}>
+                        Timeline
+                    </NavLink>
+                    <NavLink to="?p=about" className={({ isActive }) => page==='about' ? "mx-2 item pointer active-item" : "mx-2 item pointer"}>
+                        About
+                    </NavLink>
                 </ul>
                 <Relation {...{id,relations}}/>
             </nav>

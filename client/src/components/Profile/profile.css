@@ -45,3 +45,10 @@ header{
     background-color: rgba(70, 96, 128, 0.466);
     color: rgb(13,110,253);
 }
+
+.about-section{
+    position: absolute;
+    top: 79%;
+    display: flex;
+    justify-content: center;
+}

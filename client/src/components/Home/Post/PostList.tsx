@@ -3,11 +3,11 @@ import axiosClient from "../../../axiosClient";
 import Post from "./Post";
 import SavedPost from "./SavedPost";
 
-function PostList({postsType}:{postsType:string}){
+function PostList({postsType,userId=''}:{postsType:string,userId?:string|number}){
     const [posts,setPosts] = useState<{posts:Record<string,any>[],cursor:number}>({posts:[],cursor:0})
     async function getPosts(){
         try {
-            const url = (postsType==="saved") ? `/post/saved?cursor=${posts.cursor}` : `/post?cursor=${posts.cursor}`
+            const url = (postsType==="saved") ? `/post/saved?cursor=${posts.cursor}` : `/post?cursor=${posts.cursor}&id=${userId}`
             const response = await axiosClient.get(url)
             const {posts:newPosts,cursor} = response.data
             setPosts({posts:[...posts.posts,...newPosts],cursor:cursor})
