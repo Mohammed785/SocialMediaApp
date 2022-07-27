@@ -1,10 +1,55 @@
 import { RequestHandler, Router } from "express";
 import { unlinkSync } from "fs";
+import { CreateGroupDTO } from "../@types/group";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
-import { createNotification, prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
+import { validationMiddleware } from "../middleware";
+import { createNotification, filePath, prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
 
 export const groupRouter = Router()
 
+
+const searchGroups:RequestHandler = async(req,res)=>{
+    const { search } = req.query;
+    let cursor = parseInt(req.query.cursor as string);
+    const searchQuery: Record<string, any> = {
+        cursor: undefined,
+        skip: undefined,
+        where: { name: { contains: search } },
+    };
+    if (cursor) {
+        searchQuery.cursor = { id: cursor };
+        searchQuery.skip = 1;
+    }
+    const groups = await prisma.group.findMany({
+        take: 4,
+        orderBy: [{ id: "asc" }],
+        ...searchQuery,
+    });
+    const last = groups[groups.length - 1];
+    cursor = last && groups.length >= 4 ? last.id : 0;
+    return res.json({result:groups,cursor})
+}
+
+const getUserGroups:RequestHandler = async (req,res)=>{
+    let cursor = parseInt(req.query.cursor as string);
+    const searchQuery: Record<string, any> = {
+        cursor: undefined,
+        skip: undefined,
+    };
+    if (cursor) {
+        searchQuery.cursor = { id: cursor };
+        searchQuery.skip = 1;
+    }
+    const groups = await prisma.groupMembership.findMany({
+        take:6,
+        orderBy:[{groupId:"asc"}],
+        ...searchQuery,
+        where:{userId:req.user!.id},include:{group:true}
+    })
+    const last = groups[groups.length - 1];
+    cursor = last && groups.length >= 4 ? last.groupId : 0;
+    return res.json({groups,cursor})
+}
 
 const getGroup:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
@@ -23,12 +68,13 @@ const createGroup:RequestHandler = async(req,res)=>{
     const group = await prisma.group.create({
         data: {
             creatorId: req.user!.id,
-            image: req.file.path,
+            image: filePath(req.file.filename),
             name,
             description,
             private: isPrivate === "true" ? true : false,
         },
     });
+    await prisma.groupMembership.create({data:{groupId:group.id,userId:req.user!.id,isAdmin:true}})
     await resizeImage(req.file.path,req.file.filename,req.file.destination)
     return res.status(StatusCodes.CREATED).json({group})
 }
@@ -222,8 +268,17 @@ const kickGroupMember: RequestHandler = async (req, res) => {
     return res.json({membership})
 };
 
+const checkIsMember:RequestHandler = async(req,res)=>{
+    const groupId = parseInt(req.params.id)
+    const member = await prisma.groupMembership.findUnique({
+        where: { groupId_userId: { groupId, userId: req.user!.id } }
+    })
+    return res.json({member})
+}
 
-groupRouter.post("/create",uploader.single("image"),createGroup)
+groupRouter.get("/search",searchGroups)
+groupRouter.get("/user",getUserGroups)
+groupRouter.post("/create",uploader.single("image"),validationMiddleware(CreateGroupDTO),createGroup)
 groupRouter.patch("/update/:id",uploader.single("image"),editGroup)
 groupRouter.delete("/delete/:id",deleteGroup)
 groupRouter.get("/:id",getGroup)
@@ -233,6 +288,7 @@ groupRouter.patch("/:groupId/request/:userId/accept", acceptGroupRequest);
 groupRouter.delete("/:groupId/request/:userId/decline",declineGroupRequest)
 groupRouter.delete("/:id/request/cancel",cancelGroupRequest)
 
+groupRouter.get("/:id/member",checkIsMember)
 groupRouter.get("/:id/member/all", getGroupMembers);
 groupRouter.post("/:id/join", joinGroup);
 groupRouter.delete("/:id/member/leave", leaveGroup);
