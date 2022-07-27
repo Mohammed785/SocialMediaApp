@@ -26,14 +26,14 @@ const userSearch:RequestHandler = async (req,res)=>{
         searchQuery.skip = 1
     }
     const users = await prisma.user.findMany({
-        take:2,
+        take:4,
         orderBy:[{id:"asc"}],
         ...searchQuery,
         select:{...userSelect}
     })
     const last = users[users.length - 1];
-    cursor = last ? last.id : 0;
-    return res.json({users,cursor})
+    cursor = (last && users.length >= 4) ? last.id : 0;
+    return res.json({result:users,cursor})
 }
 
 

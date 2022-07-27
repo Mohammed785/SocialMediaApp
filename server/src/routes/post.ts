@@ -45,6 +45,29 @@ const getPosts: RequestHandler = async (req, res) => {
     return res.json({posts,cursor})
 };
 
+const getGroupPosts:RequestHandler = async(req,res)=>{
+    const groupId = parseInt(req.params.id)
+    let cursor = parseInt(req.query.cursor as string)
+    const cursorOptions:Record<string,any> = {cursor:undefined,skip:undefined}
+    if (cursor) {
+        cursorOptions.cursor = { id: cursor };
+        cursorOptions.skip = 1;
+    }
+    const posts = await prisma.post.findMany({
+        where:{groupId},
+        take:3,
+        ...cursorOptions,
+        include:{images:true,
+            author:{select:{...userSelect}},
+            reactions:{select:{reaction:true,user:{select:userSelect}}},
+            _count:{select:{comments:true}}
+        },
+    })
+    const last = posts[posts.length - 1];
+    cursor = last && posts.length >= 3 ? last.id : 0;
+    return res.json({posts,cursor})
+}
+
 const getPost:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
     const post = await prisma.post.findUnique({where:{id}
@@ -68,6 +91,7 @@ const getPost:RequestHandler = async(req,res)=>{
 }
 
 const createPost:RequestHandler = async(req,res)=>{
+    const groupId = parseInt(req.query.group as string)
     const { body, captions, isPrivate, commentable } = req.body;
     if(!req.files && !body){
         throw new BadRequestError("Cant Create Empty Post")
@@ -78,6 +102,7 @@ const createPost:RequestHandler = async(req,res)=>{
             authorId: req.user!.id,
             private: isPrivate === "true" ? true : false,
             commentable: commentable === "true" ? true : false,
+            groupId:groupId?groupId:null
         },
     });
     if(req.files){
@@ -334,6 +359,7 @@ postRouter.delete("/image/delete/:id",deletePostImage)
 // post
 postRouter.get("/",getPosts)
 postRouter.get("/:id",getPost)
+postRouter.get("/group/:id",getGroupPosts)
 postRouter.post("/create",uploader.array("images"),createPost);
 postRouter.patch("/update/:id",validationMiddleware(UpdatePostDTO,true),updatePost)
 postRouter.delete("/delete/:id",deletePost)

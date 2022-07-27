@@ -3,7 +3,7 @@ import { FaImage } from "react-icons/fa"
 import axiosClient from "../../../axiosClient"
 import image from "../../img.jpg"
 
-function PostForm() {
+function PostForm({groupId}:{groupId?:number}) {
     const [postImages, setPostImages] = useState<{selected:FileList|any[],preview:any[]}>({selected:[],preview:[]})
     const [captions, setCaptions] = useState<Record<string, any>>({})
     const [postInfo, setPostInfo] = useState({ content: "", private: "false", commentable:"true" })
@@ -38,9 +38,8 @@ function PostForm() {
     async function handleSubmit(e:FormEvent){
         e.preventDefault()
         const data = getFormData()
-        
         try {
-            const response = await axiosClient.post("/post/create",data,{headers:{'Content-Type':"multipart/form-data"}})
+            const response = await axiosClient.post(`/post/create?group=${groupId}`,data,{headers:{'Content-Type':"multipart/form-data"}})
             console.log(response);
         } catch (error) {
             console.error(error);            
