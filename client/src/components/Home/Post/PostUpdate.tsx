@@ -1,7 +1,7 @@
 import { useState,useRef} from "react"
 import { FaImage } from "react-icons/fa"
 import axiosClient from "../../../axiosClient"
-import image from "../../img.jpg"
+
 
 function PostUpdate({ post, update, postDelete, updateInfo }: { post: Record<string, any>, updateInfo:Function,update:Function,postDelete:Function}){
     const [postInfo, setPostInfo] = useState({...post})
@@ -79,7 +79,7 @@ function PostUpdate({ post, update, postDelete, updateInfo }: { post: Record<str
                             <div className="d-flex flex-column">
                                 <div className="d-flex align-items-center">
                                     <div className="p-2">
-                                        <img src={image} alt="avatar" className="rounded-circle" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
+                                        <img src={`${process.env.REACT_APP_STATIC_PATH}${postInfo.author.profileImg}`} alt="avatar" className="rounded-circle" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
                                     </div>
                                     <div style={{ display: "contents" }}>
                                         <select value={postInfo.private} onChange={(e) => setPostInfo({ ...postInfo, private: (e.target.value === 'true') ? true : false })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">

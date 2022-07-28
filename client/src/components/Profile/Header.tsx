@@ -6,8 +6,8 @@ function Header({ id, relations, info }: { id: number, relations: Record<string,
     const page = queryParams.get("p")
     return <>
         <header className="shadow bg-white">
-            <img className="cover-img pointer shadow" src="#" alt="d" />
-            <img className="profile-img rounded-circle pointer shadow" src="#" alt="d" />
+            <img className="cover-img pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.coverImg}`} alt="profile-img" />
+            <img className="profile-img rounded-circle pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.profileImg}`} alt="d" />
             <div className="user-info">
                 <h4 className="profile-name">{info.firstName} {info.lastName}</h4>
                 <p className="text-muted">{info.bio}</p>

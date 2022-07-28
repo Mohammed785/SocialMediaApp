@@ -22,7 +22,7 @@ function CommentForm({ id, addComment }: { id: number, addComment:Function}){
     return <>
         <form method="POST" onSubmit={handleSubmit} className="d-flex my-1">
             <div>
-                <img src="#" alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
+                <img src={`${process.env.REACT_APP_STATIC_PATH}${user!.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
             </div>
             <input type="text" required value={comment} onChange={(e)=>setComment(e.target.value)} className="form-control border-0 rounded-pill bg-gray" placeholder="Write a comment" />
         </form>

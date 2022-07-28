@@ -8,6 +8,7 @@ import multer from "multer"
 import { extname, join, resolve } from "path"
 import { BadRequestError } from "./errors"
 import sharp from "sharp"
+import { unlinkSync } from "fs"
 
 export const prisma = new PrismaClient()
 
@@ -16,6 +17,8 @@ export const userSelect = {
     firstName: true,
     lastName: true,
     email: true,
+    profileImg:true,
+    coverImg:true,
     password: false,
 };
 export const serializeUser = (user:User)=>{
@@ -119,9 +122,14 @@ export const createNotification = async (receiverId:number,content:string,action
         },
     });
 };
-export const filePath = (filename:string,host=`http://localhost:${process.env.PORT}`)=>{
-    return `${host}/static/${filename}`
+export const filePath = (filename:string)=>{
+    return `/static/${filename}`
 }
+
+export const unlinkImage=(name:string)=>{
+    unlinkSync(join(__dirname,"..",'public',name))
+}
+
 export enum StatusCodes {
     OK = 200,
     CREATED = 201,

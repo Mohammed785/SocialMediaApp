@@ -1,5 +1,5 @@
 import axiosClient from "../../../axiosClient";
-import image from "../../img.jpg"
+
 function Story({ story, setStory }: { story: Record<string,any>, setStory: Function }){
     const getStoryImages = async()=>{
         try {            
@@ -21,7 +21,7 @@ function Story({ story, setStory }: { story: Record<string,any>, setStory: Funct
             }            
             <div className=" d-flex align-items-center justify-content-center position-relative" style={{ minHeight: "65px" }}>
                 <div className="position-absolute top-0 start-50 translate-middle">
-                    <img src={image} style={{width:"50px"}} className="text-primary bg-white p-1 rounded-circle"></img>
+                    <img src={`${process.env.REACT_APP_STATIC_PATH}${story.author.profileImg}`} style={{width:"50px"}} className="text-primary bg-white p-1 rounded-circle"></img>
                 </div>
             </div>
         </div>

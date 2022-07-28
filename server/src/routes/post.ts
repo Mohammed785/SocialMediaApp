@@ -1,6 +1,5 @@
 import { RequestHandler, Router } from "express";
-import { resizeImage, uploader,prisma, StatusCodes,userSelect, createNotification, filePath } from "../utils";
-import { unlinkSync } from "fs";
+import { resizeImage, uploader,prisma, StatusCodes,userSelect, createNotification,unlinkImage } from "../utils";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 import { validationMiddleware } from "../middleware";
 import { UpdatePostDTO } from "../@types/post";
@@ -108,7 +107,7 @@ const createPost:RequestHandler = async(req,res)=>{
     if(req.files){
         (req.files as Array<Express.Multer.File>).forEach(async(file,idx)=>{
             await resizeImage(file.path,file.filename,file.destination)
-            await prisma.postImage.create({data:{postId:post.id,image:filePath(file.filename),
+            await prisma.postImage.create({data:{postId:post.id,image:file.filename,
                 description:captions[idx]}})
         })
     }
@@ -140,7 +139,7 @@ const deletePost:RequestHandler = async(req,res)=>{
     }
     await prisma.post.delete({where:{id}})
     post.images.forEach((img)=>{
-        unlinkSync(join(__dirname,"..","..","public",img.image.split("/").at(-1)!));
+        unlinkImage(img.image);
     })
     return res.status(StatusCodes.OK).json({post})
 }
@@ -173,7 +172,7 @@ const createPostImage:RequestHandler = async (req,res)=>{
     const newImg = await prisma.postImage.create({
         data: {
             postId: id,
-            image: filePath(req.file.filename),
+            image: req.file.filename,
             description: req.body.description,
         },
     });
@@ -190,7 +189,7 @@ const deletePostImage:RequestHandler = async (req,res)=>{
         throw new ForbiddenError("You Cant Delete This Post Image");
     }
     const postImage = await prisma.postImage.delete({where:{id}})
-    unlinkSync(join(__dirname,"..","..","public",postImage.image.split("/").at(-1)!));
+    unlinkImage(postImage.image);
     return res.json({postImage})
 }
 

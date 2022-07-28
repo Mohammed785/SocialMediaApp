@@ -6,7 +6,7 @@ function SavedPost({ post, deletePost }: { post: Record<string, any>, deletePost
         <div className="bg-white p-4 rounded shadow mt-3">
             <div className="d-flex justify-content-between">
                 <div className="d-flex">
-                    <img src="#" alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
+                    <img src={`${process.env.REACT_APP_STATIC_PATH}${post.author.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
                     <div>
                         <p className="m-0 fw-bold">{post.author.firstName} {post.author.lastName}</p>
                         <span className="text-muted fs-7">{post.createTime}</span>

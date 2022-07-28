@@ -32,7 +32,7 @@ function Comment({comment,updateComment,deleteComment}:{comment:Record<string,an
     }
     return <>    
         <div className="d-flex align-items-center my-1" id={`comment${comment.id}`}>
-            <img src="#" alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
+            <img src={`${process.env.REACT_APP_STATIC_PATH}${comment.author.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
             <div className="p-3 rounded comment__input w-100">
                 <div className="d-flex justify-content-end align-items-center">
                     <p className="text-muted me-1" style={{margin:0}}>{comment.edited&&"edited"}</p>

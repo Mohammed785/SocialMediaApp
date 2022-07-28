@@ -30,8 +30,8 @@ function Notifications(){
     }
     const markAllRead = async () => {
         try {
-            const ids = notificationState.notifications.filter((notifi: any) => notifi.seen == false).map((noti: any) => noti.id)
-            const response = await axiosClient.patch("/notification/seen", { ids })
+            const ids = notificationState.notifications.filter((notifi: any) => notifi.seen === false).map((noti: any) => noti.id)
+            await axiosClient.patch("/notification/seen", { ids })
             const notifications = notificationState.notifications.map((noti: any) => { return { ...noti, seen: true } })
             setNotificationState({ ...notificationState, notSeen: 0, notifications: (notifications as never[]) })
         } catch (error) {
@@ -76,7 +76,6 @@ function Notification({ id, content, createTime, action, seen }:INotification) {
                     <img src="" className="w-50 rounded-circle" />
                 </div>
                 <div className="col-lg-8 col-sm-8 col-8">
-                    {/* <strong className="text-info">David John</strong> */}
                     <div>
                         {content}
                     </div>

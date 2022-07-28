@@ -23,6 +23,8 @@ model User {
   bio              String?           @db.Text
   createTime       DateTime          @default(now())
   lastSeen         DateTime          @default(now())
+  profileImg       String            @default("default.jpg")
+  coverImg         String            @default("cover.jpg")
   posts            Post[]
   postReactions    PostReaction[]
   savedPosts       SavedPost[]

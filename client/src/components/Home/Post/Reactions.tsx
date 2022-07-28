@@ -1,7 +1,7 @@
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import image from "../../img.jpg"
+
 function Reactions({ id,reactions,type }: {id:number, reactions: Record<string, any>[],type:string }){
     const [reacts, setReacts] = useState({ reacts: reactions, filter: "all", _count: { like: 0, dislike: 0 } })
     const navigate = useNavigate()
@@ -66,7 +66,7 @@ function Reactions({ id,reactions,type }: {id:number, reactions: Record<string, 
                             if (reacts.filter === "all" || react.reaction === (reacts.filter === "like") ? true : false) {
                                 return <li key={i} onClick={() => redirectToProfile(react.user.id)} className="list-item react-info my-2 d-flex align-items-center justify-content-between">
                                     <div className="d-flex align-items-center">
-                                        <img src={image} className="rounded-circle" style={{ width: "40px", height: "40px", objectFit: "cover" }} alt="" />
+                                        <img src={`${process.env.REACT_APP_STATIC_PATH}${react.user.profileImg}`} className="rounded-circle" style={{ width: "40px", height: "40px", objectFit: "cover" }} alt="" />
                                         <p style={{ margin: "0px 5px", fontSize: "20px", fontWeight: "700" }}>{react.user.firstName} {react.user.lastName}</p>
                                     </div>
                                     {react.reaction ? <FaThumbsUp className="text-primary"></FaThumbsUp>

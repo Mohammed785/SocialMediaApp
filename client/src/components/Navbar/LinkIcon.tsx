@@ -7,6 +7,7 @@ function LinkIcon() {
     return <>
         <div className="col d-none d-xl-flex justify-content-center">
             <CustomNavLink to="/" tooltip="Home" icon={FaHome}></CustomNavLink>
+            <CustomNavLink to="/groups" tooltip="Groups" icon={FaUsers}></CustomNavLink>
             <CustomNavLink to="/chat" tooltip="Chat" icon={FaFacebookMessenger}></CustomNavLink>
             <CustomNavLink to="/posts/saved" tooltip="Saved Posts" icon={FaBookmark}></CustomNavLink>
         </div>

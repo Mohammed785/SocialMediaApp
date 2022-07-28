@@ -1,9 +1,8 @@
 import { RequestHandler, Router } from "express";
-import { unlinkSync } from "fs";
 import { CreateGroupDTO } from "../@types/group";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 import { validationMiddleware } from "../middleware";
-import { createNotification, filePath, prisma, resizeImage, StatusCodes, uploader, userSelect } from "../utils";
+import {  createNotification,prisma ,resizeImage, StatusCodes, unlinkImage, uploader, userSelect } from "../utils";
 
 export const groupRouter = Router()
 
@@ -68,7 +67,7 @@ const createGroup:RequestHandler = async(req,res)=>{
     const group = await prisma.group.create({
         data: {
             creatorId: req.user!.id,
-            image: filePath(req.file.filename),
+            image: req.file.filename,
             name,
             description,
             private: isPrivate === "true" ? true : false,
@@ -91,11 +90,11 @@ const editGroup:RequestHandler = async(req,res)=>{
     }
     if(req.body.name) queryObj.name = req.body.name
     if (req.body.description) queryObj.description = req.body.description;
-    if (req.body.private) queryObj.private = req.body.Private === "true" ? true : false;
+    if (req.body.private) queryObj.private = req.body.private === "true" ? true : false;
     if(req.file){
-        unlinkSync(old.image)
+        unlinkImage(old.image)
         await resizeImage(req.file.path,req.file.filename,req.file.destination)
-        queryObj.image = req.file!.path
+        queryObj.image = req.file!.filename
     }
     const group = await prisma.group.update({where:{id},data:{...queryObj}})
     return res.status(StatusCodes.ACCEPTED).json({group})
@@ -111,7 +110,7 @@ const deleteGroup:RequestHandler = async(req,res)=>{
         throw new ForbiddenError("You Can't Delete This Group");
     }
     await prisma.group.delete({where:{id}})
-    unlinkSync(group.image)
+    unlinkImage(group.image)
     return res.json({group})
 }
 
@@ -142,20 +141,19 @@ const acceptGroupRequest: RequestHandler = async (req, res) => {
     if (group.creatorId !== req.user?.id) {
         throw new ForbiddenError("You Can't Respond To This Group Requests");
     }
-    let request = await prisma.groupRequest.findUnique({where:{groupId_senderId:{
-        groupId,senderId:userId
-    }}})
-    if(request?.accepted===true){
-        return res.json({msg:"User Already A Member"})
-    }
-    request = await prisma.groupRequest.update({
+    // let request = await prisma.groupRequest.findUnique({where:{groupId_senderId:{
+    //     groupId,senderId:userId
+    // }}})
+    // if(request?.accepted===true){
+    //     return res.json({msg:"User Already A Member"})
+    // }
+    const request = await prisma.groupRequest.delete({
         where: {
             groupId_senderId: {
                 groupId,
                 senderId: userId,
             },
-        },
-        data: { accepted: true, acceptTime: new Date() },
+        }
     });
     await createNotification(request.senderId,`Your Join Request To ${group.name} Group Is Accepted`)
     await prisma.groupMembership.create({data:{groupId,userId}})
@@ -199,11 +197,11 @@ const cancelGroupRequest: RequestHandler = async (req, res) => {
     if (request.senderId !== req.user?.id) {
         throw new ForbiddenError("You Can't Cancel This Request");
     }
-    if (request.accepted === true) {
-        throw new BadRequestError(
-            "Request Already Accepted Try To Leave The The Group"
-        );
-    }
+    // if (request.accepted === true) {
+    //     throw new BadRequestError(
+    //         "Request Already Accepted Try To Leave The The Group"
+    //     );
+    // }
     await prisma.groupRequest.delete({
         where: {
             groupId_senderId: {
@@ -273,7 +271,10 @@ const checkIsMember:RequestHandler = async(req,res)=>{
     const member = await prisma.groupMembership.findUnique({
         where: { groupId_userId: { groupId, userId: req.user!.id } }
     })
-    return res.json({member})
+    const request = await prisma.groupRequest.findUnique({
+        where:{groupId_senderId:{groupId,senderId:req.user!.id}}
+    })
+    return res.json({member,request})
 }
 
 groupRouter.get("/search",searchGroups)
@@ -284,7 +285,7 @@ groupRouter.delete("/delete/:id",deleteGroup)
 groupRouter.get("/:id",getGroup)
 
 groupRouter.get("/:id/request/all", getGroupRequests);
-groupRouter.patch("/:groupId/request/:userId/accept", acceptGroupRequest);
+groupRouter.delete("/:groupId/request/:userId/accept", acceptGroupRequest);
 groupRouter.delete("/:groupId/request/:userId/decline",declineGroupRequest)
 groupRouter.delete("/:id/request/cancel",cancelGroupRequest)
 

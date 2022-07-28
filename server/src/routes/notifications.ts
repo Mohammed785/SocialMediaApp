@@ -18,7 +18,8 @@ const getNotifications:RequestHandler = async(req,res)=>{
         take:7,
         ...cursorOptions,
         where:{
-            receiverId:req.user?.id
+            receiverId:req.user?.id,
+            seen:false
         },
         orderBy:{ id: "desc" }
     })
