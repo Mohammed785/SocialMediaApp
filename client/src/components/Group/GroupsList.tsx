@@ -23,7 +23,7 @@ function GroupsList() {
     <div className="d-flex flex-wrap">
         {list.groups && list.groups.map(group=>{
             return <div key={group.group.id} className="shadow rounded card m-2">
-                <img src={`${SERVER}${group.group.image}`} className="card-img-top" alt="group-image" />
+                <img src={`${process.env.REACT_APP_STATIC_PATH}${group.group.image}`} className="card-img-top" alt="group-image" />
                 <div className="card-body">
                     <Link to={`/group/${group.group.id}`}><h5 className="card-title">{group.group.name}</h5></Link> 
                     <p className="card-text">{group.group.description}</p>

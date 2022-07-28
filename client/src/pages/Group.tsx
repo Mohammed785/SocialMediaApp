@@ -5,12 +5,14 @@ import GroupHeader from "../components/Group/GroupHeader"
 import GroupMembers from "../components/Group/GroupMemebers"
 import GroupPosts from "../components/Group/GroupPosts"
 import PostForm from "../components/Home/Post/PostForm"
+import GroupInfo from "../components/Group/GroupInfo"
 import "../components/Group/group.css"
+import Requests from "../components/Group/Requests"
 
 function Group() {
     const {id} = useParams()
     const [group,setGroup] = useState<Record<string,any>>({})
-    const [membership, setMembership] = useState(null)
+    const [membership, setMembership] = useState<Record<string,any>|null>(null)
     const [queryParams, setQueryParams] = useSearchParams()
     const page = queryParams.get("p")
     useEffect(()=>{
@@ -24,8 +26,8 @@ function Group() {
         }
         const checkMember = async () => {
             try {
-                const { data: { member } } = await axiosClient.get(`/group/${id}/member`)
-                setMembership(member)
+                const { data: { member,request } } = await axiosClient.get(`/group/${id}/member`)
+                setMembership({member,request})
             } catch (error) {
                 console.error(error);
             }
@@ -43,6 +45,8 @@ function Group() {
         </div>
     }
     {page==='members' && <GroupMembers group={group}/>}
+    {page==="info" && <GroupInfo group={group} setGroup={setGroup}/>}
+    {(page==="requests"&&group.private)&&<Requests group={group}/>}
     </>
 }
 
