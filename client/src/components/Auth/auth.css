@@ -8,15 +8,12 @@ body {
     align-items: center;
     padding-top: 40px;
     padding-bottom: 40px;
-    background-color: var(--main-bg);
 }
 
 .form-signin {
     max-width: fit-content;
     padding: 15px;
-    background: #060d1fcc;
     border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(2.9px);
     -webkit-backdrop-filter: blur(12.9px);
     -webkit-box-shadow: 7px 7px 31px 0px rgba(0, 0, 0, 0.56);
@@ -26,6 +23,10 @@ body {
 
 .form-signin .form-floating:focus-within {
     z-index: 2;
+}
+
+label{
+    color: black;
 }
 
 .bd-placeholder-img {

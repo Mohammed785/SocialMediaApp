@@ -11,7 +11,7 @@ function MenuIcon() {
     const {user} = useAuthContext()!
     async function handleLogout(){
         try {
-            const response = await axiosClient.post("/auth/logout")
+            await axiosClient.post("/auth/logout")
             logoutUser()
             navigator("/login",{replace:true})
         } catch (error) {
@@ -23,7 +23,7 @@ function MenuIcon() {
         <div className="col d-flex align-items-center justify-content-end">
             <div title="Profile" className="align-items-center justify-content-center d-none d-xl-flex">
                 <Link to={`/profile/${user!.id}`}>
-                    <img src="" className="rounded-circle me-2"
+                    <img src={process.env.REACT_APP_STATIC_PATH+user!.profileImg} className="rounded-circle me-2"
                         alt="avatar" style={{width: "38px", height: "38px" ,objectFit: "cover"}} />
                 </Link>
             </div>

@@ -5,7 +5,7 @@ import { FaUsers } from "react-icons/fa"
 interface IRequest{
     id: number;
     createTime:string;
-    sender: {id: number, firstName: string;lastName: string;}
+    sender: {id: number, firstName: string;lastName: string;profileImg:string}
 }
 
 function FriendRequests() {
@@ -58,7 +58,7 @@ function Request({ req, handleRequest }: { req: IRequest, handleRequest: Functio
         <li className={"notification-box"} key={req.id} >
             <div className="row">
                 <div className="col-lg-2 col-sm-2 col-2 text-center">
-                    <img src="" className="w-50 rounded-circle" />
+                    <img src={`${process.env.REACT_APP_STATIC_PATH}${req.sender.profileImg}`} className="w-50 rounded-circle" />
                 </div>
                 <div className="col-lg-7 col-sm-7 col-7">
                     <strong className="text-info">{req.sender.firstName} {req.sender.lastName}</strong>

@@ -46,10 +46,10 @@ function StoryModal({story}:{story:Record<string,any>[]}){
                             <div className="carousel-inner">
                                 {story.map((st,i)=>{
                                     return <div key={st.id} className={i === 0 ? "carousel-item active" :"carousel-item"}>                                       
-                                        {st.image ? <img src={st.image} crossOrigin='anonymous' className="d-block w-100" alt="story image" />
+                                        {st.image ? <img src={process.env.REACT_APP_STATIC_PATH+st.image} crossOrigin='anonymous' className="d-block w-100" alt="story image" />
                                             : <img src={captionImage} className="d-block w-100" alt="paper image" />}
                                         {st.caption && 
-                                            <div className={`carousel-caption d-none d-md-block ${(st.image===null && "carousel-text")}`}>
+                                            <div style={{fontSize:"25px"}} className={`carousel-caption d-none d-md-block ${(st.image===null && "carousel-text")}`}>
                                                 <p>{st.caption}</p>
                                             </div>
                                         }

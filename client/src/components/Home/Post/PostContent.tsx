@@ -7,12 +7,12 @@ function PostContent({id,images,body}:{id:number,images:Record<string,any>[],bod
             </p>
             <div className="post-images pointer" data-bs-toggle="modal" data-bs-target={`#post${id}modal`}>
                 {images.length === 1 &&
-                    <img src={images[0].image} className="img-fluid rounded" />
+                    <img src={process.env.REACT_APP_STATIC_PATH+images[0].image} className="img-fluid rounded" />
                 }
                 {images.length === 2 &&
                     <div className="d-flex">{
                         images.map((image: Record<string, any>) => {
-                            return <img key={image.id} src={image.image} style={{ width: "50%", margin: "0 2px", height: "auto" }} />
+                            return <img key={image.id} src={process.env.REACT_APP_STATIC_PATH+image.image} style={{ width: "50%", margin: "0 2px", height: "auto" }} />
                         })
                     }
                     </div>
@@ -22,7 +22,7 @@ function PostContent({id,images,body}:{id:number,images:Record<string,any>[],bod
                         {
                             images.map((image: Record<string, any>, idx: number) => {
                                 if (idx <= 2) {
-                                    return <div key={image.id} className={`card span-${idx === 0 ? 3 : 2}`} style={{ backgroundImage: `url(${image.image})` }}></div>
+                                    return <div key={image.id} className={`card span-${idx === 0 ? 3 : 2}`} style={{ backgroundImage: `url(${process.env.REACT_APP_STATIC_PATH}${image.image})` }}></div>
 
                                 }
                             })

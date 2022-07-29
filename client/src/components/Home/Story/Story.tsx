@@ -16,7 +16,7 @@ function Story({ story, setStory }: { story: Record<string,any>, setStory: Funct
     }
     return <>
         <div className="d-none d-lg-block rounded mx-1 story" onClick={getStoryImages} typeof="button" style={{ width: "6em", height: "190px" }} data-bs-toggle="modal" data-bs-target="#Story">
-            {story.image ? <img src={story.image} crossOrigin='anonymous' className="card-img-top rounded" alt="story posts" style={{ minHeight: "150px", objectFit: "cover" }} />
+            {story.image ? <img src={process.env.REACT_APP_STATIC_PATH+story.image} crossOrigin='anonymous' className="card-img-top rounded" alt="story posts" style={{ minHeight: "150px", objectFit: "cover" }} />
             :<p className="card-img-top rounded story-text" style={{ minHeight: "130px", objectFit: "cover" }}>{story.caption}</p>
             }            
             <div className=" d-flex align-items-center justify-content-center position-relative" style={{ minHeight: "65px" }}>

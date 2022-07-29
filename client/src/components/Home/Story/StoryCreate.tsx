@@ -21,7 +21,7 @@ function StoryCreateForm(){
                 // TODO:ERROR
             }else{
                 const response = await axiosClient.post("/status/create", data)
-                console.log(response.data);
+                setStory({caption:"",image:null,preview:""})
             }
         } catch (error) {
             console.error(error);

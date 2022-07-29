@@ -35,7 +35,7 @@ function StoryDeleteForm(){
                     <div className="modal-body">
                         {myStories && myStories.map((story:Record<string,any>)=>{
                             return <div className="preview my-2" key={story.id}>
-                                {story.image && <img src={story.image} crossOrigin='anonymous' className="preview-image" alt="story image" />}
+                                {story.image && <img src={`${process.env.REACT_APP_STATIC_PATH}${story.image}`} crossOrigin='anonymous' className="preview-image" alt="story image" />}
                                 <div className="d-flex w-100 justify-content-between">
                                     <p style={{fontSize:"1.5em"}}>{story.caption}</p>
                                     <button onClick={()=>deleteStory(story.id)} className="btn btn-danger">Delete</button>

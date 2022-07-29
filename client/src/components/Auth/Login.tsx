@@ -35,7 +35,7 @@ function LoginForm(){
         }
     }
     return <>
-    <form onSubmit={handleSubmit}>
+    <form className="bg-dark" onSubmit={handleSubmit}>
             <div className="form-group">
                 <div className="alert text-wrap" style={{maxWidth:"30rem"}} ref={errorCont} role="alert">
                 </div>

@@ -17,7 +17,7 @@ function PostModal({id,images}:{id:number,images:Record<string,any>[]}){
                             <div className="carousel-inner">
                                 {images.map((image, i) => {
                                     return <div key={image.id} className={i === 0 ? "carousel-item active" : "carousel-item"}>
-                                        <img src={image.image} crossOrigin='anonymous' className="d-block w-100" alt="post image" />
+                                        <img src={process.env.REACT_APP_STATIC_PATH+image.image} crossOrigin='anonymous' className="d-block w-100" alt="post image" />
                                         {image.description &&
                                             <div className={`carousel-caption d-none d-md-block`} style={{fontSize:"2em"}}>
                                                 <p>{image.description}</p>

@@ -2,7 +2,6 @@ import { UIEvent, useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa"
 import { Link } from "react-router-dom";
 import axiosClient from "../../axiosClient";
-import image from "../img.jpg"
 
 interface ISearch{
     search:string
@@ -76,7 +75,7 @@ function SearchForm() {
                                         return <div className="my-4" key={res.id}>
                                             <div className=" alert fade show dropdown-item p-1 m-0 d-flex align-items-center justify-content-between" role="alert">
                                                 <Link className="d-flex align-items-center" to={"/profile/" + res.id}>
-                                                    <img src={image} alt="avatar" className="rounded-circle me-2" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
+                                                    <img src={`${process.env.REACT_APP_STATIC_PATH}${res.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
                                                     <p className="m-0" style={{color:"black"}}>{res.firstName+res.lastName}</p>
                                                 </Link>
                                                 <button type="button" className="btn-close p-0 m-0" data-bs-dismiss="alert" aria-label="Close"></button>
