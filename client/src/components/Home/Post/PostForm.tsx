@@ -1,50 +1,37 @@
-import { FormEvent, useRef, useState } from "react"
+import { ChangeEvent, FormEvent, useRef, useState } from "react"
 import { FaImage } from "react-icons/fa"
 import axiosClient from "../../../axiosClient"
 import { useAuthContext } from "../../../context/authContext"
 
 
-function PostForm({groupId}:{groupId?:number}) {
-    const [postImages, setPostImages] = useState<{selected:FileList|any[],preview:any[]}>({selected:[],preview:[]})
-    const [captions, setCaptions] = useState<Record<string, any>>({})
-    const [postInfo, setPostInfo] = useState({ content: "", private: "false", commentable:"true" })
+function PostForm({ groupId }: { groupId?: number }) {
+    const [postImages, setPostImages] = useState<any[]>([])
+    const [postInfo, setPostInfo] = useState({ content: "", private: "false", commentable: "true" })
     const imgInpRef = useRef<HTMLInputElement>(null)
-    const {user} = useAuthContext()!
-    function previewImages(){
-        const images = imgInpRef.current?.files!
-        for (const img of postImages.preview!) {
+    const { user } = useAuthContext()!
+    function previewImages(e: ChangeEvent<HTMLInputElement>) {
+        const images = e.currentTarget.files!
+        for (const img of postImages) {
             URL.revokeObjectURL(img)
-        }        
+        }
         const newImgs = []
-        const captions:Record<string,any> = {}
         for (let i = 0; i < images!.length; i++) {
             const img = images.item(i)!
             newImgs.push(URL.createObjectURL(img))
-            captions[img.name]=""
         }
-        setPostImages({selected:images,preview:newImgs})
-        setCaptions(captions)
+        setPostImages(newImgs)
     }
-    function getFormData(){
-        const data = new FormData()
-        for (let i = 0; i < postImages.selected.length; i++) {
-            const file = (postImages.selected as FileList).item(i)!
-            data.append("images",file)
-            data.append("captions", captions[file.name])
-        }
-        data.append("body",postInfo.content)
-        data.append("isPrivate",postInfo.private)
-        data.append("commentable",postInfo.commentable)
-        return data
-    }
-    async function handleSubmit(e:FormEvent){
+    async function handleSubmit(e: FormEvent) {
         e.preventDefault()
-        const data = getFormData()
+        const data = new FormData(e.currentTarget as HTMLFormElement)
         try {
-            const response = await axiosClient.post(`/post/create?group=${groupId}`,data,{headers:{'Content-Type':"multipart/form-data"}})
-            console.log(response);
+            await axiosClient.post(`/post/create?group=${groupId}`, data, 
+            { headers: { 'Content-Type': "multipart/form-data" } })
+            setPostInfo({ content: "", private: "false", commentable: "true" })
+            imgInpRef.current!.files = null
+            setPostImages([])
         } catch (error) {
-            console.error(error);            
+            console.error(error);
         }
     }
     return <>
@@ -53,7 +40,7 @@ function PostForm({groupId}:{groupId?:number}) {
                 <div className="p-1">
                     <img src={`${process.env.REACT_APP_STATIC_PATH}${user!.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
                 </div>
-                <input type="text" className="form-control rounded-pill border-0 bg-gray pointer" style={{ cursor: "pointer" }}  placeholder="What's on your mind?" />
+                <input type="text" className="form-control rounded-pill border-0 bg-gray pointer" style={{ cursor: "pointer" }} placeholder="What's on your mind?" />
             </div>
             <div className="modal fade" id="createModal" tabIndex={-1} aria-labelledby="createModalLabel" aria-hidden="true" data-bs-backdrop="false">
                 <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="modal-dialog modal-dialog-centered">
@@ -72,29 +59,28 @@ function PostForm({groupId}:{groupId?:number}) {
                                         <div className="p-2">
                                             <img src={`${process.env.REACT_APP_STATIC_PATH}${user!.profileImg}`} alt="avatar" className="rounded-circle" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
                                         </div>
-                                        <div style={{display:"contents"}}>
-                                            <select value={postInfo.private} onChange={(e)=>setPostInfo({...postInfo,private:e.target.value})} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
+                                        <div style={{ display: "contents" }}>
+                                            <select name="private" id="private" value={postInfo.private} onChange={(e) => setPostInfo({ ...postInfo, private: e.target.value })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
                                                 <option value="false">Public</option>
                                                 <option value="true">Private</option>
                                             </select>
-                                            <select value={postInfo.commentable} onChange={(e) => setPostInfo({ ...postInfo, commentable: e.target.value })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
+                                            <select name="commentable" id="commentable" value={postInfo.commentable} onChange={(e) => setPostInfo({ ...postInfo, commentable: e.target.value })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
                                                 <option value="true">Allow Comments</option>
                                                 <option value="false">Block Comments</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className="form-floating">
-                                        <textarea cols={30} rows={5} value={postInfo.content} onChange={(e)=>setPostInfo({...postInfo,content:e.target.value})} placeholder="Post Content" name="body" id="body" className="form-control bg-gray border-0"></textarea>
+                                        <textarea cols={30} rows={5} value={postInfo.content} onChange={(e) => setPostInfo({ ...postInfo, content: e.target.value })} placeholder="Post Content" name="body" id="body" className="form-control bg-gray border-0"></textarea>
                                         <label htmlFor="body">Post Content</label>
                                     </div>
                                     <input onChange={previewImages} ref={imgInpRef} type="file" name="images" id="images" style={{ opacity: 0 }} multiple />
                                     <div className=" d-flex flex-wrap justify-content-between border border-1 border-light rounded p-1 mt-1">
-                                        {postImages.preview && postImages.preview.map((preview,i)=>{
-                                            const name = postImages.selected[i].name
+                                        {postImages && postImages.map((preview, i) => {
                                             return <div className="preview" key={i}>
                                                 <img src={preview} alt="" className="preview-image" />
                                                 <div className="form-floating">
-                                                    <textarea name="captions" value={captions[name]} onChange={(e)=>{setCaptions({...captions,[name]:e.target.value})}} placeholder="Caption" className="form-control caption"></textarea>
+                                                    <textarea name="captions" defaultValue="" placeholder="Caption" className="form-control caption"></textarea>
                                                     <label>Caption</label>
                                                 </div>
                                             </div>
