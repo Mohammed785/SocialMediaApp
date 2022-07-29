@@ -27,6 +27,8 @@ export const serializeUser = (user:User)=>{
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        profileImg:user.profileImg,
+        coverImg:user.coverImg
     };
 }
 

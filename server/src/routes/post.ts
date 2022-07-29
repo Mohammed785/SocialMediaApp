@@ -3,7 +3,7 @@ import { resizeImage, uploader,prisma, StatusCodes,userSelect, createNotificatio
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 import { validationMiddleware } from "../middleware";
 import { UpdatePostDTO } from "../@types/post";
-import { join } from "path";
+
 export const postRouter = Router()
 
                     /* Post Section*/
@@ -107,8 +107,9 @@ const createPost:RequestHandler = async(req,res)=>{
     if(req.files){
         (req.files as Array<Express.Multer.File>).forEach(async(file,idx)=>{
             await resizeImage(file.path,file.filename,file.destination)
+            const caption = captions instanceof Array ?captions[idx]:captions
             await prisma.postImage.create({data:{postId:post.id,image:file.filename,
-                description:captions[idx]}})
+                description:caption}})
         })
     }
     return res.status(StatusCodes.CREATED).json({msg:"Post Created",post})

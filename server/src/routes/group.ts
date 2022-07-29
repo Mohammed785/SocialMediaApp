@@ -23,6 +23,7 @@ const searchGroups:RequestHandler = async(req,res)=>{
         take: 4,
         orderBy: [{ id: "asc" }],
         ...searchQuery,
+        select:{id:true,name:true,image:true}
     });
     const last = groups[groups.length - 1];
     cursor = last && groups.length >= 4 ? last.id : 0;

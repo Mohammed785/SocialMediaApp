@@ -29,7 +29,7 @@ const userSearch:RequestHandler = async (req,res)=>{
         take:4,
         orderBy:[{id:"asc"}],
         ...searchQuery,
-        select:{...userSelect}
+        select:{id:true,firstName:true,lastName:true,profileImg:true}
     })
     const last = users[users.length - 1];
     cursor = (last && users.length >= 4) ? last.id : 0;
