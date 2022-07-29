@@ -1,6 +1,7 @@
 import "./profile.css"
 import Relation from "./Relation"
 import { NavLink, useSearchParams } from "react-router-dom"
+
 function Header({ id, relations, info }: { id: number, relations: Record<string, any>, info: Record<string, any> }){
     const [queryParams, setQueryParams] = useSearchParams()
     const page = queryParams.get("p")
@@ -17,6 +18,9 @@ function Header({ id, relations, info }: { id: number, relations: Record<string,
                 <ul className="list-group list-group-horizontal m-auto">
                     <NavLink to="" className={({ isActive }) => !page ? "mx-2 item pointer active-item" :"mx-2 item pointer"}>
                         Timeline
+                    </NavLink>
+                    <NavLink to="?p=friends" className={({ isActive }) => page === 'friends' ? "mx-2 item pointer active-item" : "mx-2 item pointer"}>
+                        Friends
                     </NavLink>
                     <NavLink to="?p=about" className={({ isActive }) => page==='about' ? "mx-2 item pointer active-item" : "mx-2 item pointer"}>
                         About

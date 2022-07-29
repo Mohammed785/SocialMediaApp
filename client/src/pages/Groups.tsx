@@ -1,7 +1,9 @@
 import CreateForm from "../components/Group/GroupForm"
 import GroupsList from "../components/Group/GroupsList"
+import useTitle from "../hooks/useTitle"
 
 function Groups() {
+    useTitle("Groups")
     return <>
         <div className="col-12 col-lg-6 pb-5" style={{ paddingTop: "56px", }}>
                 <CreateForm/>

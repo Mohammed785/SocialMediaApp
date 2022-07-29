@@ -8,8 +8,10 @@ import PostForm from "../components/Home/Post/PostForm"
 import GroupInfo from "../components/Group/GroupInfo"
 import "../components/Group/group.css"
 import Requests from "../components/Group/Requests"
+import useTitle from "../hooks/useTitle"
 
 function Group() {
+    useTitle("Group")
     const {id} = useParams()
     const [group,setGroup] = useState<Record<string,any>>({})
     const [membership, setMembership] = useState<Record<string,any>|null>(null)

@@ -2,11 +2,14 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import axiosClient from "../axiosClient"
 import About from "../components/Profile/About"
+import FriendsList from "../components/Profile/FriendsList"
 import Header from "../components/Profile/Header"
 import Timeline from "../components/Profile/Timeline"
 import { useAuthContext } from "../context/authContext"
+import useTitle from "../hooks/useTitle"
 
 function Profile(){
+    useTitle("Profiles")
     const {id} = useParams()    
     const [relations,setRelations] = useState<{relation:Record<string,any>[],request:Record<string,any>}>({relation:[],request:{}})
     const [info, setInfo] = useState<Record<string, any>>({})
@@ -44,6 +47,7 @@ function Profile(){
     <Header id={parseInt(id!)} info={info} relations={relations}/>
     {!page && <Timeline id={parseInt(id!)} />}
     {page==="about" && <About info={info}/>}
+    {page==="friends" && <FriendsList id={id!} owner={parseInt(id!)===user!.id}/>}
     </>
 }
 
