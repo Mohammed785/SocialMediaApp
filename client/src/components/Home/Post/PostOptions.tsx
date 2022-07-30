@@ -2,7 +2,15 @@ import axiosClient from "../../../axiosClient";
 import { useAuthContext } from "../../../context/authContext";
 import {FaEllipsisH,FaPencilAlt,FaTrash,FaSave, FaUnlink} from "react-icons/fa"
 
-function PostOptions({id,authorId,deletePost,saved,edited}:{id:number,saved:boolean,authorId:number,deletePost:Function,edited:boolean}){
+interface IPostOptionsProps{
+    id: number
+    saved: boolean
+    authorId: number
+    deletePost: (id: number) => void
+    edited: boolean
+}
+
+function PostOptions({id,authorId,deletePost,saved,edited}:IPostOptionsProps){
     const {user} = useAuthContext()!
     const postDelete = async () => {
         try {

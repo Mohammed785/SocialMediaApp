@@ -1,23 +1,30 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaUserPlus, FaUserTimes, FaUserSlash } from "react-icons/fa"
+import { IFriendRequest, IRelation } from "../../@types/relation";
 import axiosClient from "../../axiosClient";
 import { useAuthContext } from "../../context/authContext";
 
-function Relation({ id, relations }: { id: number, relations: Record<string, any> }){
+interface IRelationProps{
+    id:number
+    relations: { relation: IRelation[], request: IFriendRequest | null }
+}
+
+function Relation({ id, relations }: IRelationProps){
     const {user} = useAuthContext()!
     const [relationState,setRelationState] = useState({block:false,friend:false,sent:false})
     const isFriend = ()=>{
         if(user!.id!==id){
-            relations.relation.forEach((friend:{friend:boolean,userId:number})=>{
+            relations.relation.forEach((friend)=>{
                 if (friend.friend){
                     setRelationState({sent:false,block:false,friend:true})
                 }else if(friend.userId===user!.id && !friend.friend){
                     setRelationState({sent:false,block:true,friend:false})
                 }
+                // check if blocked me
             })
             if (relations.request && Object.hasOwn(relations.request,"senderId")){
-                setRelationState({ sent: true, block: true, friend: false })
+                setRelationState({ sent: true, block: false, friend: false })
             }
         }
     }

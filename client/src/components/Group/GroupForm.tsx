@@ -16,8 +16,7 @@ function CreateForm(){
         e.preventDefault()
         const data = new FormData((e.currentTarget as HTMLFormElement))
         try {
-            const response = await axiosClient.post(`/group/create`, data, {headers: { 'Content-Type': "multipart/form-data" }})
-            console.log(response.data);            
+            await axiosClient.post(`/group/create`, data, {headers: { 'Content-Type': "multipart/form-data" }})
         } catch (error) {
             console.error(error);            
         }

@@ -20,8 +20,10 @@ export const getAllStatus:RequestHandler = async(req,res)=>{
     const authorId = parseInt(req.query.id as string||"-1")
     let status = await prisma.status.findMany({where:{authorId:(authorId!==-1)?authorId:req.user!.id}})
     status = status.filter(async(stat)=>{
-        if (new Date().getTime() - stat.createTime.getTime() <= 86400000) return true;
-        await prisma.status.delete({where:{id:stat.id}});
+        if (new Date().getTime() - stat.createTime.getTime() <= 86400000){
+            await prisma.status.delete({where:{id:stat.id}});
+            return true
+        };
     })
     const count = status.length
     return res.json({status,count})

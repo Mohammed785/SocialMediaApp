@@ -9,12 +9,13 @@ import GroupInfo from "../components/Group/GroupInfo"
 import "../components/Group/group.css"
 import Requests from "../components/Group/Requests"
 import useTitle from "../hooks/useTitle"
+import { IGroup, IGroupMembership, IGroupRequest } from "../@types/group"
 
 function Group() {
     useTitle("Group")
     const {id} = useParams()
-    const [group,setGroup] = useState<Record<string,any>>({})
-    const [membership, setMembership] = useState<Record<string,any>|null>(null)
+    const [group,setGroup] = useState<IGroup>({} as IGroup)
+    const [membership, setMembership] = useState<{member:IGroupMembership|false,request:IGroupRequest|false}|null>(null)
     const [queryParams, setQueryParams] = useSearchParams()
     const page = queryParams.get("p")
     useEffect(()=>{
@@ -46,9 +47,9 @@ function Group() {
             </div>
         </div>
     }
-    {page==='members' && <GroupMembers group={group}/>}
+    {page==='members' && <GroupMembers {...{id:group.id,creatorId:group.creatorId}}/>}
     {page==="info" && <GroupInfo group={group} setGroup={setGroup}/>}
-    {(page==="requests"&&group.private)&&<Requests group={group}/>}
+    {(page==="requests"&&group.private)&&<Requests id={group.id}/>}
     </>
 }
 

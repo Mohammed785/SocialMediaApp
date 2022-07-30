@@ -1,11 +1,19 @@
 import { FormEvent, useState } from "react";
 import { FaEllipsisH, FaPencilAlt, FaTrash,FaThumbsDown,FaThumbsUp } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { IComment } from "../../../@types/post";
 import axiosClient from "../../../axiosClient";
 import { useAuthContext } from "../../../context/authContext";
 import Reactions from "./Reactions";
 import ReactToContent from "./ReactToContent";
 
-function Comment({comment,updateComment,deleteComment}:{comment:Record<string,any>,updateComment:Function,deleteComment:Function}){
+interface ICommentProps{
+    comment: IComment
+    updateComment: (id:number,newComment:IComment)=>void
+    deleteComment: (id:number)=>void
+}
+
+function Comment({comment,updateComment,deleteComment}:ICommentProps){
     const [reactionsState,setReactionsState] = useState(comment.reactions)
     const [editState,setEditState] = useState({edit:false,newVal:comment.body})
     const {user} = useAuthContext()!
@@ -21,7 +29,7 @@ function Comment({comment,updateComment,deleteComment}:{comment:Record<string,an
     }
     const deleteComment_ = async(id:number)=>{
         try {
-            const response = await axiosClient.delete(`/comment/delete/${comment.id}`)
+            await axiosClient.delete(`/comment/delete/${comment.id}`)
             deleteComment(id)
         } catch (error) {
             console.error(error);
@@ -50,7 +58,8 @@ function Comment({comment,updateComment,deleteComment}:{comment:Record<string,an
 
                     </ul>
                 </div>
-                <p className="fw-bold m-0">{comment.author.firstName} {comment.author.lastName}</p>
+                <Link className="fw-bold m-0" style={{textDecoration:"none"}} to={`/profile/${comment.author.id}`}>{comment.author.firstName} {comment.author.lastName}</Link>
+                {/* <p className="fw-bold m-0">{comment.author.firstName} {comment.author.lastName}</p> */}
                 {editState.edit?<form onSubmit={editSubmit} method="POST" className="d-flex">
                     <textarea value={editState.newVal} onChange={(e) => setEditState({...editState,newVal:e.target.value})} className="form-control"></textarea>
                     <button type="submit" className="btn btn-info">Edit</button>

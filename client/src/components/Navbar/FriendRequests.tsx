@@ -1,12 +1,8 @@
 import { useState } from "react"
 import axiosClient from "../../axiosClient"
 import { FaUsers } from "react-icons/fa"
+import { IFriendRequest } from "../../@types/relation"
 
-interface IRequest{
-    id: number;
-    createTime:string;
-    sender: {id: number, firstName: string;lastName: string;profileImg:string}
-}
 
 function FriendRequests() {
     const [requestState, setRequestState] = useState({ loading: false, requests: [] })
@@ -23,7 +19,7 @@ function FriendRequests() {
     const handleRequest = async(id:number,action:"accept"|"decline")=>{
         try{
             const response = await axiosClient.post(`/relation/request/${action}/${id}`)
-            setRequestState({...requestState,requests:requestState.requests.filter((req:IRequest)=>{
+            setRequestState({...requestState,requests:requestState.requests.filter((req:IFriendRequest)=>{
                 return req.sender.id!==id
             })})
         }catch(error){
@@ -41,7 +37,7 @@ function FriendRequests() {
                         </div>
                     </div>
                 </li>
-                {requestState.requests && requestState.requests.map((req: IRequest) => {
+                {requestState.requests && requestState.requests.map((req:IFriendRequest) => {
                     return <Request key={req.sender.id} req={req} handleRequest={handleRequest} />
                 })}
                 <li className="footer bg-dark text-center">
@@ -53,7 +49,7 @@ function FriendRequests() {
         </div>
     </>
 }
-function Request({ req, handleRequest }: { req: IRequest, handleRequest: Function }) {
+function Request({ req, handleRequest }: { req: IFriendRequest, handleRequest: Function }) {
     return <>
         <li className={"notification-box"} key={req.id} >
             <div className="row">

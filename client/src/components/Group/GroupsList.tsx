@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { IGroupMembership } from "../../@types/group"
 import axiosClient from "../../axiosClient"
 
-interface IListState{
+interface IGroupList{
     cursor:number
-    groups:Record<string,any>[]
+    groups:IGroupMembership[]
 }
-const SERVER = 'http://localhost:8000'
+
 function GroupsList() {
-    const [list,setList] = useState<IListState>({cursor:0,groups:[]})
+    const [list,setList] = useState<IGroupList>({cursor:0,groups:[]})
     const getUserGroups = async()=>{
         try {
             const response = await axiosClient.get(`/group/user?cursor=${list.cursor}`)

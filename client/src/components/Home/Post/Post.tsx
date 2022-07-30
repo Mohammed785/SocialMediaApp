@@ -6,17 +6,18 @@ import CommentList from "./CommentList";
 import PostUpdate from "./PostUpdate";
 import PostContent from "./PostContent";
 import PostOptions from "./PostOptions";
+import { IPost, IPostImage, IPostReaction } from "../../../@types/post";
 
-function Post({post,deletePost}:{post:Record<string,any>,deletePost:Function}) {
+function Post({post,deletePost}:{post:IPost,deletePost:(id:number)=>void}) {
     const [postState,setPostState] = useState({...post})
     const updateCommentCount = (count:number)=>setPostState({...postState,_count:{comments:postState._count.comments+count}})
-    const setReactions = (reactions:[])=>{
+    const setReactions = (reactions:IPostReaction[])=>{
         setPostState({...postState,reactions})
     }
-    const updatePostImages = (images:Record<string,any>[])=>{
+    const updatePostImages = (images:IPostImage[])=>{
         setPostState({...postState,images})
     }
-    const updateInfo = (info:Record<string,any>)=>{
+    const updateInfo = (info:{body:string,commentable:boolean,private:boolean})=>{
         setPostState({...postState,...info})
     }
     return <>
@@ -55,7 +56,7 @@ function Post({post,deletePost}:{post:Record<string,any>,deletePost:Function}) {
                     </div>
                 </div>
             </div>
-            <PostUpdate post={postState} updateInfo={updateInfo} postDelete={deletePost} update={updatePostImages}/>
+            <PostUpdate post={postState} updateInfo={updateInfo} postDelete={deletePost} updateImages={updatePostImages}/>
         </div>
     </>
 }

@@ -1,4 +1,6 @@
-function PostModal({id,images}:{id:number,images:Record<string,any>[]}){
+import { IPostImage } from "../../../@types/post";
+
+function PostModal({id,images}:{id:number,images:IPostImage[]}){
 
     return <>
         <div className="modal fade" id={`post${id}modal`} tabIndex={-1} data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="" aria-hidden="true">

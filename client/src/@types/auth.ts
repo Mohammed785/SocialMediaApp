@@ -5,12 +5,20 @@ export interface IUser {
     profileImg:string;
     coverImg:string;
     email:string;
+    birthDate:string;
+    gender:boolean
+    bio:string
+}
+
+export interface IUserSearch {
+    id: number;
+    firstName: string;
+    lastName: string;
+    profileImg: string;
 }
 
 export type AuthContextType = {
     user:IUser|null;
-    token:string|null;
-    setToken:(token:string)=>void;
     loginUser:(user:IUser)=>void;
     logoutUser:()=>void;
 }

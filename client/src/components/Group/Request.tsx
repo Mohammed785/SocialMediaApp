@@ -1,10 +1,15 @@
+import { IGroupRequest } from "../../@types/group";
 import axiosClient from "../../axiosClient";
 
-function Request({request,removeRequest}:{request:Record<string,any>,removeRequest:Function}){
+interface IRequestProps{
+    request: IGroupRequest;
+    removeRequest:(id:number)=>void
+}
+
+function Request({request,removeRequest}:IRequestProps){
     const handleRequest = async(type:"accept"|"decline")=>{
         try {
-            const {data} = await axiosClient.delete(`/group/${request.groupId}/request/${request.sender.id}/${type}`)
-            console.log(data);            
+            await axiosClient.delete(`/group/${request.groupId}/request/${request.sender.id}/${type}`)
             removeRequest(request.sender.id)
         } catch (error) {
             console.error(error);            

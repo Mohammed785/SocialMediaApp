@@ -9,13 +9,14 @@ import SavedPosts from "./pages/SavedPosts";
 import Profile from "./pages/Profile";
 import Groups from "./pages/Groups";
 import Group from "./pages/Group";
+import RequireAuth from "./components/Auth/RequireAuth";
 
 function WithNav(){
   return <>
   <div className="container-fluid">
       <div className="row justify-content-evenly">
-        <Navbar/>
-        <Outlet/>
+          <Navbar/>
+          <Outlet/>
       </div>
   </div>
   </>
@@ -30,8 +31,8 @@ function App() {
       <Route path="/forgetPassword" element={<ForgetPassword/>}/>
       <Route path="/resetPassword/:token" element={<ResetPassword/>}/>
     </Route>
-    <Route element={<WithNav/>}>
-      <Route path="/" element={<Home/>}/>
+      <Route element={<RequireAuth><WithNav /></RequireAuth>}>
+        <Route path="/" element={<Home/>}/>
       <Route path="/profile/:id" element={<Profile/>}/>
       <Route path="/groups" element={<Groups/>}/>
       <Route path="/group/:id" element={<Group/>}/>

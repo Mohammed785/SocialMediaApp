@@ -7,7 +7,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<IUser | null>(
         JSON.parse(window.localStorage.getItem("currentUser") || "null")
     );
-    const [token, setToken] = useState("");
     useEffect(() => {
         window.localStorage.setItem("currentUser", JSON.stringify(currentUser));
     }, [currentUser]);
@@ -22,7 +21,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 user: currentUser,
                 loginUser, logoutUser,
-                token, setToken,
             }}
         >
             {children}

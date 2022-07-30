@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
+import { IGroup, IGroupMembership } from "../../@types/group";
 import axiosClient from "../../axiosClient";
 import { useAuthContext } from "../../context/authContext";
-import image from "../img.jpg"
 
 interface IGroupMembers {
-    members:Record<string,any>[]
+    members:IGroupMembership[]
     count: number
 }
 
-function GroupMembers({group}:{group:Record<string,any>}) {
+function GroupMembers({id,creatorId}:{id:number,creatorId:number}) {
     const [members,setMembers] = useState<IGroupMembers>({members:[],count:0})
     const {user} = useAuthContext()!
     const getMembers = async ()=>{
         try {            
-            const {data:{count,members}} = await axiosClient.get(`/group/${group.id}/member/all`)
+            const {data:{count,members}} = await axiosClient.get(`/group/${id}/member/all`)
             setMembers({members,count})
         } catch (error) {
             console.error(error);            
@@ -22,16 +22,16 @@ function GroupMembers({group}:{group:Record<string,any>}) {
     }
     const kickMember = async(id:number)=>{
         try {
-            const {data} = await axiosClient.delete(`/group/${group.id}/member/${id}/kick`)
-            const membersL = members.members.filter((mem:Record<string,any>) => mem.user.id !== id)
+            await axiosClient.delete(`/group/${id}/member/${id}/kick`)
+            const membersL = members.members.filter((mem:IGroupMembership) => mem.user.id !== id)
             setMembers({members:membersL,count:membersL.length})
         } catch (error) {
             console.error(error);            
         }
     }
     useEffect(()=>{
-        group.id && getMembers()
-    },[group])
+        id && getMembers()
+    },[id])
     return <>
     <div className="col-lg-8 d-flex flex-column justify-content-center my-3 bg-white shadow p-2">
             <ul className="list-group w-100 my-2">
@@ -46,8 +46,8 @@ function GroupMembers({group}:{group:Record<string,any>}) {
                                 </Link>
                             </div>
                             <div className="d-flex align-items-center">
-                            <h5>{!member.isAdmin ?"Member":(member.user.id===group.creatorId)?"Creator":"Member"}</h5>
-                            {(user!.id===group.creatorId&&user!.id!==member.user.id)&&
+                            <h5>{!member.isAdmin ?"Member":(member.user.id===creatorId)?"Creator":"Member"}</h5>
+                            {(user!.id===creatorId&&user!.id!==member.user.id)&&
                             <button className="btn btn-danger ms-2" onClick={async()=>{await kickMember(member.user.id)}}>Kick</button>}
                             </div>
                         </li>

@@ -2,9 +2,16 @@ import CommentForm from "./CommentForm";
 import Comment from "./Comment"
 import axiosClient from "../../../axiosClient";
 import { useEffect, useState,UIEvent } from "react";
+import { IComment } from "../../../@types/post";
 
-function CommentList({ postId, updateCommentCount, commentable }: { postId: number, updateCommentCount: Function, commentable:boolean }){
-    const [commentsQuery, setCommentsQuery] = useState<{ comments: Record<string, any>[],cursor:number|string }>({comments:[],cursor:0})
+interface ICommentListProps{
+    postId: number
+    updateCommentCount: (count:number)=>void
+    commentable: boolean
+}
+
+function CommentList({ postId, updateCommentCount, commentable }:ICommentListProps){
+    const [commentsQuery, setCommentsQuery] = useState<{ comments: IComment[],cursor:number }>({comments:[],cursor:0})
     const getComments = async()=>{
         try {
             const response = await axiosClient.get(`/comment/post/${postId}?cursor=${commentsQuery.cursor}`)
@@ -12,13 +19,13 @@ function CommentList({ postId, updateCommentCount, commentable }: { postId: numb
             if(comments){
                 setCommentsQuery({ comments: [...commentsQuery.comments,...comments], cursor: cursor})
             }else{
-                setCommentsQuery({...commentsQuery,cursor:''})
+                setCommentsQuery({...commentsQuery,cursor:0})
             }
         } catch (error) {
             console.error(error);
         }
     }
-    const updateComment = (id:number,newComment:Record<string,any>)=>{
+    const updateComment = (id:number,newComment:IComment)=>{
         const comments = commentsQuery.comments.map(comment=>{
             if(comment.id===id){
                 return {...comment,body:newComment.body,edited:true,updateTime:newComment.updateTime}
@@ -38,7 +45,7 @@ function CommentList({ postId, updateCommentCount, commentable }: { postId: numb
         setCommentsQuery({cursor,comments})
         updateCommentCount(-1)
     }
-    const addComment = (comment:Record<string,any>)=>{
+    const addComment = (comment:IComment)=>{
         setCommentsQuery({...commentsQuery,comments:[comment,...commentsQuery.comments]})
         updateCommentCount(1)
     }
@@ -57,7 +64,7 @@ function CommentList({ postId, updateCommentCount, commentable }: { postId: numb
             :<h5 className="text-center">Comments blocked on this post</h5>
             }
             <div onScroll={handleScroll} className="accordion-body navbar-nav-scroll">
-                {commentsQuery.comments.length>0 && commentsQuery.comments.map((comment:Record<string,any>)=>{
+                {commentsQuery.comments.length>0 && commentsQuery.comments.map((comment)=>{
                     return  <Comment key={comment.id} {...{comment,updateComment,deleteComment}}/>
                 })}
             </div>

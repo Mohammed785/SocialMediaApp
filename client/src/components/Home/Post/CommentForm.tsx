@@ -1,17 +1,18 @@
 import { FormEvent, useState } from "react";
+import { IComment } from "../../../@types/post";
 import axiosClient from "../../../axiosClient";
 import { useAuthContext } from "../../../context/authContext";
 
-function CommentForm({ id, addComment }: { id: number, addComment:Function}){
+function CommentForm({ id, addComment }: { id: number, addComment:(comment:IComment)=>void}){
     const [comment,setComment] = useState("")
     const {user} = useAuthContext()!
     const handleSubmit = async(e:FormEvent)=>{
         e.preventDefault()
         try {
             const response = await axiosClient.post(`/comment/create/${id}`,{body:comment})
-            const { comment: newComment }: { comment: Record<string, any> } = response.data
+            const { comment: newComment }: { comment: IComment } = response.data
             newComment.reactions = []
-            newComment.author = user
+            newComment.author = user!
             newComment._count={comments:0}
             setComment("")            
             addComment(newComment)

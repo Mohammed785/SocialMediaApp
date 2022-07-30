@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { IStory } from "../../../@types/story";
 import axiosClient from "../../../axiosClient";
 import captionImage from "./img.jpg"
 
-function StoryModal({story}:{story:Record<string,any>[]}){
+function StoryModal({story}:{story:IStory[]}){
     const [currentView,setCurrentView] = useState(0)
     const [viewed,setViewed] = useState<number[]>([])
     async function viewStory(){

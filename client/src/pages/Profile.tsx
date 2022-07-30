@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { IUser } from "../@types/auth"
+import { IFriendRequest, IRelation } from "../@types/relation"
 import axiosClient from "../axiosClient"
 import About from "../components/Profile/About"
 import FriendsList from "../components/Profile/FriendsList"
@@ -11,8 +13,8 @@ import useTitle from "../hooks/useTitle"
 function Profile(){
     useTitle("Profiles")
     const {id} = useParams()    
-    const [relations,setRelations] = useState<{relation:Record<string,any>[],request:Record<string,any>}>({relation:[],request:{}})
-    const [info, setInfo] = useState<Record<string, any>>({})
+    const [relations,setRelations] = useState<{relation:IRelation[],request:IFriendRequest|null}>({relation:[],request:null})
+    const [info, setInfo] = useState<IUser>({} as IUser)
     const {user} = useAuthContext()!
     const navigate = useNavigate()
     const [queryParams, setQueryParams] = useSearchParams()

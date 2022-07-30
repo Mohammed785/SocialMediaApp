@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { IPost } from "../../../@types/post";
 import axiosClient from "../../../axiosClient";
 import Post from "./Post";
 import SavedPost from "./SavedPost";
 
 function PostList({ postsType, userId, groupId }: { postsType: string, userId?: string | number, groupId?: string | number }){
-    const [posts,setPosts] = useState<{posts:Record<string,any>[],cursor:number}>({posts:[],cursor:0})
+    const [posts,setPosts] = useState<{posts:IPost[],cursor:number}>({posts:[],cursor:0})
     async function getPosts(){
         try {
             let url = `/post?cursor=${posts.cursor}&id=${userId}`
@@ -41,7 +42,7 @@ function PostList({ postsType, userId, groupId }: { postsType: string, userId?: 
         getPosts()
     },[])
     return <>
-    {posts.posts && posts.posts.map((post:Record<string,any>)=>{
+    {posts.posts && posts.posts.map((post)=>{
         if(postsType==='saved'){
             return <SavedPost key={post.id} post={post} deletePost={deletePost} />
         }else{

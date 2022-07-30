@@ -17,15 +17,13 @@ type LocationProps = {
 function LoginForm(){
     const [info,setInfo] = useFormFields({email:"",password:""})
     const errorCont = useRef<HTMLDivElement>(null)
-    const {loginUser,setToken} = useAuthContext()!
+    const {loginUser} = useAuthContext()!
     const navigate = useNavigate()
     const location = useLocation() as LocationProps
     const handleSubmit = async(e:React.FormEvent)=>{
         e.preventDefault()
         try {
             const res = await axiosClient.post("/auth/login",{...info})
-            const token = `Bearer ${res.data.token}`;
-            setToken(token)
             loginUser(res.data.user)
             navigate(location.state?.from?.pathname || "/",{replace:true})
         } catch (error) {

@@ -2,10 +2,11 @@ import { useState,useRef,useEffect } from "react"
 import { useAuthContext } from "../../../context/authContext";
 import axiosClient from "../../../axiosClient";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
+import { IPostReaction } from "../../../@types/post";
 
 
-function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:string, reactions: Record<string, any>[],setReactions?:Function }) {
-    const [liked, setLiked] = useState(null)
+function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:string, reactions: IPostReaction[],setReactions?:Function }) {
+    const [liked, setLiked] = useState<boolean|null>(null)
     const { user } = useAuthContext()!
     const likeRef = useRef<HTMLDivElement>(null)
     const dislikeRef = useRef<HTMLDivElement>(null)
@@ -25,7 +26,7 @@ function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:s
             likeRef.current?.classList.add("text-muted")
         }
     }
-    const updateReactionsList = (reaction:Record<string,any>, removed:boolean)=>{
+    const updateReactionsList = (reaction:IPostReaction, removed:boolean)=>{
         let newReactions;
         if(removed){
             newReactions = reactions.filter((react)=>{
@@ -41,7 +42,7 @@ function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:s
                 return react
             })
             if(!found){
-                reaction.user = user   
+                reaction.user = user!
                 newReactions.unshift(reaction)
             }
         }        

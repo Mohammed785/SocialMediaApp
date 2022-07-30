@@ -1,8 +1,9 @@
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IPostReaction } from "../../../@types/post";
 
-function Reactions({ id,reactions,type }: {id:number, reactions: Record<string, any>[],type:string }){
+function Reactions({ id,reactions,type }: {id:number, reactions: IPostReaction[],type:string }){
     const [reacts, setReacts] = useState({ reacts: reactions, filter: "all", _count: { like: 0, dislike: 0 } })
     const navigate = useNavigate()
     const likeFilterRef = useRef<HTMLDivElement>(null)
@@ -62,7 +63,7 @@ function Reactions({ id,reactions,type }: {id:number, reactions: Record<string, 
                     </div>
                     <hr style={{ margin: "5px" }} />
                     <ul className="list-group">
-                        {reacts.reacts && reacts.reacts.map((react: Record<string, any>, i) => {
+                        {reacts.reacts && reacts.reacts.map((react, i) => {
                             if (reacts.filter === "all" || react.reaction === (reacts.filter === "like") ? true : false) {
                                 return <li key={i} onClick={() => redirectToProfile(react.user.id)} className="list-item react-info my-2 d-flex align-items-center justify-content-between">
                                     <div className="d-flex align-items-center">

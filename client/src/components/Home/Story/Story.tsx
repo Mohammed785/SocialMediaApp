@@ -1,11 +1,11 @@
+import { IStory } from "../../../@types/story";
 import axiosClient from "../../../axiosClient";
 
-function Story({ story, setStory }: { story: Record<string,any>, setStory: Function }){
+function Story({ story, setStory }: { story: IStory, setStory: (story:IStory[])=>void }){
     const getStoryImages = async()=>{
         try {            
             const response = await axiosClient.get(`/status/author/?id=${story.author.id}`)
             const data = response.data.status
-            console.log("Story: ",data);
             if(!data.length){
                 // TODO:
             }

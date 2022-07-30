@@ -1,7 +1,8 @@
 import PostOptions from "./PostOptions"
 import PostContent from "./PostContent"
+import { IPost } from "../../../@types/post"
 
-function SavedPost({ post, deletePost }: { post: Record<string, any>, deletePost: Function }){
+function SavedPost({ post, deletePost }: { post: IPost, deletePost: (id:number)=>void }){
     return <>
         <div className="bg-white p-4 rounded shadow mt-3">
             <div className="d-flex justify-content-between">

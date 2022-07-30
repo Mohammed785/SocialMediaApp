@@ -1,8 +1,16 @@
 import "./profile.css"
 import Relation from "./Relation"
 import { NavLink, useSearchParams } from "react-router-dom"
+import { IUser } from "../../@types/auth"
+import { IFriendRequest, IRelation } from "../../@types/relation"
 
-function Header({ id, relations, info }: { id: number, relations: Record<string, any>, info: Record<string, any> }){
+interface IHeaderProps{
+    id:number
+    relations: { relation: IRelation[], request: IFriendRequest | null }
+    info:IUser
+}
+
+function Header({ id, relations, info }: IHeaderProps){
     const [queryParams, setQueryParams] = useSearchParams()
     const page = queryParams.get("p")
     return <>

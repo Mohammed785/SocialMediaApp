@@ -5,10 +5,11 @@ import axiosClient from "../../../axiosClient";
 import { useEffect,useState } from "react";
 import StoryModal from "./StoryModal";
 import StoryUpdateForm from "./StoryDelete";
+import { IStory } from "../../../@types/story";
 
 function StatusList() {
-    const [stories,setStories] = useState([])
-    const [story,setStory] = useState([])
+    const [stories,setStories] = useState<IStory[]>([])
+    const [story,setStory] = useState<IStory[]>([])
     const availableStories = async () => {
         try {
             const response = await axiosClient.get("/status/available");
@@ -25,7 +26,7 @@ function StatusList() {
         <div className="mt-5 d-flex position-relative">
             <StoryForm/>
             <StoryUpdateForm/>
-            {stories.length>0 && stories.map((story:Record<string,any>)=>{
+            {stories.length>0 && stories.map((story)=>{
                 return <Story key={story.id} story={story} setStory={setStory} /> 
             })}
             <StoryModal story={story} />

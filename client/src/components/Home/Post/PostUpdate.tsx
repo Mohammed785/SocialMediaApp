@@ -1,10 +1,17 @@
 import { useState,useRef} from "react"
 import { FaImage } from "react-icons/fa"
+import { IPost, IPostImage } from "../../../@types/post"
 import axiosClient from "../../../axiosClient"
 
+interface IPostUpdateProps{
+    post: IPost
+    updateInfo: (o:{body:string,commentable:boolean,private:boolean})=>void;
+    updateImages: (images:IPostImage[])=>void
+    postDelete: (id:number)=>void
+}
 
-function PostUpdate({ post, update, postDelete, updateInfo }: { post: Record<string, any>, updateInfo:Function,update:Function,postDelete:Function}){
-    const [postInfo, setPostInfo] = useState({...post})
+function PostUpdate({ post, updateImages, postDelete, updateInfo }:IPostUpdateProps){
+    const [postInfo, setPostInfo] = useState<IPost>({...post})
     const [postImages, setPostImages] = useState<{ selected: FileList | any[], preview: any[] }>({ selected: [], preview: [] })
     const [captions, setCaptions] = useState<Record<string, any>>({})
     const imgInpRef = useRef<HTMLInputElement>(null)
@@ -20,7 +27,7 @@ function PostUpdate({ post, update, postDelete, updateInfo }: { post: Record<str
                 newImages.push(response.data.newImg)
             }
             setPostInfo({ ...postInfo, images: [...postInfo.images, ...newImages]})
-            update([...postInfo.images, ...newImages])
+            updateImages([...postInfo.images, ...newImages])
             setPostImages({selected:[],preview:[]})
         } catch (error) {
             console.error(error);
@@ -33,8 +40,8 @@ function PostUpdate({ post, update, postDelete, updateInfo }: { post: Record<str
                 return img.id !== id
             })
             setPostInfo({...postInfo,images})
-            if(!postInfo.body && !postInfo.images) postDelete()
-            update(images)
+            if(!postInfo.body && !postInfo.images) postDelete(post.id)
+            updateImages(images)
         } catch (error) {
             console.error(error);            
         }
@@ -82,11 +89,11 @@ function PostUpdate({ post, update, postDelete, updateInfo }: { post: Record<str
                                         <img src={`${process.env.REACT_APP_STATIC_PATH}${postInfo.author.profileImg}`} alt="avatar" className="rounded-circle" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
                                     </div>
                                     <div style={{ display: "contents" }}>
-                                        <select value={postInfo.private} onChange={(e) => setPostInfo({ ...postInfo, private: (e.target.value === 'true') ? true : false })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
+                                        <select value={postInfo.private ? "true" : "false"} onChange={(e) => setPostInfo({ ...postInfo, private: (e.target.value === 'true') ? true : false })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
                                             <option value="false">Public</option>
                                             <option value="true">Private</option>
                                         </select>
-                                        <select value={postInfo.commentable} onChange={(e) => setPostInfo({ ...postInfo, commentable: (e.target.value==='true')?true:false })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
+                                        <select value={postInfo.commentable?"true":"false"} onChange={(e) => setPostInfo({ ...postInfo, commentable: (e.target.value==='true')?true:false })} className="form-select border-0 mx-1 bg-gray fs-7" aria-label="Default select example">
                                             <option value="true">Allow Comments</option>
                                             <option value="false">Block Comments</option>
                                         </select>

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import axiosClient from "../../axiosClient";
 import { Link } from "react-router-dom";
+import { IRelation } from "../../@types/relation";
 
 function FriendsList({id,owner}:{id:string,owner:boolean}){
-    const [friends,setFriends] = useState<Record<string,any>[]>([])
+    const [friends,setFriends] = useState<IRelation[]>([])
     const getFriends = async()=>{
         try {
             const {data:{list}} = await axiosClient.get(`/relation/friend/list/${id}`)

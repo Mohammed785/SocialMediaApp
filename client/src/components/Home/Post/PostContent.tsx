@@ -1,5 +1,6 @@
+import { IPostImage } from "../../../@types/post"
 import PostModal from "./PostModal"
-function PostContent({id,images,body}:{id:number,images:Record<string,any>[],body:string}){
+function PostContent({id,images,body}:{id:number,images:IPostImage[],body:string}){
     return <>
         <div>
             <p>
@@ -11,7 +12,7 @@ function PostContent({id,images,body}:{id:number,images:Record<string,any>[],bod
                 }
                 {images.length === 2 &&
                     <div className="d-flex">{
-                        images.map((image: Record<string, any>) => {
+                        images.map((image) => {
                             return <img key={image.id} src={process.env.REACT_APP_STATIC_PATH+image.image} style={{ width: "50%", margin: "0 2px", height: "auto" }} />
                         })
                     }
@@ -20,7 +21,7 @@ function PostContent({id,images,body}:{id:number,images:Record<string,any>[],bod
                 {images.length >= 3 &&
                     <div className="grid">
                         {
-                            images.map((image: Record<string, any>, idx: number) => {
+                            images.map((image, idx: number) => {
                                 if (idx <= 2) {
                                     return <div key={image.id} className={`card span-${idx === 0 ? 3 : 2}`} style={{ backgroundImage: `url(${process.env.REACT_APP_STATIC_PATH}${image.image})` }}></div>
 

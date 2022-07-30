@@ -1,21 +1,29 @@
 import { FaBan, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
+import { IGroup, IGroupMembership, IGroupRequest } from "../../@types/group"
 import axiosClient from "../../axiosClient"
 
-function GroupActions({ group, membership, setMember }: { group: Record<string,any>, membership: Record<string, any> | null, setMember:Function }){
+
+interface IGroupHeaderProps {
+    group: IGroup,
+    membership: {member:IGroupMembership | false,request:IGroupRequest|false}|null,
+    setMember: (o: { member: IGroupMembership | false, request: IGroupRequest|false } | null) => void
+}
+
+function GroupActions({ group, membership, setMember }:IGroupHeaderProps){
     const groupAction = async(type:string)=>{
         try {
             if(type==='leave'){
-                const {data:{membership}} = await axiosClient.delete(`/group/${group.id}/member/leave`)
+                await axiosClient.delete(`/group/${group.id}/member/leave`)
                 setMember(null)
             }else if(type==="cancel"){
-                const { data } = await axiosClient.delete(`/group/${group.id}/request/cancel`)
+                await axiosClient.delete(`/group/${group.id}/request/cancel`)
                 setMember(null)
             }else{
                 const { data } = await axiosClient.post(`/group/${group.id}/join`)
                 if(group.private){
-                    setMember({request:data.request,membership:false})
+                    setMember({request:data.request,member:false})
                 }else{
-                    setMember({membership:data.membership,request:false})
+                    setMember({member:data.membership,request:false})
                 }
             }
         } catch (error) {

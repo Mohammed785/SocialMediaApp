@@ -1,4 +1,6 @@
-function About({info}:{info:Record<string,any>}){   
+import { IUser } from "../../@types/auth"
+
+function About({info}:{info:IUser}){   
     return <>
         <div className="about-section row">
             <div className="col-lg-5">

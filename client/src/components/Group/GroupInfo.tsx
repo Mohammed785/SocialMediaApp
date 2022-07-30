@@ -1,8 +1,14 @@
 import { useState,ChangeEvent, FormEvent } from "react";
+import { IGroup } from "../../@types/group";
 import axiosClient from "../../axiosClient";
 import { useAuthContext } from "../../context/authContext"
 
-function GroupInfo({group,setGroup}:{group:Record<string,any>,setGroup:Function}){
+interface IGroupInfoProps{
+    group:IGroup
+    setGroup:(group:IGroup)=>void
+}
+
+function GroupInfo({group,setGroup}:IGroupInfoProps){
     const [imagePreview, setImagePreview] = useState("")
     const {user} = useAuthContext()!
     const preview = (e: ChangeEvent<HTMLInputElement>) => {

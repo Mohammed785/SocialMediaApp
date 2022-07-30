@@ -1,18 +1,18 @@
 import {useState,UIEvent} from "react"
 import axiosClient from "../../axiosClient"
 import { FaBell } from "react-icons/fa"
+import { INotification } from "../../@types/notification"
 
-
-interface INotification { 
-    id: number
-    content: string
-    createTime: string
-    action?: string
-    seen: boolean 
+interface INotificationsState{
+    loading: boolean
+    notSeen: number
+    end: boolean
+    cursor: number
+    notifications: INotification[]
 }
 
 function Notifications(){
-    const [notificationState, setNotificationState] = useState({loading:false, notSeen: 0, end: false, cursor: 0, notifications: [] })
+    const [notificationState, setNotificationState] = useState<INotificationsState>({loading:false, notSeen: 0, end: false, cursor: 0, notifications: [] })
     const loadNotification = async () => {
         try {
             setNotificationState({...notificationState,loading:true})
@@ -30,10 +30,10 @@ function Notifications(){
     }
     const markAllRead = async () => {
         try {
-            const ids = notificationState.notifications.filter((notifi: any) => notifi.seen === false).map((noti: any) => noti.id)
+            const ids = notificationState.notifications.filter((notifi) => notifi.seen === false).map((noti) => noti.id)
             await axiosClient.patch("/notification/seen", { ids })
-            const notifications = notificationState.notifications.map((noti: any) => { return { ...noti, seen: true } })
-            setNotificationState({ ...notificationState, notSeen: 0, notifications: (notifications as never[]) })
+            const notifications = notificationState.notifications.map((noti) => { return { ...noti, seen: true } })
+            setNotificationState({ ...notificationState, notSeen: 0, notifications:notifications})
         } catch (error) {
             console.error(error);
         }

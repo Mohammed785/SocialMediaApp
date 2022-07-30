@@ -1,8 +1,14 @@
 import { NavLink, useSearchParams } from "react-router-dom"
+import { IGroup, IGroupMembership, IGroupRequest } from "../../@types/group"
 import { useAuthContext } from "../../context/authContext"
 import GroupActions from "./GroupActions"
+interface IGroupHeaderProps {
+    group: IGroup,
+    membership: { member: IGroupMembership | false, request: IGroupRequest|false }|null,
+    setMember: (o: { member: IGroupMembership | false, request: IGroupRequest|false } | null) => void
+}
 
-function GroupHeader({ group, membership, setMember }: { group: Record<string, any>, membership: Record<string, any> | null, setMember:Function }){
+function GroupHeader({ group, membership, setMember }:IGroupHeaderProps){
     const [queryParams, setQueryParams] = useSearchParams()
     const page = queryParams.get("p")
     const {user} = useAuthContext()!
@@ -36,7 +42,6 @@ function GroupHeader({ group, membership, setMember }: { group: Record<string, a
                     </ul>
                     <GroupActions group={group} setMember={setMember} membership={membership}/>
                 </nav>
-
             </div>
         </header>
     </>

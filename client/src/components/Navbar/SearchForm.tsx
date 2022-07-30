@@ -1,12 +1,14 @@
 import { UIEvent, useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa"
 import { Link } from "react-router-dom";
+import { IUserSearch } from "../../@types/auth";
+import { IGroupSearch } from "../../@types/group";
 import axiosClient from "../../axiosClient";
 
 interface ISearch{
     search:string
     cursor:number
-    result:any[]
+    result:IUserSearch[]|IGroupSearch[]
     type:string
 }
 
