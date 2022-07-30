@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
     getPost,getGroupPosts,getPostImage,getPostReact,getPostReactions,getPosts,getSavedPosts,savePost
-    ,unSavePost,updatePost,createPost,createPostImage,postReact,deletePost,deletePostImage} from "../controllers/post"
+    ,unSavePost,updatePost,createPost,createPostImage,postReact,deletePost,deletePostImage,feed} from "../controllers/post"
 import { uploader } from "../utils";
 import { validationMiddleware } from "../middleware";
 import { UpdatePostDTO } from "../@types/post";
@@ -23,6 +23,7 @@ postRouter.post("/:id/image/create",uploader.single("image"),createPostImage)
 postRouter.delete("/image/delete/:id",deletePostImage)
 
 // post
+postRouter.get("/feed",feed)
 postRouter.get("/",getPosts)
 postRouter.get("/:id",getPost)
 postRouter.get("/group/:id",getGroupPosts)

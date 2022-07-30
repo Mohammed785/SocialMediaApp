@@ -11,7 +11,8 @@ function PostList({ postsType, userId, groupId }: { postsType: string, userId?: 
             let url = `/post?cursor=${posts.cursor}&id=${userId}`
             if(postsType==="saved"){
                 url =  `/post/saved?cursor=${posts.cursor}`
-            }else if(postsType==='group') url = `/post/group/${groupId}`
+            }else if(postsType==='group') url = `/post/group/${groupId}?cursor=${posts.cursor}`
+            else if(postsType==='feed') url=`/post/feed?cursor=${posts.cursor}`
             const response = await axiosClient.get(url)
             const {posts:newPosts,cursor} = response.data
             setPosts({posts:[...posts.posts,...newPosts],cursor:cursor})

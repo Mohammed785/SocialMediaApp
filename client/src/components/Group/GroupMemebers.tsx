@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
-import { IGroup, IGroupMembership } from "../../@types/group";
+import { IGroupMembership } from "../../@types/group";
 import axiosClient from "../../axiosClient";
 import { useAuthContext } from "../../context/authContext";
 

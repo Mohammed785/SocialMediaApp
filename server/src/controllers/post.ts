@@ -4,7 +4,33 @@ import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 
 
                     /* Post Section*/
-export const feed:RequestHandler = async(req,res)=>{}
+export const feed:RequestHandler = async(req,res)=>{
+    let cursor = parseInt(req.query.cursor as string);
+    const cursorOptions:Record<string,any> = {cursor:undefined,skip:undefined}
+    if (cursor) {
+        cursorOptions.cursor = { id: cursor };
+        cursorOptions.skip = 1;
+    }
+    const friends = await prisma.relation.findMany({where:{userId:req.user!.id,friend:true}})
+    const friendsIds = friends.map(friend=>friend.relatedId)
+    const posts = await prisma.post.findMany({
+        take: 3,
+        ...cursorOptions,
+        where: { private: false, authorId: { in: friendsIds } },
+        include: {
+            images: true,
+            author: { select: userSelect },
+            reactions: {
+                select: { reaction: true, user: { select: userSelect } },
+            },
+            _count: { select: { comments: true } },
+        },
+        orderBy: { id: "desc" },
+    });
+    const last = posts[posts.length - 1];
+    cursor = last && posts.length >= 3 ? last.id : 0;
+    return res.json({posts,cursor})
+}
 
 export const getPosts: RequestHandler = async (req, res) => {
     const {stDate,enDate} = req.query
