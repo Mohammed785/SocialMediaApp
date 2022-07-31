@@ -33,12 +33,12 @@ function GroupMembers({id,creatorId}:{id:number,creatorId:number}) {
         id && getMembers()
     },[id])
     return <>
-    <div className="col-lg-8 d-flex flex-column justify-content-center my-3 bg-white shadow p-2">
+    <div className="col-lg-8 d-flex flex-column justify-content-center my-3 bg-dark p-2">
             <ul className="list-group w-100 my-2">
                 <h3 className="text-center">{members.count} Members</h3>
                 {
                     members.members.map((member)=>{
-                        return <li key={member.user.id} className="list-group-item d-flex align-items-center justify-content-between my-1 shadow member-rounded p-2">
+                        return <li key={member.user.id} className="list-group-item bg-gray-dark d-flex align-items-center justify-content-between my-1 shadow member-rounded p-2">
                             <div className="member-info">
                                 <img className="rounded-circle" src={`${process.env.REACT_APP_STATIC_PATH}${member.user.profileImg}`} alt="" />
                                 <Link to={`/profile/${member.user.id}`}>

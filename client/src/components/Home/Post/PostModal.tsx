@@ -5,8 +5,9 @@ function PostModal({id,images}:{id:number,images:IPostImage[]}){
     return <>
         <div className="modal fade" id={`post${id}modal`} tabIndex={-1} data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered">
-                <div className="modal-content">
+                <div className="modal-content bg-dark">
                     <div className="modal-header">
+                        <h3 className="text-muted m-0">Post Images</h3>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">

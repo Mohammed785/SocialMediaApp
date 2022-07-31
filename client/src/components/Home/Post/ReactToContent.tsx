@@ -68,12 +68,12 @@ function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:s
         updateBtns()
     }, [liked])
     return <>
-        <div onClick={async() => {await react("like")}} ref={likeRef} className={`${type==="post"&&"dropdown-item"} pointer rounded d-flex justify-content-center align-items-center pointer text-muted p-1`}>
-            <FaThumbsUp className="me-3"></FaThumbsUp>
+        <div onClick={async() => {await react("like")}} ref={likeRef} className={`${type==="post"&&"dropdown-item"} action rounded d-flex justify-content-center align-items-center pointer text-muted p-1`}>
+            <FaThumbsUp className="me-3 action"></FaThumbsUp>
             <p className="m-0">Like</p>
         </div>
-        <div onClick={async () => { await react("dislike") }} ref={dislikeRef} className={`${type==="post"&&"dropdown-item"} pointer rounded d-flex justify-content-center align-items-center pointer text-muted p-1`}>
-            <FaThumbsDown className=" me-3"></FaThumbsDown>
+        <div onClick={async () => { await react("dislike") }} ref={dislikeRef} className={`${type==="post"&&"dropdown-item"} action rounded d-flex justify-content-center align-items-center pointer text-muted p-1`}>
+            <FaThumbsDown className=" me-3 action"></FaThumbsDown>
             <p className="m-0">Dislike</p>
         </div>
     </>

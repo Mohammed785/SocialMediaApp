@@ -30,8 +30,8 @@ function StatusList() {
                 return <Story key={story.id} story={story} setStory={setStory} /> 
             })}
             <StoryModal story={story} />
-            <div className=" position-absolute top-50 start-100 translate-middle pointer d-none d-lg-block">
-                <FaArrowRight className="p-1 fs-3 border text-primary bg-white rounded-circle"></FaArrowRight>
+            <div className=" position-absolute top-50  start-100 translate-middle pointer d-none d-lg-block">
+                <FaArrowRight className="p-1 fs-3 bg-gray-dark rounded-circle"></FaArrowRight>
             </div>
         </div>
     </>

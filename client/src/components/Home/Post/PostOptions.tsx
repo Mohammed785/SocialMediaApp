@@ -36,7 +36,7 @@ function PostOptions({id,authorId,deletePost,saved,edited}:IPostOptionsProps){
         <div className="d-flex align-items-center">
             <p className="text-muted me-2" style={{ margin: 0 }}>{edited && "edited"}</p>
             <FaEllipsisH type="button" id={`post${id}Menu`} data-bs-toggle="dropdown" className="dropdown-toggle" aria-expanded="false"></FaEllipsisH>
-            <ul className="dropdown-menu border-0 shadow" aria-labelledby={`post${id}Menu`} >
+            <ul className="bg-dark dropdown-menu border-0 shadow" aria-labelledby={`post${id}Menu`} >
                 {
                     saved?<li className="d-flex align-items-center my-1 btn btn-warning" onClick={()=>PostSaver("unsave")}>
                         <FaUnlink className="me-1"></FaUnlink> UnSave

@@ -13,7 +13,7 @@ import RequireAuth from "./components/Auth/RequireAuth";
 
 function WithNav(){
   return <>
-  <div className="container-fluid">
+  <div className="bg-dark container-fluid">
       <div className="row justify-content-evenly">
           <Navbar/>
           <Outlet/>

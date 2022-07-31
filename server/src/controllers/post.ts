@@ -101,7 +101,7 @@ export const getPost:RequestHandler = async(req,res)=>{
         where: {
             OR: [
                 { userId: post.authorId, relatedId: req.user?.id },
-                { userId: req.user?.id, relatedId: post.authorId }]},
+                { userId: req.user?.id, relatedId: post.authorId }],friend:false},
     });
     if (blocked) {
         throw new ForbiddenError("You View This Post");
@@ -247,7 +247,7 @@ export const savePost:RequestHandler = async(req,res)=>{
     const blocked = await prisma.relation.findFirst({
         where: {
             OR: [{ userId: post.authorId, relatedId: req.user?.id },
-                { userId: req.user?.id, relatedId: post.authorId }]},
+                { userId: req.user?.id, relatedId: post.authorId }],friend:false},
     });
     if(blocked){
         throw new ForbiddenError("You Can't Save This Post")
@@ -322,7 +322,7 @@ export const postReact:RequestHandler = async(req,res)=>{
     const blocked = await prisma.relation.findFirst({
         where: {
             OR: [{ userId: post.authorId, relatedId: req.user?.id },
-                { userId: req.user?.id, relatedId: post.authorId }]},
+                { userId: req.user?.id, relatedId: post.authorId }],friend:false},
     });
     if(blocked){
         throw new ForbiddenError("You React to This Post")

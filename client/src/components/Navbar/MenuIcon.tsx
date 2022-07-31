@@ -29,7 +29,7 @@ function MenuIcon() {
             </div>
             <Notifications/>
             <FriendRequests/>
-            <div className="rounded-circle p-1 bg-gray d-flex align-items-center justify-content-center mx-2" style={{ width: "38px", height: "38px" }} typeof="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+            <div className="bg-gray-dark rounded-circle p-1 bg-gray d-flex align-items-center justify-content-center mx-2" style={{ width: "38px", height: "38px" }} typeof="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                 <FaSignOutAlt title="Logout" type="button" onClick={handleLogout}></FaSignOutAlt>
             </div>
         </div>

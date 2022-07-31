@@ -44,8 +44,8 @@ function Notifications(){
         }
     }
     return <>
-        <div className="dropdown me-1 rounded-circle p-1 bg-gray d-flex align-items-center justify-content-center mx-2" style={{ width: "38px", height: "38px" }} typeof="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-            <FaBell title="Notification" className="dropdown-toggle" onClick={loadNotification} type="button" id="notificationDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"></FaBell>
+        <div className="bg-gray-dark shadow dropdown me-1 rounded-circle p-1 d-flex align-items-center justify-content-center mx-2" style={{ width: "38px", height: "38px" }} typeof="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+            <FaBell title="Notification" className="dropdown-toggle" onClick={loadNotification}  type="button" id="notificationDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"></FaBell>
             <ul onScroll={handleNotificationsScroll} className="dropdown-menu navbar-nav-scroll dropdown-menu-dark" style={{ overflowX: "hidden" }} aria-labelledby="notificationDropdown">
                 <li className="head text-light ">
                     <div className="row">

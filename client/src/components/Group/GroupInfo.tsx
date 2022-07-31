@@ -32,9 +32,9 @@ function GroupInfo({group,setGroup}:IGroupInfoProps){
         {
             group.creatorId===user!.id && <>
                 <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="col-lg-6 mt-4 rounded shadow">
-                    <div className="modal-content">
+                    <div className="bg-dark modal-content">
                         <div className="modal-header align-items-center">
-                            <h5 className="text-dark text-center w-100 m-0" id="createModalLabel">
+                            <h5 className="text-muted text-center w-100 m-0" id="createModalLabel">
                                 Update Group
                             </h5>
                         </div>
@@ -42,23 +42,23 @@ function GroupInfo({group,setGroup}:IGroupInfoProps){
                             <div className="my-1 p-1">
                                 <div className="d-flex flex-column">
                                     <div className="form-floating my-1">
-                                        <input placeholder="Group name" defaultValue={group.name} name="name" id="name" className="form-control bg-gray border-0" />
+                                        <input placeholder="Group name" defaultValue={group.name} name="name" id="name" className="form-control post-content border-0" />
                                         <label htmlFor="name">name</label>
                                     </div>
                                     <div className="form-floating my-1">
-                                        <textarea cols={30} rows={5} defaultValue={group.description} placeholder="Group Description" name="description" id="description" className="form-control bg-gray border-0"></textarea>
+                                        <textarea cols={30} rows={5} defaultValue={group.description} placeholder="Group Description" name="description" id="description" className="form-control post-content border-0"></textarea>
                                         <label htmlFor="description">description</label>
                                     </div>
                                     <div className="d-flex align-items-center">
                                         <label className="form-label" htmlFor="private">Group Visibility: </label>
-                                        <select style={{ width: "auto" }} defaultValue={group.private===true?"true":"false"} name="private" id="private" className="form-select border-0 mx-1 bg-gray " aria-label="Default select example">
+                                        <select style={{ width: "auto" }} defaultValue={group.private === true ? "true" : "false"} name="private" id="private" className="form-select border-0 mx-1 select" aria-label="Default select example">
                                             <option defaultChecked value="false">Public</option>
                                             <option value="true">Private</option>
                                         </select>
                                     </div>
                                     <label htmlFor="image mt-2">Group Image: </label>
                                     <input type="file" onChange={e => { preview(e) }} name="image" id="image" />
-                                    <div className=" d-flex flex-wrap justify-content-between border border-1 border-light rounded p-1 mt-1">
+                                    <div className=" d-flex flex-wrap justify-content-between rounded p-1 mt-1">
                                         {imagePreview && <div className="preview">
                                             <img src={imagePreview} alt="group" className="preview-image" />
                                         </div>

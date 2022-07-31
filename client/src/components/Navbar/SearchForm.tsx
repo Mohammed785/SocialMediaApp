@@ -52,18 +52,18 @@ function SearchForm() {
                 <i className="fab fa-facebook text-primary" style={{ fontSize: "3rem" }}></i>
                 <div className="input-group ms-2" typeof="button">
                     <span className="input-group-prepend" id="searchMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                        <div className="input-group-text bg-gray border-0 rounded-circle" style={{ minHeight: "40px" }}>
+                        <div className="bg-gray-dark input-group-text bg-gray border-0 rounded-circle" style={{ minHeight: "40px" }}>
                             <FaSearch title="Search" type="button" className="text-muted" />
                         </div>
                     </span>
-                    <div onScroll={handleSearchScroll} className="dropdown-menu overflow-auto border-0 shadow p-3" style={{ width: "20em", maxHeight: "600px" }} aria-labelledby="searchMenu" data-popper-placement="bottom-start">
-                        <div>
-                            <input type="text" value={searchInfo.search} onChange={(e)=>setSearchInfo({...searchInfo,search:e.target.value})} style={{margin:"0px"}} className="rounded-pill border-0 bg-gray dropdown-item" name="search" id="search" placeholder="Search..." />
-                            <div className="form-check form-check-inline me-3">
+                    <div onScroll={handleSearchScroll} className="bg-dark dropdown-menu overflow-auto border-0 shadow p-3" style={{ width: "20em", maxHeight: "600px" }} aria-labelledby="searchMenu" data-popper-placement="bottom-start">
+                        <div className="search-form">
+                            <input type="text" value={searchInfo.search} onChange={(e)=>setSearchInfo({...searchInfo,search:e.target.value})} style={{margin:"0px"}} className="rounded-pill border-0 dropdown-item" name="search" id="search" placeholder="Search..." />
+                            <div className="form-check form-check-inline me-3 mt-1">
                                 <input className="form-check-input" onChange={(e)=>handleSearchTypeChange(e.target.value)} defaultChecked type="radio" name="searchType" id="searchType1" value="user"/>
                                 <label className="form-check-label" htmlFor="searchType1">User</label>
                             </div>
-                            <div className="form-check form-check-inline ms-3">
+                            <div className="form-check form-check-inline ms-3 mt-1">
                                 <input className="form-check-input" onChange={(e)=>handleSearchTypeChange(e.target.value)} type="radio" name="searchType" id="searchType2" value="group"/>
                                 <label className="form-check-label" htmlFor="searchType2">Group</label>
                             </div>
@@ -76,7 +76,7 @@ function SearchForm() {
                                     if(searchInfo.type==='user'){
                                         return <div className="my-4" key={res.id}>
                                             <div className=" alert fade show dropdown-item p-1 m-0 d-flex align-items-center justify-content-between" role="alert">
-                                                <Link className="d-flex align-items-center" to={"/profile/" + res.id}>
+                                                <Link className="d-flex align-items-center text-decoration-none" to={"/profile/" + res.id}>
                                                     <img src={`${process.env.REACT_APP_STATIC_PATH}${res.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
                                                     <p className="m-0" style={{color:"black"}}>{res.firstName+res.lastName}</p>
                                                 </Link>

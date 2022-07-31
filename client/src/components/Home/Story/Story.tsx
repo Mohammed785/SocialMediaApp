@@ -19,7 +19,7 @@ function Story({ story, setStory }: { story: IStory, setStory: (story:IStory[])=
             {story.image ? <img src={process.env.REACT_APP_STATIC_PATH+story.image} crossOrigin='anonymous' className="card-img-top rounded" alt="story posts" style={{ minHeight: "150px", objectFit: "cover" }} />
             :<p className="card-img-top rounded story-text" style={{ minHeight: "130px", objectFit: "cover" }}>{story.caption}</p>
             }            
-            <div className=" d-flex align-items-center justify-content-center position-relative" style={{ minHeight: "65px" }}>
+            <div className="b d-flex align-items-center justify-content-center position-relative" style={{ minHeight: "65px" }}>
                 <div className="position-absolute top-0 start-50 translate-middle">
                     <img src={`${process.env.REACT_APP_STATIC_PATH}${story.author.profileImg}`} style={{width:"50px"}} className="text-primary bg-white p-1 rounded-circle"></img>
                 </div>

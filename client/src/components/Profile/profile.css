@@ -33,9 +33,7 @@ header{
     position: relative;
     display: block;
     padding: 0.5rem 1rem;
-    color: #212529;
     text-decoration: none;
-    background-color: #fff;
     border-radius: 0.45rem; 
     border: 0 none ;
     transition: 0.3s all;
@@ -48,7 +46,7 @@ header{
 
 .about-section{
     position: absolute;
-    top: 79%;
+    top: 78%;
     display: flex;
     justify-content: center;
 }

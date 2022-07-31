@@ -16,8 +16,8 @@ function Request({request,removeRequest}:IRequestProps){
         }
     }
     return <>
-        <li className="list-group-item d-flex align-items-center justify-content-between my-1 shadow member-rounded p-2">
-            <div className="member-info">
+        <li className="list-group-item d-flex bg-gray-dark align-items-center justify-content-between my-1 shadow member-rounded p-2">
+            <div className="member-info text-muted">
                 <img className="rounded-circle" src={`${process.env.REACT_APP_STATIC_PATH}${request.sender.profileImg}`} alt="" />
                 <p style={{fontSize:"20px",margin:0}}>{request.sender.firstName} {request.sender.lastName}</p>
             </div>

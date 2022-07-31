@@ -39,33 +39,33 @@ function Comment({comment,updateComment,deleteComment}:ICommentProps){
         setReactionsState(reactions)
     }
     return <>    
-        <div className="d-flex align-items-center my-1" id={`comment${comment.id}`}>
+        <div className="d-flex comment align-items-center my-1" id={`comment${comment.id}`}>
             <img src={`${process.env.REACT_APP_STATIC_PATH}${comment.author.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
-            <div className="p-3 rounded comment__input w-100">
-                <div className="d-flex justify-content-end align-items-center">
-                    <p className="text-muted me-1" style={{margin:0}}>{comment.edited&&"edited"}</p>
-                    <FaEllipsisH className="text-blue pointer" id={`comment${comment.id}CommentMenuButton`} data-bs-toggle="dropdown" aria-expanded="false"></FaEllipsisH>
-                    <ul className="dropdown-menu border-0 shadow" aria-labelledby={`comment${comment.id}CommentMenuButton`} style={{ width: "auto" }}>
-                    {
-                        user!.id===comment.author.id &&<><li onClick={()=>setEditState({edit:true,newVal:comment.body})} className="d-flex align-items-center my-1 btn btn-success">
-                            <FaPencilAlt className="me-1"></FaPencilAlt> Edit
-                        </li>
-                            <li onClick={() => deleteComment_(comment.id)} className="d-flex align-items-center my-1 btn btn-danger">
-                            <FaTrash className="me-1"></FaTrash> Delete
-                        </li>
-                        </>
-                    }
-
-                    </ul>
+            <div className="p-2 rounded comment__input w-100">
+                <div className="d-flex justify-content-between align-items-center">
+                    <Link className="fw-bold m-0" style={{textDecoration:"none"}} to={`/profile/${comment.author.id}`}>{comment.author.firstName} {comment.author.lastName}</Link>
+                    <div className="d-flex align-items-center">
+                        <p className="text-muted me-2" style={{margin:0}}>{comment.edited&&"edited"}</p>
+                        <FaEllipsisH className="text-blue pointer" id={`comment${comment.id}CommentMenuButton`} data-bs-toggle="dropdown" aria-expanded="false"></FaEllipsisH>
+                        <ul className="dropdown-menu border-0 shadow" aria-labelledby={`comment${comment.id}CommentMenuButton`} style={{ width: "auto" }}>
+                        {
+                            user!.id===comment.author.id &&<><li onClick={()=>setEditState({edit:true,newVal:comment.body})} className="d-flex align-items-center my-1 btn btn-success">
+                                <FaPencilAlt className="me-1"></FaPencilAlt> Edit
+                            </li>
+                                <li onClick={() => deleteComment_(comment.id)} className="d-flex align-items-center my-1 btn btn-danger">
+                                <FaTrash className="me-1"></FaTrash> Delete
+                            </li>
+                            </>
+                        }
+                        </ul>
+                    </div>
                 </div>
-                <Link className="fw-bold m-0" style={{textDecoration:"none"}} to={`/profile/${comment.author.id}`}>{comment.author.firstName} {comment.author.lastName}</Link>
-                {/* <p className="fw-bold m-0">{comment.author.firstName} {comment.author.lastName}</p> */}
                 {editState.edit?<form onSubmit={editSubmit} method="POST" className="d-flex">
-                    <textarea value={editState.newVal} onChange={(e) => setEditState({...editState,newVal:e.target.value})} className="form-control"></textarea>
+                    <textarea value={editState.newVal} onChange={(e) => setEditState({...editState,newVal:e.target.value})} className="post-content form-control"></textarea>
                     <button type="submit" className="btn btn-info">Edit</button>
                 </form>
                 :<>
-                    <p className="m-0 fs-7 bg-gray p-2 rounded">{comment.body}</p>
+                    <p className="m-0 bg-gray rounded" style={{fontSize:"1.1rem"}}>{comment.body}</p>
                     <div className="d-flex justify-content-between"> 
                         <div className="me-2 d-flex pointer align-items-center" data-bs-toggle="modal" data-bs-target={`#comment${comment.id}reacts`}>
                             <FaThumbsUp className="text-primary"></FaThumbsUp>

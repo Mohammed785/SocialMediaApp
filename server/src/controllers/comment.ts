@@ -56,7 +56,7 @@ export const createComment:RequestHandler = async (req,res)=>{
     const blocked = await prisma.relation.findFirst({
         where: {
             OR: [{ userId: post.authorId, relatedId: req.user?.id },
-                { userId: req.user?.id, relatedId: post.authorId }]},
+                { userId: req.user?.id, relatedId: post.authorId }],friend:false},
     });
     if(blocked){
         throw new ForbiddenError("You Can't Comment on this Post")
@@ -128,6 +128,7 @@ export const commentReact:RequestHandler = async(req,res)=>{
                 { userId: comment.authorId, relatedId: req.user?.id },
                 { userId: req.user?.id, relatedId: comment.authorId },
             ],
+            friend:false
         },
     });
     if (blocked) {

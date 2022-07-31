@@ -4,7 +4,7 @@ import { IPost } from "../../../@types/post"
 
 function SavedPost({ post, deletePost }: { post: IPost, deletePost: (id:number)=>void }){
     return <>
-        <div className="bg-white p-4 rounded shadow mt-3">
+        <div className="bg-dark text-muted p-4 rounded shadow mt-3">
             <div className="d-flex justify-content-between">
                 <div className="d-flex">
                     <img src={`${process.env.REACT_APP_STATIC_PATH}${post.author.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />

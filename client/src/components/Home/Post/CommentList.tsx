@@ -63,7 +63,7 @@ function CommentList({ postId, updateCommentCount, commentable }:ICommentListPro
             {commentable ? <CommentForm id={postId} addComment={addComment} />
             :<h5 className="text-center">Comments blocked on this post</h5>
             }
-            <div onScroll={handleScroll} className="accordion-body navbar-nav-scroll">
+            <div onScroll={handleScroll} className="navbar-nav-scroll" style={{margin:"0.5rem"}}>
                 {commentsQuery.comments.length>0 && commentsQuery.comments.map((comment)=>{
                     return  <Comment key={comment.id} {...{comment,updateComment,deleteComment}}/>
                 })}

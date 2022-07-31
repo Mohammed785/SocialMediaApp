@@ -50,7 +50,7 @@ function PostList({ postsType, userId, groupId }: { postsType: string, userId?: 
             return <Post key={post.id} post={post} deletePost={deletePost}/>
         }
     })}
-    {posts.cursor===0 && <p className="text-center mt-3 mb-0 fw-bold" style={{fontSize:"2em"}}>No More Posts</p>}
+    {posts.cursor===0 && <p className="text-center text-muted mt-3 mb-0 fw-bold" style={{fontSize:"2em"}}>No More Posts</p>}
     </>
 }
 

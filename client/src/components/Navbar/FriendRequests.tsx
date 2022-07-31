@@ -27,7 +27,7 @@ function FriendRequests() {
         }
     }
     return <>
-        <div className="dropdown me-1 rounded-circle p-1 bg-gray d-flex align-items-center justify-content-center mx-2" style={{ width: "38px", height: "38px" }} typeof="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+        <div className="bg-gray-dark dropdown me-1 rounded-circle p-1 bg-gray d-flex align-items-center justify-content-center mx-2" style={{ width: "38px", height: "38px" }} typeof="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
             <FaUsers title="Friend Request" className="dropdown-toggle" onClick={loadRequests} type="button" id="requestDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"></FaUsers>
             <ul className="dropdown-menu navbar-nav-scroll dropdown-menu-dark" style={{ overflowX: "hidden" }} aria-labelledby="requestDropdown">
                 <li className="head text-light ">

@@ -43,8 +43,8 @@ function Reactions({ id,reactions,type }: {id:number, reactions: IPostReaction[]
     return <>
         <div className="modal fade" id={`${type}${id}reacts`} aria-labelledby={`#${type}${id}reactsLabel`} tabIndex={-1} aria-hidden="true">
 
-        <div className="modal-dialog modal-dialog-centered" >
-            <div className="modal-content">
+            <div className="modal-dialog modal-dialog-centered" >
+                <div className="modal-content bg-dark">
                 <div className="modal-header">
                     <h5 className="modal-title" id={`${type}${id}reactsLabel`}>Reactions</h5>
                     <button className="btn-close" onClick={() => handleReactFilter("all")} type="button" data-bs-dismiss="modal" aria-label="close"></button>
@@ -65,7 +65,7 @@ function Reactions({ id,reactions,type }: {id:number, reactions: IPostReaction[]
                     <ul className="list-group">
                         {reacts.reacts && reacts.reacts.map((react, i) => {
                             if (reacts.filter === "all" || react.reaction === (reacts.filter === "like") ? true : false) {
-                                return <li key={i} onClick={() => redirectToProfile(react.user.id)} className="list-item react-info my-2 d-flex align-items-center justify-content-between">
+                                return <li key={i} onClick={() => redirectToProfile(react.user.id)} className="list-item react-info my-2 d-flex align-items-center justify-content-between react">
                                     <div className="d-flex align-items-center">
                                         <img src={`${process.env.REACT_APP_STATIC_PATH}${react.user.profileImg}`} className="rounded-circle" style={{ width: "40px", height: "40px", objectFit: "cover" }} alt="" />
                                         <p style={{ margin: "0px 5px", fontSize: "20px", fontWeight: "700" }}>{react.user.firstName} {react.user.lastName}</p>

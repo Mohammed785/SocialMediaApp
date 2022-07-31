@@ -1,7 +1,3 @@
-.bg-gray {
-    background-color: #f0f2f5;
-}
-
 .fs-0 {
     font-size: 4rem;
 }
@@ -11,8 +7,14 @@
 }
 
 /* nav button */
+.search-form input{
+    background-color: #494e53;
+}
+.search-form label{
+    color: gray;
+}
 .nav__btn button:hover {
-    background: #f0f2f5 !important;
+    background: #494e53 !important;
 }
 
 .nav__btn button:hover svg {
@@ -39,8 +41,9 @@
 }
 
 /* dropdown */
-.dropdown-item:active {
-    background-color: #d5d5d5 !important;
+.dropdown-item:active,.dropdown-item:hover,.dropdown-item:focus {
+    color: white;
+    background-color: #252a30 !important;
 }
 
 /* scrollbar */
@@ -107,9 +110,9 @@
 .notification-box:hover {
     background-color: #3f464d;
 }
-
-.bg-gray {
-    background-color: #eee;
+.bg-gray-dark{
+    background-color: #343a40;
+    color: #6c757d;
 }
 
 @media (max-width: 640px) {

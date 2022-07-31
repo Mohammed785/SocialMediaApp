@@ -20,7 +20,7 @@ function Requests({id}:{id:number}) {
         getRequests()
     },[])
     return <>
-        <div className="col-lg-8 d-flex flex-column justify-content-center my-3 bg-white shadow p-2">
+        <div className="col-lg-8 d-flex flex-column justify-content-center my-3 bg-dark shadow p-2">
             <ul className="list-group w-100 my-2">
                 {        
                     requests.map((request:IGroupRequest)=>{                        

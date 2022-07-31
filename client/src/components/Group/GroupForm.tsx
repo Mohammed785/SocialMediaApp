@@ -23,9 +23,9 @@ function CreateForm(){
     }
     return <>
         <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="mt-4 rounded shadow">
-            <div className="modal-content">
+            <div className="bg-dark modal-content">
                 <div className="modal-header align-items-center">
-                    <h5 className="text-dark text-center w-100 m-0" id="createModalLabel">
+                    <h5 className="text-muted text-center w-100 m-0" id="createModalLabel">
                         Create Group
                     </h5>
                 </div>
@@ -33,23 +33,23 @@ function CreateForm(){
                     <div className="my-1 p-1">
                         <div className="d-flex flex-column">
                             <div className="form-floating my-1">
-                                <input required value={groupInfo.name} onChange={setGroupInfo} placeholder="Group name" name="name" id="name" className="form-control bg-gray border-0" />
+                                <input required value={groupInfo.name} onChange={setGroupInfo} placeholder="Group name" name="name" id="name" className="post-content form-control bg-gray border-0" />
                                 <label htmlFor="name">name</label>
                             </div>
                             <div className="form-floating my-1">
-                                <textarea required cols={30} rows={5} value={groupInfo.description} onChange={setGroupInfo} placeholder="Group Description" name="description" id="description" className="form-control bg-gray border-0"></textarea>
+                                <textarea required cols={30} rows={5} value={groupInfo.description} onChange={setGroupInfo} placeholder="Group Description" name="description" id="description" className="post-content form-control bg-gray border-0"></textarea>
                                 <label htmlFor="description">description</label>
                             </div>
                             <div className="d-flex align-items-center">
                                 <label className="form-label" htmlFor="private">Group Visibility: </label>
-                                <select required value={groupInfo.private} onChange={setGroupInfo} style={{ width: "auto" }} name="private" id="private" className="form-select border-0 mx-1 bg-gray " aria-label="Default select example">
+                                <select required value={groupInfo.private} onChange={setGroupInfo} style={{ width: "auto" }} name="private" id="private" className="select form-select border-0 mx-1 bg-gray " aria-label="Default select example">
                                     <option defaultChecked value="false">Public</option>
                                     <option value="true">Private</option>
                                 </select>
                             </div>
                             <label htmlFor="image mt-2">Group Image: </label>
                             <input required type="file" onChange={e => { preview(e) }} name="image" id="image" />
-                            <div className=" d-flex flex-wrap justify-content-between border border-1 border-light rounded p-1 mt-1">
+                            <div className=" d-flex flex-wrap justify-content-between rounded p-1 mt-1">
                                 {imagePreview && <div className="preview">
                                     <img src={imagePreview} alt="group" className="preview-image" />
                                 </div>
