@@ -27,7 +27,7 @@ function RegisterForm(){
     }
     return <>
     <form onSubmit={handleSubmit}>
-            <h1 style={{ color: "white" }} className="h3 mb-3 fw-normal">Register</h1>
+            <h1 className="h3 mb-3 fw-normal text-muted">Register</h1>
             <div className="form-group">
                 <div className="alert text-wrap" style={{maxWidth:"38rem"}} ref={errorCont} role="alert">
                 </div>

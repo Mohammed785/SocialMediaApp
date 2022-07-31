@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { prisma, userSelect } from "../utils";
+import { prisma, resizeImage, unlinkImage, userSelect } from "../utils";
 
 
 export const userInfo: RequestHandler = async (req, res) => {
@@ -32,4 +32,18 @@ export const userSearch:RequestHandler = async (req,res)=>{
     const last = users[users.length - 1];
     cursor = (last && users.length >= 4) ? last.id : 0;
     return res.json({result:users,cursor})
+}
+
+export const changeImg:RequestHandler = async(req,res)=>{
+    const type = req.query.type
+    const image = req.file?.filename
+    await resizeImage(req.file!.path,req.file!.filename,req.file!.destination)
+    if(type=="profile"){
+        req.user!.profileImg!=="default.jpg"&&unlinkImage(req.user!.profileImg)
+        await prisma.user.update({where:{id:req.user!.id},data:{profileImg:image}})
+    }else if(type=="cover"){
+        req.user!.coverImg!=="cover.jpg"&&unlinkImage(req.user!.coverImg);
+        await prisma.user.update({where:{id:req.user!.id},data:{coverImg:image}})
+    }
+    return res.json({image})
 }

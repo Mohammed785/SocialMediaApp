@@ -49,7 +49,7 @@ function LoginForm(){
             </div>
     
             <div className="form-group mb-2">
-                {<Link to="/forget-password" className="btn btn-link">Forget password?</Link>}
+                {<Link to="/forgetPassword" className="btn btn-link">Forget password?</Link>}
             </div>
             <button className="w-100 btn btn-lg mb-3 btn-primary" type="submit">Sign in</button>
             {<Link to="/register" className="btn btn-outline-secondary">Need Account?</Link>}

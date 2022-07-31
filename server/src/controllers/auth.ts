@@ -1,7 +1,6 @@
 import { RequestHandler } from "express"
 import { CreateUserDTO, LoginDTO, ResetPasswordDTO } from "../@types/user";
 import { BadRequestError, NotFoundError } from "../errors";
-import { authMiddleware, validationMiddleware } from "../middleware";
 import { attachCookie, comparePasswords, createJWT, hashPassword, 
     prisma, serializeUser, StatusCodes, transporter, verifyJWT,userSelect, createNotification } from "../utils"
 
@@ -99,7 +98,8 @@ export const deleteAccount:RequestHandler = async(req,res)=>{
 
 export const updateProfile:RequestHandler = async(req,res)=>{
     if(req.body.password) delete req.body.password
+    req.body.birthDate = new Date(req.body.birthDate)
     const user = await prisma.user.update({where:{id:req.user?.id},
-        data:req.body,select:{...userSelect}})
+        data:req.body,select:{...userSelect,bio:true,gender:true,birthDate:true}})
     return res.status(StatusCodes.ACCEPTED).json({msg:"Profile Updated Successfully",user})
 }

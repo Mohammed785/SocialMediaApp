@@ -1,9 +1,24 @@
 import { IUser } from "../../@types/auth"
+import { useAuthContext } from "../../context/authContext"
+import ChangePassword from "./ChangePassword"
+import ChangeProfilePics from "./ChangeProfilePics"
+import UpdateInfo from "./UpdateInfo"
 
-function About({info}:{info:IUser}){   
+
+function About({info,owner}:{info:IUser,owner:boolean}){
     return <>
         <div className="bg-dark about-section row">
             <div className="col-lg-5">
+                <div className="d-flex justify-content-center mb-2">
+                    {
+                        owner&&<>
+                            <UpdateInfo id={info!.id}/>
+                            <ChangePassword/>
+                            <ChangeProfilePics type="profile"/>
+                            <ChangeProfilePics type="cover" />
+                        </>
+                    }
+                </div>
                 <div className="card mb-4 bg-gray-dark" style={{ borderRadius: "0.55rem"}}>
                     <div className="card-body">
                         <div className="row">

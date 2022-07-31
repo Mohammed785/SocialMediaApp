@@ -15,11 +15,11 @@ function Header({ id, relations, info }: IHeaderProps){
     const page = queryParams.get("p")
     return <>
         <header className="shadow bg-dark">
-            <img className="cover-img pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.coverImg}`} alt="profile-img" />
-            <img className="profile-img rounded-circle pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.profileImg}`} alt="d" />
-            <div className="user-info">
+            <img className="cover-img pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.coverImg}`} alt="profile-cover" />
+            <img className="profile-img rounded-circle pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.profileImg}`} alt="profile-img"/>
+            <div className="user-info text-muted">
                 <h4 className="profile-name">{info.firstName} {info.lastName}</h4>
-                <p className="text-muted">{info.bio}</p>
+                <p className="m-0">{info.bio}</p>
             </div>
             <div style={{ height: "1px", backgroundColor: "black", width: "80%" }}></div>
             <nav className="d-flex justify-content-between w-100 mt-2">

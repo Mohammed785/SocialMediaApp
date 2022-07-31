@@ -14,8 +14,8 @@ function Profile(){
     useTitle("Profiles")
     const {id} = useParams()    
     const [relations,setRelations] = useState<{relation:IRelation[],request:IFriendRequest|null}>({relation:[],request:null})
-    const [info, setInfo] = useState<IUser>({} as IUser)
     const {user} = useAuthContext()!
+    const [info, setInfo] = useState<IUser>(user!)
     const navigate = useNavigate()
     const [queryParams, setQueryParams] = useSearchParams()
     const page = queryParams.get("p")
@@ -43,12 +43,12 @@ function Profile(){
                 console.error(error);
             }
         }
-        getInfo() 
+        parseInt(id!)!==user?.id && getInfo() 
     }, [id])
     return <>
     <Header id={parseInt(id!)} info={info} relations={relations}/>
     {!page && <Timeline id={parseInt(id!)} />}
-    {page==="about" && <About info={info}/>}
+        {page === "about" && <About info={info} owner={parseInt(id!) === user!.id} />}
     {page==="friends" && <FriendsList id={id!} owner={parseInt(id!)===user!.id}/>}
     </>
 }

@@ -18,7 +18,8 @@ export interface IUserSearch {
 }
 
 export type AuthContextType = {
-    user:IUser|null;
-    loginUser:(user:IUser)=>void;
-    logoutUser:()=>void;
-}
+    user: IUser | null;
+    loginUser: (user: IUser) => void;
+    setCurrentUser: (user: IUser) => void;
+    logoutUser: () => void;
+};

@@ -21,6 +21,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 user: currentUser,
                 loginUser, logoutUser,
+                setCurrentUser
             }}
         >
             {children}

@@ -18,7 +18,9 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
             id:payload.id,
             email:payload.email,
             firstName:payload.firstName,
-            lastName:payload.lastName
+            lastName:payload.lastName,
+            profileImg:payload.profileImg,
+            coverImg:payload.coverImg
         }
         next()
     } catch (error) {

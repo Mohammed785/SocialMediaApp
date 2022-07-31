@@ -30,7 +30,7 @@ function ResetPasswordForm(){
                 <div className="alert text-wrap" style={{maxWidth:"25rem"}} ref={errorCont} role="alert">
                 </div>
             </div>
-            <h1 style={{ color: "white" }} className="h3 mb-3 fw-normal">Reset Password</h1>
+            <h1 className="h3 mb-3 fw-normal text-muted">Reset Password</h1>
             <div className="form-floating">
                 <input type="password" name="password" value={passwords.password} onChange={setPasswords} className="form-control inp" id="password" required placeholder="New Password"/>
                 <label htmlFor="password">New Password</label>

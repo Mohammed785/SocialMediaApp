@@ -5,7 +5,9 @@ declare global{
                 id:number,
                 email:string,
                 firstName:string,
-                lastName:string
+                lastName:string,
+                profileImg:string,
+                coverImg:string
             }
         }
     }

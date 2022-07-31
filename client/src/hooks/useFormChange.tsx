@@ -7,5 +7,5 @@ export default function useFormFields(state:any){
         const name = (e.target as HTMLInputElement).name
         const val = (e.target as HTMLInputElement).value
         setField({...fields,[name]:val})
-    }]
+    },setField]
 }

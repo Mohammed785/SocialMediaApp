@@ -28,7 +28,10 @@ export const serializeUser = (user:User)=>{
         firstName: user.firstName,
         lastName: user.lastName,
         profileImg:user.profileImg,
-        coverImg:user.coverImg
+        coverImg:user.coverImg,
+        gender:user.gender,
+        birthDate:user.birthDate,
+        bio:user.bio
     };
 }
 
@@ -124,9 +127,6 @@ export const createNotification = async (receiverId:number,content:string,action
         },
     });
 };
-export const filePath = (filename:string)=>{
-    return `/static/${filename}`
-}
 
 export const unlinkImage=(name:string)=>{
     unlinkSync(join(__dirname,"..",'public',name))
