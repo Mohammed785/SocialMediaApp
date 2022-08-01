@@ -1,4 +1,5 @@
 import { useState,useRef} from "react"
+import toast from "react-hot-toast"
 import { FaImage } from "react-icons/fa"
 import { IPost, IPostImage } from "../../../@types/post"
 import axiosClient from "../../../axiosClient"
@@ -29,6 +30,7 @@ function PostUpdate({ post, updateImages, postDelete, updateInfo }:IPostUpdatePr
             setPostInfo({ ...postInfo, images: [...postInfo.images, ...newImages]})
             updateImages([...postInfo.images, ...newImages])
             setPostImages({selected:[],preview:[]})
+            toast.success("Image added")
         } catch (error) {
             console.error(error);
         }
@@ -42,6 +44,7 @@ function PostUpdate({ post, updateImages, postDelete, updateInfo }:IPostUpdatePr
             setPostInfo({...postInfo,images})
             if(!postInfo.body && !postInfo.images) postDelete(post.id)
             updateImages(images)
+            toast.success("Image deleted")
         } catch (error) {
             console.error(error);            
         }

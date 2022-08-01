@@ -10,10 +10,15 @@ import Profile from "./pages/Profile";
 import Groups from "./pages/Groups";
 import Group from "./pages/Group";
 import RequireAuth from "./components/Auth/RequireAuth";
+import { Toaster } from "react-hot-toast";
+import { AxiosError } from "./axiosClient";
+import NotFoundPage from "./pages/NotFound";
 
 function WithNav(){
   return <>
   <div className="bg-dark container-fluid">
+    <AxiosError/>
+      <div><Toaster position="bottom-right" toastOptions={{ success: { className:"text-white", style: { backgroundColor:"#03632d"}}}} reverseOrder={false}/></div>
       <div className="row justify-content-evenly">
           <Navbar/>
           <Outlet/>
@@ -38,6 +43,7 @@ function App() {
       <Route path="/group/:id" element={<Group/>}/>
       <Route path="/posts/saved" element={<SavedPosts/>}/>
     </Route>
+    <Route path="*" element={<NotFoundPage/>}/>
   </Routes>
   </BrowserRouter>
 }

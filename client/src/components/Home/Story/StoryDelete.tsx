@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import axiosClient from "../../../axiosClient";
 
 function StoryDeleteForm(){
@@ -20,6 +21,7 @@ function StoryDeleteForm(){
             setMyStories(myStories.filter((story:{id:number})=>{
                 return story.id!==id
             }))
+            toast.success("story deleted")
         } catch (error) {
             console.error(error);            
         }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import axiosClient from "../../axiosClient";
 import { Link } from "react-router-dom";
 import { IRelation } from "../../@types/relation";
+import toast from "react-hot-toast";
 
 function FriendsList({id,owner}:{id:string,owner:boolean}){
     const [friends,setFriends] = useState<IRelation[]>([])
@@ -17,6 +18,7 @@ function FriendsList({id,owner}:{id:string,owner:boolean}){
         try {
             await axiosClient.post(`/relation/unfriend/${id}`)
             setFriends(friends.filter(friend=>friend.related.id!==id))
+            toast.success("friend removed")
         } catch (error) {
             console.error(error);
         }

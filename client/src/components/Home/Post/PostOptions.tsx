@@ -1,6 +1,7 @@
 import axiosClient from "../../../axiosClient";
 import { useAuthContext } from "../../../context/authContext";
 import {FaEllipsisH,FaPencilAlt,FaTrash,FaSave, FaUnlink} from "react-icons/fa"
+import toast from "react-hot-toast";
 
 interface IPostOptionsProps{
     id: number
@@ -24,8 +25,10 @@ function PostOptions({id,authorId,deletePost,saved,edited}:IPostOptionsProps){
         try {
             if(type==='save'){
                 await axiosClient.post(`post/${id}/save`)
+                toast.success("Post saved")
             }else{
                 await axiosClient.delete(`post/${id}/unsave`)
+                toast.success("Post unsaved")
                 deletePost(id)
             }
         } catch (error) {

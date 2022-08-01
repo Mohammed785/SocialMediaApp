@@ -1,4 +1,5 @@
 import { useState,ChangeEvent, FormEvent } from "react";
+import toast from "react-hot-toast";
 import { IGroup } from "../../@types/group";
 import axiosClient from "../../axiosClient";
 import { useAuthContext } from "../../context/authContext"
@@ -24,6 +25,7 @@ function GroupInfo({group,setGroup}:IGroupInfoProps){
             const data = new FormData(e.currentTarget as HTMLFormElement)
             const { data: { group:newGroup } } = await axiosClient.patch(`/group/update/${group.id}`, data,{headers: {'Content-Type': "multipart/form-data" }})            
             setGroup(newGroup)
+            toast.success("group info updated")
         } catch (error) {
             console.error(error);
         }

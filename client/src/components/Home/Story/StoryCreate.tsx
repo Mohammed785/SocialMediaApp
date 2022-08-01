@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 import axiosClient from "../../../axiosClient";
 
 function StoryCreateForm(){
@@ -18,14 +19,14 @@ function StoryCreateForm(){
             story.image && data.append("image", story.image)
             story.caption && data.append("caption", story.caption)
             if(!story.image && !story.caption){
-                // TODO:ERROR
+                toast.error("You Need to add image or caption")
             }else{
                 const response = await axiosClient.post("/status/create", data)
                 setStory({caption:"",image:null,preview:""})
+                toast.success("story created")
             }
         } catch (error) {
             console.error(error);
-
         }
     }
     return <>

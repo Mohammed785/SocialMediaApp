@@ -3,6 +3,7 @@ import { useAuthContext } from "../../../context/authContext";
 import axiosClient from "../../../axiosClient";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { IPostReaction } from "../../../@types/post";
+import toast from "react-hot-toast";
 
 
 function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:string, reactions: IPostReaction[],setReactions?:Function }) {
@@ -45,7 +46,8 @@ function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:s
                 reaction.user = user!
                 newReactions.unshift(reaction)
             }
-        }        
+        }
+        !removed && toast.success(`${type} ${reaction.reaction?"liked":"disliked"}`)
         if(setReactions)setReactions(newReactions)
     }
     const react = async (react="like") => {        
@@ -54,6 +56,8 @@ function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:s
             const { reaction, removed, msg } = response.data 
             removed ? updateReactionsList(reaction, true) : updateReactionsList(reaction,false)
             setLiked(removed ? null : reaction.reaction)
+            removed && toast.success(`${type} react removed`)
+            
         } catch (error) {
             console.error(error);
         }

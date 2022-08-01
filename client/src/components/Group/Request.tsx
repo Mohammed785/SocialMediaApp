@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { IGroupRequest } from "../../@types/group";
 import axiosClient from "../../axiosClient";
 
@@ -11,6 +12,7 @@ function Request({request,removeRequest}:IRequestProps){
         try {
             await axiosClient.delete(`/group/${request.groupId}/request/${request.sender.id}/${type}`)
             removeRequest(request.sender.id)
+            toast.success(`request ${type}`)
         } catch (error) {
             console.error(error);            
         }

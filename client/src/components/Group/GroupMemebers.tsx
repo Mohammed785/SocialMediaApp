@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom"
 import { IGroupMembership } from "../../@types/group";
 import axiosClient from "../../axiosClient";
@@ -25,6 +26,7 @@ function GroupMembers({id,creatorId}:{id:number,creatorId:number}) {
             await axiosClient.delete(`/group/${id}/member/${id}/kick`)
             const membersL = members.members.filter((mem:IGroupMembership) => mem.user.id !== id)
             setMembers({members:membersL,count:membersL.length})
+            toast.success("member kicked")
         } catch (error) {
             console.error(error);            
         }

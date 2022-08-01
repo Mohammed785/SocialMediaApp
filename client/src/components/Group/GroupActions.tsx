@@ -1,3 +1,4 @@
+import toast from "react-hot-toast"
 import { FaBan, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { IGroup, IGroupMembership, IGroupRequest } from "../../@types/group"
 import axiosClient from "../../axiosClient"
@@ -15,15 +16,19 @@ function GroupActions({ group, membership, setMember }:IGroupHeaderProps){
             if(type==='leave'){
                 await axiosClient.delete(`/group/${group.id}/member/leave`)
                 setMember(null)
+                toast.success("leaved group")
             }else if(type==="cancel"){
                 await axiosClient.delete(`/group/${group.id}/request/cancel`)
                 setMember(null)
+                toast.success("request canceled")
             }else{
                 const { data } = await axiosClient.post(`/group/${group.id}/join`)
                 if(group.private){
                     setMember({request:data.request,member:false})
+                    toast.success("request sent")
                 }else{
                     setMember({member:data.membership,request:false})
+                    toast.success("joined the group")
                 }
             }
         } catch (error) {

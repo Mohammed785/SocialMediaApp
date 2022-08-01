@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { FaEllipsisH, FaPencilAlt, FaTrash,FaThumbsDown,FaThumbsUp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { IComment } from "../../../@types/post";
@@ -23,6 +24,7 @@ function Comment({comment,updateComment,deleteComment}:ICommentProps){
             const response = await axiosClient.patch(`/comment/update/${comment.id}`,{body:editState.newVal})          
             setEditState({newVal:"",edit:false})
             updateComment(comment.id,response.data.comment)
+            toast.success("Comment updated")
         } catch (error) {
             console.error(error);            
         }
@@ -31,6 +33,7 @@ function Comment({comment,updateComment,deleteComment}:ICommentProps){
         try {
             await axiosClient.delete(`/comment/delete/${comment.id}`)
             deleteComment(id)
+            toast.success("Comment deleted")
         } catch (error) {
             console.error(error);
         }

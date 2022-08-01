@@ -1,4 +1,5 @@
 import { FormEvent } from "react"
+import toast from "react-hot-toast"
 import axiosClient from "../../axiosClient"
 import useFormFields from "../../hooks/useFormChange"
 
@@ -8,7 +9,7 @@ function ChangePassword(){
         e.preventDefault()
         try {
             const { data } = await axiosClient.patch("/auth/changePassword", passFields)
-            console.log(data);
+            toast.success("Password updated")
         } catch (error) {
             console.error(error);
         }

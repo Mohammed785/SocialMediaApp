@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react"
+import toast from "react-hot-toast"
 import axiosClient from "../../axiosClient"
 import { useAuthContext } from "../../context/authContext"
 
@@ -15,6 +16,7 @@ function ChangeProfilePics({type}:{type:"profile"|"cover"}){
         try {
             const {data} = await axiosClient.patch(`/user/img?type=${type}`,new FormData(e.currentTarget as HTMLFormElement))
             type === 'profile' ? setCurrentUser({ ...user!, profileImg: data.image }) : setCurrentUser({ ...user!, coverImg: data.image })
+            toast.success("image updated")
         } catch (error) {
             console.error(error);            
         }

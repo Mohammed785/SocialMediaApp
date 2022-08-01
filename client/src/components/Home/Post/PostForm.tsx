@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useRef, useState } from "react"
+import toast from "react-hot-toast"
 import { FaImage } from "react-icons/fa"
 import axiosClient from "../../../axiosClient"
 import { useAuthContext } from "../../../context/authContext"
@@ -30,6 +31,7 @@ function PostForm({ groupId }: { groupId?: number }) {
             setPostInfo({ content: "", private: "false", commentable: "true" })
             imgInpRef.current!.files = null
             setPostImages([])
+            toast.success("Post created")
         } catch (error) {
             console.error(error);
         }

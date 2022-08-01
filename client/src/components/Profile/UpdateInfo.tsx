@@ -1,4 +1,5 @@
 import { FormEvent, useEffect } from "react"
+import toast from "react-hot-toast"
 import axiosClient from "../../axiosClient"
 import { useAuthContext } from "../../context/authContext"
 import useFormFields from "../../hooks/useFormChange"
@@ -24,6 +25,7 @@ function UpdateInfo({id}:{id:number}){
             userForm.gender = (userForm.gender==="male"||userForm.gender===true)?true:false
             const {data} = await axiosClient.patch("/auth/account/update",{...userForm})
             setCurrentUser(data.user)
+            toast.success("info updated181b1e")
         } catch (error) {
             console.error(error);            
         }

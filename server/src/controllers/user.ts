@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import { NotFoundError } from "../errors";
 import { prisma, resizeImage, unlinkImage, userSelect } from "../utils";
 
 
@@ -6,6 +7,9 @@ export const userInfo: RequestHandler = async (req, res) => {
     const {id} = req.query
     if(id){
         const user = await prisma.user.findUnique({where:{id:parseInt(id as string)},select:{...userSelect,gender:true,birthDate:true,bio:true}})
+        if(!user){
+            throw new NotFoundError("User Not Found")
+        }
         return res.json({user})
     }
     return res.json({ user: req.user });

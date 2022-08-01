@@ -7,6 +7,7 @@ import PostUpdate from "./PostUpdate";
 import PostContent from "./PostContent";
 import PostOptions from "./PostOptions";
 import { IPost, IPostImage, IPostReaction } from "../../../@types/post";
+import toast from "react-hot-toast";
 
 function Post({post,deletePost}:{post:IPost,deletePost:(id:number)=>void}) {
     const [postState,setPostState] = useState({...post})
@@ -15,9 +16,11 @@ function Post({post,deletePost}:{post:IPost,deletePost:(id:number)=>void}) {
         setPostState({...postState,reactions})
     }
     const updatePostImages = (images:IPostImage[])=>{
+        toast.success("Post images updated")
         setPostState({...postState,images})
     }
     const updateInfo = (info:{body:string,commentable:boolean,private:boolean})=>{
+        toast.success("Post updated")
         setPostState({...postState,...info})
     }
     return <>

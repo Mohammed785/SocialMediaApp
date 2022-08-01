@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { IComment } from "../../../@types/post";
 import axiosClient from "../../../axiosClient";
 import { useAuthContext } from "../../../context/authContext";
@@ -16,6 +17,7 @@ function CommentForm({ id, addComment }: { id: number, addComment:(comment:IComm
             newComment._count={comments:0}
             setComment("")            
             addComment(newComment)
+            toast.success("Comment created")
         } catch (error) {
             console.error(error);            
         }

@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react"
+import toast from "react-hot-toast"
 import axiosClient from "../../axiosClient"
 import useFormFields from "../../hooks/useFormChange"
 
@@ -17,6 +18,7 @@ function CreateForm(){
         const data = new FormData((e.currentTarget as HTMLFormElement))
         try {
             await axiosClient.post(`/group/create`, data, {headers: { 'Content-Type': "multipart/form-data" }})
+            toast.success("group created")
         } catch (error) {
             console.error(error);            
         }
