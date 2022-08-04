@@ -37,8 +37,7 @@ export function AxiosError(){
                 toast.error(errorData.message, { style: errorStyle })
                 return Promise.reject(error)
             }
-        })
-        console.log("Added");        
+        }) 
         return ()=>axiosClient.interceptors.response.eject(interceptor)
     },[])
     return <></>

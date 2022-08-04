@@ -48,7 +48,7 @@ function PostForm({ groupId }: { groupId?: number }) {
                 <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="modal-dialog modal-dialog-centered">
                     <div className="modal-content bg-dark">
                         <div className="modal-header align-items-center">
-                            <h5 className="text-muted text-center w-100 m-0" id="createModalLabel">
+                            <h5 className="text-white text-center w-100 m-0" id="createModalLabel">
                                 Create Post
                             </h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal"
@@ -90,7 +90,7 @@ function PostForm({ groupId }: { groupId?: number }) {
                                     </div>
                                     <div className="d-flex align-items-center">
                                         <FaImage type="button" style={{ fontSize: "40px" }} onClick={() => imgInpRef.current?.click()} className="text-success pointer mx-1"></FaImage>
-                                        <p className="m-0 text-muted">add images</p>
+                                        <p className="m-0 text-white">add images</p>
                                     </div>
                                 </div>
                             </div>
@@ -107,7 +107,7 @@ function PostForm({ groupId }: { groupId?: number }) {
             <div className="d-flex flex-column flex-lg-row mt-3">
                 <div className="dropdown-item rounded pointer d-flex align-items-center justify-content-center" typeof="button" data-bs-toggle="modal" data-bs-target="#createModal" >
                     <FaImage className="me-2 text-success"></FaImage>
-                    <p className="m-0 text-muted">Photo</p>
+                    <p className="m-0 text-white">Photo</p>
                 </div>
             </div>
         </div>

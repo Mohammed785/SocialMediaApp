@@ -78,7 +78,7 @@ function PostUpdate({ post, updateImages, postDelete, updateInfo }:IPostUpdatePr
             <form onSubmit={(e)=>{e.preventDefault()}} method="POST" encType="multipart/form-data" className="modal-dialog 1modal-dialog-centered">
                 <div className="bg-dark modal-content">
                     <div className="modal-header align-items-center">
-                        <h5 className="text-muted text-center w-100 m-0" id={`update${post.id}ModalLabel`}>
+                        <h5 className="text-white text-center w-100 m-0" id={`update${post.id}ModalLabel`}>
                             Update Post
                         </h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal"

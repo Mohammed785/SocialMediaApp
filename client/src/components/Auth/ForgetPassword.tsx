@@ -32,7 +32,7 @@ function ForgetPasswordForm(){
                 <div className="alert text-wrap" style={{display:"block",maxWidth:"25rem"}} ref={errorCont} role="alert">
                 </div>
             </div>
-            <h1 className="h3 mb-3 fw-normal text-muted">Find My Account</h1>
+            <h1 className="h3 mb-3 fw-normal text-white">Find My Account</h1>
             <div className="form-floating">
                 <input type="email" name="email" id="email" className="form-control inp" value={email} onChange={(e)=>{setEmail(e.target.value)}} placeholder="Email address"/>
                 <label htmlFor="email">Email:</label>

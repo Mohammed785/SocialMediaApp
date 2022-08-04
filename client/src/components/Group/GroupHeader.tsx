@@ -16,9 +16,9 @@ function GroupHeader({ group, membership, setMember }:IGroupHeaderProps){
         <header className="shadow bg-dark" style={{position:"relative"}}>
             <img className="cover-img pointer shadow" src={process.env.REACT_APP_STATIC_PATH + group.image} alt="group-img" style={{top: "9%",position: "relative"}} />
             <div style={{position: "relative",top: "5%",width: "100%",display: "flex",flexDirection: "column",alignItems: "center"}}>
-                <div className="user-info text-muted">
+                <div className="user-info text-white">
                     <h4 className="profile-name">{group.name}</h4>
-                    <p className="text-muted">{group.description}</p>
+                    <p className="text-white">{group.description}</p>
                 </div>
                 <div style={{ height: "1px", backgroundColor: "black", width: "80%" }}></div>
                 <nav className="d-flex justify-content-between align-items-center w-100 mt-2">

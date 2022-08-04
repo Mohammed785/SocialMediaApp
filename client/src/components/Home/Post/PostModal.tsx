@@ -7,7 +7,7 @@ function PostModal({id,images}:{id:number,images:IPostImage[]}){
             <div className="modal-dialog modal-lg modal-dialog-centered">
                 <div className="modal-content bg-dark">
                     <div className="modal-header">
-                        <h3 className="text-muted m-0">Post Images</h3>
+                        <h3 className="text-white m-0">Post Images</h3>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">

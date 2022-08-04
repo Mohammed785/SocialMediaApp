@@ -13,12 +13,11 @@ export const getPostComments:RequestHandler = async (req,res)=>{
     }
     const comments = await prisma.comment.findMany({
         take: 6,
-        where: { postId: id, commentId: null },
+        where: { postId: id },
         orderBy: [{ id: "desc" }, { createTime: "desc" }],
         include: {
             reactions: {select:{reaction:true,user:{select:userSelect}}},
-            author: { select: { ...userSelect } },
-            _count: { select: { comments: true } },
+            author: { select: { ...userSelect } }
         },
         ...queryOptions,
     });
@@ -26,24 +25,6 @@ export const getPostComments:RequestHandler = async (req,res)=>{
     cursor = (last && comments.length>=6)?last.id:0
     return res.json({comments,cursor})
 };
-
-export const getSubComments:RequestHandler = async (req,res)=>{
-    const id = parseInt(req.params.id)
-    const parentComment = await prisma.comment.findUnique({where:{id}})
-    if(!parentComment){
-        throw new NotFoundError("Comment Not Found")
-    }
-    const comments = await prisma.comment.findMany({
-        where: { commentId: id },
-        orderBy: { createTime: "desc" },
-        include: {
-            reactions: true,
-            author: { select: { ...userSelect } },
-            _count: { select: { comments: true } },
-        },
-    });
-    return res.json({comments})
-}
 
 export const createComment:RequestHandler = async (req,res)=>{
     const id = parseInt(req.params.id)

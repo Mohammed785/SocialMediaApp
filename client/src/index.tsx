@@ -5,6 +5,7 @@ import "@popperjs/core"
 import "bootstrap/dist/js/bootstrap.min.js"
 import App from './App';
 import { AuthProvider } from './context/authContext';
+import { SocketProvider } from './context/socketContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,7 +13,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+      <SocketProvider>
+        <App />
+      </SocketProvider>
     </AuthProvider>
   </React.StrictMode>
 );

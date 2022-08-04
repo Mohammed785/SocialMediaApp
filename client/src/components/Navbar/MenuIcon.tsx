@@ -2,6 +2,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../../axiosClient";
 import { useAuthContext } from "../../context/authContext";
+import { useSocketContext } from "../../context/socketContext";
 import FriendRequests from "./FriendRequests";
 import Notifications from "./Notifications";
 
@@ -9,10 +10,12 @@ function MenuIcon() {
     const {logoutUser} = useAuthContext()!
     const navigator = useNavigate()
     const {user} = useAuthContext()!
+    const {socket} = useSocketContext()
     async function handleLogout(){
         try {
             await axiosClient.post("/auth/logout")
             logoutUser()
+            socket?.close()
             navigator("/login",{replace:true})
         } catch (error) {
             console.error(error);

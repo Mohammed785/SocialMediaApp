@@ -26,7 +26,7 @@ function ChangeProfilePics({type}:{type:"profile"|"cover"}){
         <div className="modal fade" id={`change${type}ImgModal`} tabIndex={-1} aria-labelledby={`change${type}ImgLabel`} aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content bg-dark">
-                    <div className="modal-header text-muted">
+                    <div className="modal-header text-white">
                         <h5 className="modal-title" id={`change${type}ImgLabel`}>Change {type} img</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>

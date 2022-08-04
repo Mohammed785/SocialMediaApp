@@ -17,7 +17,7 @@ function Header({ id, relations, info }: IHeaderProps){
         <header className="shadow bg-dark">
             <img className="cover-img pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.coverImg}`} alt="profile-cover" />
             <img className="profile-img rounded-circle pointer shadow" src={`${process.env.REACT_APP_STATIC_PATH}${info.profileImg}`} alt="profile-img"/>
-            <div className="user-info text-muted">
+            <div className="user-info text-white">
                 <h4 className="profile-name">{info.firstName} {info.lastName}</h4>
                 <p className="m-0">{info.bio}</p>
             </div>

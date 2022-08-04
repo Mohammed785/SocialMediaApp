@@ -2,10 +2,14 @@ import { useState } from "react"
 import axiosClient from "../../axiosClient"
 import { FaUsers } from "react-icons/fa"
 import { IFriendRequest } from "../../@types/relation"
+import { useSocketContext } from "../../context/socketContext"
+import { useAuthContext } from "../../context/authContext"
 
 
 function FriendRequests() {
     const [requestState, setRequestState] = useState({ loading: false, requests: [] })
+    const {socket} = useSocketContext()
+    const {user} = useAuthContext()!
     const loadRequests = async () => {
         try {
             setRequestState({...requestState,loading:true})
@@ -22,6 +26,7 @@ function FriendRequests() {
             setRequestState({...requestState,requests:requestState.requests.filter((req:IFriendRequest)=>{
                 return req.sender.id!==id
             })})
+            action === "accept" && socket?.emit("acceptFriendRequest", id, `${user?.firstName} ${user?.lastName}`)
         }catch(error){
             console.error(error);            
         }

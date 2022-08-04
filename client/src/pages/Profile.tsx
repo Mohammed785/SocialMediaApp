@@ -8,6 +8,7 @@ import FriendsList from "../components/Profile/FriendsList"
 import Header from "../components/Profile/Header"
 import Timeline from "../components/Profile/Timeline"
 import { useAuthContext } from "../context/authContext"
+import { useSocketContext } from "../context/socketContext"
 import useTitle from "../hooks/useTitle"
 
 function Profile(){
@@ -19,6 +20,8 @@ function Profile(){
     const navigate = useNavigate()
     const [queryParams, setQueryParams] = useSearchParams()
     const page = queryParams.get("p")
+    const {socket} = useSocketContext()
+    
     useEffect(()=>{
         const getRelation = async()=>{
             try {                

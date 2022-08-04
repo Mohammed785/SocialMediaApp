@@ -18,10 +18,10 @@
 }
 .post-content:focus{
     background-color: #252a30;
-    color: black;
+    color: rgb(168, 168, 168);
 }
 .post{
-    color: #6c757d;
+    color: white;
 }
 .select{
     color: white;

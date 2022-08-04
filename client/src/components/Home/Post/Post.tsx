@@ -30,7 +30,7 @@ function Post({post,deletePost}:{post:IPost,deletePost:(id:number)=>void}) {
                     <img src={`${process.env.REACT_APP_STATIC_PATH}${post.author.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "38px", height: "38px", objectFit: "cover" }} />
                     <div>
                         <p className="m-0 fw-bold">{post.author.firstName} {post.author.lastName}</p>
-                        <span className="text-muted fs-7">{post.createTime}</span>
+                        <span className="text-muted fs-7">{new Date(post.createTime).toLocaleString()}</span>
                     </div>
                 </div>
                 <PostOptions {...{id:post.id,authorId:post.author.id,edited:postState.edited,deletePost,saved:false}}/>
@@ -43,7 +43,7 @@ function Post({post,deletePost}:{post:IPost,deletePost:(id:number)=>void}) {
                         <div className="bg-dark accordion-item border-0">
                             <h2 className="bg-dark accordion-header" id="headingTwo">
                                 <div className="bg-dark accordion-button pointer d-flex justify-content-end collapsed" data-bs-toggle="collapse" data-bs-target={`#collapsePost${post.id}`} aria-expanded="false" aria-controls={`collapsePost${post.id}`}>
-                                    <p className="m-0 text-muted">{postState._count.comments} Comment{postState._count.comments>1&&"s"}</p>
+                                    <p className="m-0 text-white">{postState._count.comments} Comment{postState._count.comments>1&&"s"}</p>
                                 </div>
                             </h2>
                             <hr />

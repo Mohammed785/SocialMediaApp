@@ -59,7 +59,7 @@ function Reactions({ id,reactions,type }: {id:number, reactions: IPostReaction[]
                             <FaThumbsDown className="text-danger me-3"></FaThumbsDown>
                             <p style={{ margin: "0px" }}>{reacts._count.dislike}</p>
                         </div>
-                        <p className="text-muted m-auto">click on icon to filter reactions</p>
+                        <p className="text-white m-auto">click on icon to filter reactions</p>
                     </div>
                     <hr style={{ margin: "5px" }} />
                     <ul className="list-group">

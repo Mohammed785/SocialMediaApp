@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity","fullTextSearch","fullTextIndex"]
+  previewFeatures = ["referentialIntegrity", "fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -40,6 +40,10 @@ model User {
   sentGroupReq     GroupRequest[]
   groupMemberships GroupMembership[]
   notifications    Notification[]
+  sentMessages     Message[]
+  chats1           Chat[]            @relation("chats1")
+  chats2           Chat[]            @relation("chats2")
+
   @@fulltext([email])
 }
 
@@ -123,11 +127,8 @@ model Comment {
   updateTime DateTime          @updatedAt
   authorId   Int
   postId     Int
-  commentId  Int?
   author     User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post       Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
-  pComment   Comment?          @relation("SubComments", fields: [commentId], references: [id], onDelete: Cascade)
-  comments   Comment[]         @relation("SubComments")
   reactions  CommentReaction[]
 }
 
@@ -207,4 +208,27 @@ model Notification {
   seen       Boolean  @default(false)
   receiverId Int
   receiver   User     @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model Chat {
+  id         Int       @id @default(autoincrement())
+  active Boolean @default(true)
+  user1Id    Int
+  user2Id    Int
+  user1      User      @relation("chats1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2      User      @relation("chats2", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages   Message[]
+  createTime DateTime  @default(now())
+
+  @@unique([user1Id, user2Id])
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String @db.Text
+  createTime DateTime @default(now())
+  senderId   Int
+  chatId     Int
+  sender     User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  chat       Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
 }

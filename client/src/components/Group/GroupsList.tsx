@@ -28,7 +28,7 @@ function GroupsList() {
                 <div className="card-body">
                     <Link className="text-decoration-none" to={`/group/${group.group.id}`}><h5 className="card-title">{group.group.name}</h5></Link> 
                     <p className="card-text">{group.group.description}</p>
-                    <p className="card-text"><small className="text-muted">Created At { group.group.createTime }</small></p>
+                    <p className="card-text"><small className="text-white">Created At { group.group.createTime }</small></p>
                 </div>
             </div>
         })}

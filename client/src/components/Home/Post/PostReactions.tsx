@@ -9,7 +9,7 @@ function PostReactions({id,reactions}:{id:number,reactions:IPostReaction[]}){
                 <FaThumbsUp className="text-primary"></FaThumbsUp>
                 <FaThumbsDown className="text-danger"></FaThumbsDown>
             </div>
-            <p className="m-0 text-muted fs-7">{reactions.length}</p>
+            <p className="m-0 text-white fs-7">{reactions.length}</p>
         </div>
         <Reactions {...{id,reactions,type:"post"}}/>
     </>

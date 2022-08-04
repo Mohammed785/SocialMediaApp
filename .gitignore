@@ -1,7 +1,6 @@
 .env
 migrations/
 dist/
-frontend/
 node_modules/
 /.pnp
 .pnp.js

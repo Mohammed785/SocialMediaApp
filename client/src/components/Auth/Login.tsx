@@ -53,7 +53,7 @@ function LoginForm(){
             </div>
             <button className="w-100 btn btn-lg mb-3 btn-primary" type="submit">Sign in</button>
             {<Link to="/register" className="btn btn-outline-secondary">Need Account?</Link>}
-            <p className="mt-3 mb-3 text-muted" style={{color:"white"}}>©{new Date().getFullYear()}</p>
+            <p className="mt-3 mb-3 text-white" style={{color:"white"}}>©{new Date().getFullYear()}</p>
         </form>
     </>
 }

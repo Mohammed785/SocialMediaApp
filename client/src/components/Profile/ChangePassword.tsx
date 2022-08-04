@@ -19,7 +19,7 @@ function ChangePassword(){
         <div className="modal fade" id="changePassModal" tabIndex={-1} aria-labelledby="changePassLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content bg-dark">
-                    <div className="modal-header text-muted">
+                    <div className="modal-header text-white">
                         <h5 className="modal-title" id="changePassLabel">Change Password</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>

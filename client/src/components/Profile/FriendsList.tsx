@@ -29,7 +29,7 @@ function FriendsList({id,owner}:{id:string,owner:boolean}){
     return <>
     <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center w-100 bg-dark shadow p-2" style={{position:"absolute",top:"78%"}}>
             <ul className="list-group my-2" style={{width:"55%"}}>
-                <h3 className="text-center text-muted">{friends.length} Friends</h3>
+                <h3 className="text-center text-white">{friends.length} Friends</h3>
                 {
                     friends.map((friend) => {
                         return <li key={friend.related.id} className="list-group-item d-flex align-items-center justify-content-between my-1 shadow member-rounded p-2 bg-gray-dark">

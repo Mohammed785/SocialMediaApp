@@ -70,7 +70,7 @@ function SearchForm() {
                             <hr style={{ margin: "10px 0px" }} />
                         </div>
                         <div>
-                            <p ref={searchMsgRef} className="text-muted text-center">Write {4 - searchInfo.search.length} more letter to start search</p>
+                            <p ref={searchMsgRef} className="text-white text-center">Write {4 - searchInfo.search.length} more letter to start search</p>
                             {searchInfo.result && 
                                 searchInfo.result.map((res:Record<string,any>)=>{
                                     if(searchInfo.type==='user'){
@@ -78,7 +78,7 @@ function SearchForm() {
                                             <div className=" alert fade show dropdown-item p-1 m-0 d-flex align-items-center justify-content-between" role="alert">
                                                 <Link className="d-flex align-items-center text-decoration-none" to={"/profile/" + res.id}>
                                                     <img src={`${process.env.REACT_APP_STATIC_PATH}${res.profileImg}`} alt="avatar" className="rounded-circle me-2" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
-                                                    <p className="m-0" style={{color:"black"}}>{res.firstName+res.lastName}</p>
+                                                    <p className="m-0 text-white" >{res.firstName+res.lastName}</p>
                                                 </Link>
                                                 <button type="button" className="btn-close p-0 m-0" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>
@@ -88,7 +88,7 @@ function SearchForm() {
                                             <div className=" alert fade show dropdown-item p-1 m-0 d-flex align-items-center justify-content-between" role="alert">
                                                 <Link className="d-flex align-items-center" to={"/group/" + res.id}>
                                                     <img src={res.image} alt="avatar" className="rounded-circle me-2" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
-                                                    <p className="m-0" style={{ color: "black" }}>{res.name}</p>
+                                                    <p className="m-0 text-white" >{res.name}</p>
                                                 </Link>
                                                 <button type="button" className="btn-close p-0 m-0" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>

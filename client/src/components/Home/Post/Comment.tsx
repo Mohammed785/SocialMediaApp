@@ -48,7 +48,7 @@ function Comment({comment,updateComment,deleteComment}:ICommentProps){
                 <div className="d-flex justify-content-between align-items-center">
                     <Link className="fw-bold m-0" style={{textDecoration:"none"}} to={`/profile/${comment.author.id}`}>{comment.author.firstName} {comment.author.lastName}</Link>
                     <div className="d-flex align-items-center">
-                        <p className="text-muted me-2" style={{margin:0}}>{comment.edited&&"edited"}</p>
+                        <p className="text-white me-2" style={{margin:0}}>{comment.edited&&"edited"}</p>
                         <FaEllipsisH className="text-blue pointer" id={`comment${comment.id}CommentMenuButton`} data-bs-toggle="dropdown" aria-expanded="false"></FaEllipsisH>
                         <ul className="dropdown-menu border-0 shadow" aria-labelledby={`comment${comment.id}CommentMenuButton`} style={{ width: "auto" }}>
                         {

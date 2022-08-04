@@ -69,6 +69,7 @@ export const acceptFriendRequest:RequestHandler = async (req,res)=>{
             {userId:req.user!.id,relatedId:id,friend:true}
         ]
     })
+    await prisma.chat.create({ data: { user1Id: req.user!.id, user2Id: id }});
     await createNotification(
         request.senderId,
         `${req.user?.firstName} ${req.user?.lastName} Accepted Your FriendRequest`
@@ -131,6 +132,12 @@ export const blockUser:RequestHandler = async(req,res)=>{
     block = await prisma.relation.create({
         data:{userId:req.user!.id,relatedId:id,friend:false}
     })
+    await prisma.chat.updateMany({
+        where: {
+            OR: [{ user1Id: req.user!.id, user2Id: id },{ user1Id: id, user2Id: req.user!.id }],
+        },
+        data: { active: false },
+    });
     return res.json({ block });
 }
 
@@ -155,6 +162,8 @@ export const unblockUser:RequestHandler = async(req,res)=>{
             }
         },
     })
+    await prisma.chat.updateMany({where: { OR: [{ user1Id: req.user!.id,user2Id:id }, 
+        { user1Id:id,user2Id: req.user!.id }] },data:{active:true}});
     return res.json({ unblock });
 }
 
@@ -182,8 +191,13 @@ export const isRelatedTo:RequestHandler = async(req,res)=>{
             OR: [ { userId: id, relatedId: req.user!.id }, { userId: req.user!.id, relatedId: id } ]
         }
     });
-    const request = await prisma.friendRequest.findUnique({
-        where: { senderId_receiverId: { senderId: req.user!.id, receiverId: id } },
+    const request = await prisma.friendRequest.findFirst({
+        where: {
+            OR:[
+                { senderId: req.user!.id, receiverId: id },
+                { senderId: id, receiverId: req.user!.id },    
+            ]
+        }
     });
     return res.json({relation,request})
 }
@@ -207,5 +221,8 @@ export const unfriendUser:RequestHandler = async(req,res)=>{
             friend:true
         }
     })
+    await prisma.chat.updateMany({
+        where: { OR: [{ user1Id: req.user!.id,user2Id:id }, { user1Id:id,user2Id: req.user!.id }] },data:{active:false}
+    });
     return res.json({ msg:"You Removed Your Friendship" });
 }

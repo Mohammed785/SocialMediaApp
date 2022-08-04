@@ -34,6 +34,9 @@ export const errorHandler: ErrorRequestHandler = async (err, req, res, next) => 
             const name = err.meta!.field_name as string
             CustomError.message = `${name.slice(0,-2)} Not Found`;
             CustomError.statusCode = StatusCodes.NOT_FOUND;
+        }else if(err.code==="P2000"){
+            CustomError.message = `${err.meta!.column_name} Is To Long`
+            CustomError.statusCode = StatusCodes.BAD_REQUEST
         }else{
             CustomError.message = "Something Went Wrong"
             CustomError.statusCode = StatusCodes.INTERNAL_SERVER_ERROR

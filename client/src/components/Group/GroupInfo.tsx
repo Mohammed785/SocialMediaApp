@@ -36,7 +36,7 @@ function GroupInfo({group,setGroup}:IGroupInfoProps){
                 <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="col-lg-6 mt-4 rounded shadow">
                     <div className="bg-dark modal-content">
                         <div className="modal-header align-items-center">
-                            <h5 className="text-muted text-center w-100 m-0" id="createModalLabel">
+                            <h5 className="text-white text-center w-100 m-0" id="createModalLabel">
                                 Update Group
                             </h5>
                         </div>

@@ -37,7 +37,7 @@ function PostOptions({id,authorId,deletePost,saved,edited}:IPostOptionsProps){
     }
     return <>
         <div className="d-flex align-items-center">
-            <p className="text-muted me-2" style={{ margin: 0 }}>{edited && "edited"}</p>
+            <p className="text-white me-2" style={{ margin: 0 }}>{edited && "edited"}</p>
             <FaEllipsisH type="button" id={`post${id}Menu`} data-bs-toggle="dropdown" className="dropdown-toggle" aria-expanded="false"></FaEllipsisH>
             <ul className="bg-dark dropdown-menu border-0 shadow" aria-labelledby={`post${id}Menu`} >
                 {

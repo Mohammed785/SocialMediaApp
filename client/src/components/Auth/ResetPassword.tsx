@@ -30,7 +30,7 @@ function ResetPasswordForm(){
                 <div className="alert text-wrap" style={{maxWidth:"25rem"}} ref={errorCont} role="alert">
                 </div>
             </div>
-            <h1 className="h3 mb-3 fw-normal text-muted">Reset Password</h1>
+            <h1 className="h3 mb-3 fw-normal text-white">Reset Password</h1>
             <div className="form-floating">
                 <input type="password" name="password" value={passwords.password} onChange={setPasswords} className="form-control inp" id="password" required placeholder="New Password"/>
                 <label htmlFor="password">New Password</label>
@@ -40,7 +40,7 @@ function ResetPasswordForm(){
                 <label htmlFor="confirmPass">confirm Password</label>
             </div>
             <button className="w-100 btn btn-lg mb-3 btn-primary" type="submit">Change</button>
-            <p className="mt-3 mb-3 text-muted" style={{ color: "white" }}>©{new Date().getFullYear()}</p>
+            <p className="mt-3 mb-3 text-white" style={{ color: "white" }}>©{new Date().getFullYear()}</p>
         </form>
     </>
 }

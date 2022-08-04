@@ -27,7 +27,7 @@ function RegisterForm(){
     }
     return <>
     <form onSubmit={handleSubmit}>
-            <h1 className="h3 mb-3 fw-normal text-muted">Register</h1>
+            <h1 className="h3 mb-3 fw-normal text-white">Register</h1>
             <div className="form-group">
                 <div className="alert text-wrap" style={{maxWidth:"38rem"}} ref={errorCont} role="alert">
                 </div>
@@ -86,7 +86,7 @@ function RegisterForm(){
             </div>
             <button className="w-100 mt-3 btn btn-lg mb-3 btn-primary" type="submit">Register</button>
             {<Link to="/login" className="btn btn-outline-secondary">Already have account?</Link>}
-            <p className="mt-3 mb-3 text-muted" style={{ color: "white" }}>©{new Date().getFullYear()}</p>
+            <p className="mt-3 mb-3 text-white" style={{ color: "white" }}>©{new Date().getFullYear()}</p>
         </form>
     </>
 }

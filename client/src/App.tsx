@@ -13,14 +13,15 @@ import RequireAuth from "./components/Auth/RequireAuth";
 import { Toaster } from "react-hot-toast";
 import { AxiosError } from "./axiosClient";
 import NotFoundPage from "./pages/NotFound";
+import Chat from "./pages/Chat";
 
 function WithNav(){
   return <>
   <div className="bg-dark container-fluid">
     <AxiosError/>
       <div><Toaster position="bottom-right" toastOptions={{ success: { className:"text-white", style: { backgroundColor:"#03632d"}}}} reverseOrder={false}/></div>
+      <Navbar/>
       <div className="row justify-content-evenly">
-          <Navbar/>
           <Outlet/>
       </div>
   </div>
@@ -36,12 +37,13 @@ function App() {
       <Route path="/forgetPassword" element={<ForgetPassword/>}/>
       <Route path="/resetPassword/:token" element={<ResetPassword/>}/>
     </Route>
-      <Route element={<RequireAuth><WithNav /></RequireAuth>}>
-        <Route path="/" element={<Home/>}/>
+      <Route element={<RequireAuth><WithNav/></RequireAuth>}>
+      <Route path="/" element={<Home/>}/>
       <Route path="/profile/:id" element={<Profile/>}/>
       <Route path="/groups" element={<Groups/>}/>
       <Route path="/group/:id" element={<Group/>}/>
       <Route path="/posts/saved" element={<SavedPosts/>}/>
+      <Route path="/chat" element={<Chat/>}/>
     </Route>
     <Route path="*" element={<NotFoundPage/>}/>
   </Routes>
