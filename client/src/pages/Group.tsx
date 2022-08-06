@@ -43,7 +43,7 @@ function Group() {
         {!page && <div className="col-12 col-lg-6 pb-5">
             <div className="d-flex flex-column justify-content-center w-100 mx-auto" style={{ paddingTop: "56px", maxWidth: "680px" }}>
                 <PostForm groupId={group.id}/>
-                <GroupPosts id={parseInt(id!)} />
+                {(!group.private || membership?.member)&&<GroupPosts id={parseInt(id!)}/>}
             </div>
         </div>
     }

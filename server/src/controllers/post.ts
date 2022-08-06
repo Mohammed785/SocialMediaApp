@@ -92,10 +92,22 @@ export const getGroupPosts:RequestHandler = async(req,res)=>{
 
 export const getPost:RequestHandler = async(req,res)=>{
     const id = parseInt(req.params.id)
-    const post = await prisma.post.findUnique({where:{id}
-    ,include:{images:true,reactions:true,author:{select:{...userSelect}}}})
+    const post = await prisma.post.findUnique({
+        where: { id },
+        include: {
+            images: true,
+            reactions: {
+                select: { reaction: true, user: { select: userSelect } },
+            },
+            author: { select: { ...userSelect } },
+            _count: { select: { comments: true } },
+        },
+    });
     if(!post){
         throw new NotFoundError("Post Not Found")
+    }
+    if(post.authorId!==req.user?.id && post.private===true){
+        throw new ForbiddenError("You Cant View This Post")
     }
     const blocked = await prisma.relation.findFirst({
         where: {
@@ -105,9 +117,6 @@ export const getPost:RequestHandler = async(req,res)=>{
     });
     if (blocked) {
         throw new ForbiddenError("You View This Post");
-    }
-    if(post.authorId!==req.user?.id && post.private===true){
-        throw new ForbiddenError("You Cant View This Post")
     }
     return res.status(StatusCodes.OK).json({post});
 }

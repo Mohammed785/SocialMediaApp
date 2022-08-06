@@ -2,6 +2,7 @@ import {useState,UIEvent} from "react"
 import axiosClient from "../../axiosClient"
 import { FaBell } from "react-icons/fa"
 import { INotification } from "../../@types/notification"
+import { Link } from "react-router-dom"
 
 interface INotificationsState{
     loading: boolean
@@ -68,7 +69,7 @@ function Notifications(){
         </div>
     </>
 }
-function Notification({ id, content, createTime, action, seen }:INotification) {
+function Notification({ id, content, createTime, seen }:INotification) {
     return <>
         <li className={(seen) ? "notification-box" : "notification-box not-seen"} key={id} >
             <div className="row">

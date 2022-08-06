@@ -203,7 +203,6 @@ model GroupMembership {
 model Notification {
   id         Int      @id @default(autoincrement())
   content    String
-  action     String?
   createTime DateTime @default(now())
   seen       Boolean  @default(false)
   receiverId Int

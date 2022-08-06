@@ -4,11 +4,20 @@ import axiosClient from "../../../axiosClient";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { IPostReaction } from "../../../@types/post";
 import toast from "react-hot-toast";
+import { useSocketContext } from "../../../context/socketContext";
 
+interface Props{
+    id: number
+    type: string
+    reactions: IPostReaction[]
+    setReactions?: Function
+    authorId?:number
+}
 
-function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:string, reactions: IPostReaction[],setReactions?:Function }) {
+function ReactToContent({ id, reactions,type,setReactions,authorId }: Props) {
     const [liked, setLiked] = useState<boolean|null>(null)
     const { user } = useAuthContext()!
+    const { socket } = useSocketContext()
     const likeRef = useRef<HTMLDivElement>(null)
     const dislikeRef = useRef<HTMLDivElement>(null)
     const updateBtns = () => {
@@ -54,10 +63,15 @@ function ReactToContent({ id, reactions,type,setReactions }: { id: number,type:s
         try {
             const response = await axiosClient.post(`/${type}/${id}/react?react=${react}`)
             const { reaction, removed, msg } = response.data 
-            removed ? updateReactionsList(reaction, true) : updateReactionsList(reaction,false)
-            setLiked(removed ? null : reaction.reaction)
-            removed && toast.success(`${type} react removed`)
-            
+            if(removed){
+                updateReactionsList(reaction, true)
+                setLiked(null)
+                toast.success(`${type} react removed`)
+            }else{
+                updateReactionsList(reaction, false)
+                setLiked(reaction.reaction)
+                socket?.emit("reactOn",authorId,type,`${user?.firstName} ${user?.lastName}`,react)
+            }
         } catch (error) {
             console.error(error);
         }

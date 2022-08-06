@@ -8,9 +8,10 @@ interface ICommentListProps{
     postId: number
     updateCommentCount: (count:number)=>void
     commentable: boolean
+    authorId?:number
 }
 
-function CommentList({ postId, updateCommentCount, commentable }:ICommentListProps){
+function CommentList({ postId, updateCommentCount, commentable, authorId }:ICommentListProps){
     const [commentsQuery, setCommentsQuery] = useState<{ comments: IComment[],cursor:number }>({comments:[],cursor:0})
     const getComments = async()=>{
         try {
@@ -60,7 +61,7 @@ function CommentList({ postId, updateCommentCount, commentable }:ICommentListPro
     return <>
         <div id={`collapsePost${postId}`} className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent={`#post${postId}Accordion`}>
             <hr />
-            {commentable ? <CommentForm id={postId} addComment={addComment} />
+            {commentable ? <CommentForm id={postId} addComment={addComment} authorId={authorId} />
             :<h5 className="text-center">Comments blocked on this post</h5>
             }
             <div onScroll={handleScroll} className="navbar-nav-scroll" style={{margin:"0.5rem"}}>

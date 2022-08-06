@@ -118,12 +118,11 @@ export const resizeImage = async(path:string,name:string,dest:string,maxWidth=12
     }
 }
 
-export const createNotification = async (receiverId:number,content:string,action:string|null=null) => {
+export const createNotification = async (receiverId:number,content:string) => {
     return await prisma.notification.create({
         data: {
             receiverId,
             content,
-            action
         },
     });
 };

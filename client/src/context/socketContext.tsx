@@ -21,7 +21,15 @@ function SocketProvider({children}:{children:ReactNode}){
         socket?.on("error",sendError)
         socket?.on("receiveFriendRequest",sendMsg)
         socket?.on("acceptedFriendRequest",sendMsg)
-        return () => { socket?.off("error", sendError); socket?.off("receiveFriendRequest",sendMsg)}
+        socket?.on("reactedOn",sendMsg)
+        socket?.on("commentedOnPost",sendMsg)
+        return () => { 
+        socket?.off("error", sendError);
+        socket?.off("receiveFriendRequest",sendMsg);
+        socket?.off("acceptedFriendRequest",sendMsg);
+        socket?.off("reactedOn",sendMsg);
+        socket?.off("commentedOnPost",sendMsg);
+    }
     },[socket,user])
     return <SocketContext.Provider value={{socket,setSocket}}>
         {children}

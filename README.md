@@ -2,15 +2,17 @@
 
 ## Features
 * Sign in, Sign up
-* CRUD on posts
+* CRUD on posts(with images and captions)
 * Save posts you liked
 * Block comment on your post
 * Comment on post
+* Create stories(text or image)
 * React to other posts and comments
 * Send friend requests or block others
 * Create group or join them
 * Create post for certain group
 * Chat friends in realtime
+* Live notification
 
 ## Technologies
 * **Front-end**: React, Bootstrap

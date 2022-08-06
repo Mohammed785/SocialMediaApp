@@ -3,10 +3,12 @@ import toast from "react-hot-toast";
 import { IComment } from "../../../@types/post";
 import axiosClient from "../../../axiosClient";
 import { useAuthContext } from "../../../context/authContext";
+import { useSocketContext } from "../../../context/socketContext";
 
-function CommentForm({ id, addComment }: { id: number, addComment:(comment:IComment)=>void}){
+function CommentForm({ id, addComment, authorId }: { id: number, authorId?:number, addComment:(comment:IComment)=>void}){
     const [comment,setComment] = useState("")
     const {user} = useAuthContext()!
+    const {socket} = useSocketContext()
     const handleSubmit = async(e:FormEvent)=>{
         e.preventDefault()
         try {
@@ -18,6 +20,7 @@ function CommentForm({ id, addComment }: { id: number, addComment:(comment:IComm
             setComment("")            
             addComment(newComment)
             toast.success("Comment created")
+            socket?.emit("commentOnPost",authorId,`${user?.firstName} ${user?.lastName}`)
         } catch (error) {
             console.error(error);            
         }

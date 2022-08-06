@@ -48,13 +48,13 @@ function Post({post,deletePost}:{post:IPost,deletePost:(id:number)=>void}) {
                             </h2>
                             <hr />
                             <div className="d-flex justify-content-around">
-                                <ReactToContent id={post.id} reactions={postState.reactions} setReactions={setReactions} type={"post"}/>
+                                <ReactToContent authorId={post.author.id} id={post.id} reactions={postState.reactions} setReactions={setReactions} type={"post"}/>
                                 <div className="dropdown-item action pointer rounded d-flex justify-content-center align-items-center pointer text-success p-1 collapsed" data-bs-toggle="collapse" data-bs-target={`#collapsePost${post.id}`} aria-expanded="false" aria-controls={`collapsePost${post.id}`}>
                                     <FaCommentAlt className="me-3"></FaCommentAlt>
                                     <p className="m-0">Comment</p>
                                 </div>
                             </div>                            
-                            <CommentList {...{postId:post.id,updateCommentCount,commentable:postState.commentable}}/>
+                            <CommentList {...{postId:post.id,updateCommentCount,commentable:postState.commentable,authorId:post.author.id}}/>
                         </div>
                     </div>
                 </div>

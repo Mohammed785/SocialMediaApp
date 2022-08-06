@@ -12,7 +12,9 @@ export interface ServerToClientEvents {
     error: (msg: string) => void;
     receiveMsg: (msg: Message) => void;
     receiveFriendRequest: (name: string) => void;
-    acceptedFriendRequest:(name:string)=>void;
+    acceptedFriendRequest: (name: string) => void;
+    reactedOn: (msg: string) => void;
+    commentedOnPost: (msg: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -20,5 +22,7 @@ export interface ClientToServerEvents {
     connectUser: (userId: number) => void;
     sendMsg: (to: number, msg: Message) => void;
     sendFriendRequest: (to: number, name: string) => void;
-    acceptFriendRequest:(to:number,name:string)=>void;
+    acceptFriendRequest: (to: number, name: string) => void;
+    commentOnPost: (to: number, name: string) => void;
+    reactOn: (to: number, on: "post" | "comment", name: string,react:string) => void;
 }

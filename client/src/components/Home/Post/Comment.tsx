@@ -76,7 +76,7 @@ function Comment({comment,updateComment,deleteComment}:ICommentProps){
                             <p className="ms-1" style={{margin:0}}>{reactionsState.length}</p>
                         </div>
                         <div className="d-flex justify-content-end">
-                                <ReactToContent {...{ id: comment.id, reactions: reactionsState,type:"comment",setReactions}} />
+                                <ReactToContent {...{ id: comment.id, reactions: reactionsState,type:"comment",setReactions,authorId:comment.author.id}} />
                         </div>
                             <Reactions {...{ id: comment.id, reactions: reactionsState,type:"comment"}}/>
                     </div>
